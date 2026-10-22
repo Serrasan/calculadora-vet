@@ -1,0 +1,1360 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Xavi Vet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<style>
+/* Layout: hospital intranet app — blue urgent bar, white header with clinician chip, sticky patient bar, side navigation + module workspace, dark footer */
+:root{
+  --bg:#F3F6F9; --surface:#FFFFFF; --sunk:#F6F9FC; --ink:#22282F; --muted:#646B73; --line:#E1E7ED;
+  --accent:#1E93E3; --accent-strong:#0C71C3; --accent-ink:#FFFFFF; --accent-soft:#E6F3FD;
+  --band:#0C71C3; --band-ink:#FFFFFF; --band-muted:#CDE5F8; --top:#2EA3F2; --foot:#222222; --foot-ink:#B4BAC0;
+  --ok:#23864F; --ok-soft:#E2F3E8; --warn:#AE5E0E; --warn-soft:#FDF0DD; --danger:#BF2E26; --danger-soft:#FCE5E3;
+  --f-body:"Nunito", "Museo Sans Rounded", Helvetica, Arial, sans-serif;
+  --r:14px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F151C; --surface:#161E27; --sunk:#121921; --ink:#E5EBF1; --muted:#98A4B0; --line:#25303C;
+  --accent:#4AAFF4; --accent-strong:#71C2F7; --accent-ink:#0A1520; --accent-soft:#15283A;
+  --band:#0E4C82; --band-ink:#FFFFFF; --band-muted:#A8D1F2; --top:#0E4C82; --foot:#0A0E13; --foot-ink:#8A949E;
+  --ok:#6ACF94; --ok-soft:#14301F; --warn:#EBA65C; --warn-soft:#33261A; --danger:#F2897F; --danger-soft:#3A1F1C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F151C; --surface:#161E27; --sunk:#121921; --ink:#E5EBF1; --muted:#98A4B0; --line:#25303C;
+  --accent:#4AAFF4; --accent-strong:#71C2F7; --accent-ink:#0A1520; --accent-soft:#15283A;
+  --band:#0E4C82; --band-ink:#FFFFFF; --band-muted:#A8D1F2; --top:#0E4C82; --foot:#0A0E13; --foot-ink:#8A949E;
+  --ok:#6ACF94; --ok-soft:#14301F; --warn:#EBA65C; --warn-soft:#33261A; --danger:#F2897F; --danger-soft:#3A1F1C; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;font-weight:600}
+button,input,select,textarea{font:inherit;color:inherit}
+img{max-width:100%}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.tn{font-variant-numeric:tabular-nums}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* top & header */
+.topbar{background:var(--top);color:#fff;font-weight:800;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase}
+.topbar .wrap{padding-block:7px;display:flex;justify-content:space-between;gap:10px 18px;flex-wrap:wrap}
+header.site{background:var(--surface);border-bottom:1px solid var(--line)}
+header.site .wrap{padding-block:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:56px;height:56px;border-radius:14px;flex:none;object-fit:cover;box-shadow:0 4px 12px rgba(12,113,195,.18)}
+.hello-logo{width:96px;height:96px;border-radius:22px;flex:none;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.hello-main{display:flex;gap:18px;align-items:center;min-width:0}
+@media (max-width:520px){.hello-logo{width:64px;height:64px;border-radius:16px}}
+.brand .name{font-weight:900;font-size:1.12rem;line-height:1.1;color:var(--ink)}
+.brand .name span{display:block;color:var(--accent-strong)}
+.app-pill{font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent-strong);border-radius:999px;padding:4px 10px;margin-left:4px}
+.user{margin-left:auto;display:flex;align-items:center;gap:10px}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--band);color:#fff;display:grid;place-items:center;font-weight:900;font-size:1.05rem}
+.user b{display:block;line-height:1.1}
+.user small{color:var(--muted);font-size:.8rem}
+
+/* patient bar */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.pbar{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;box-shadow:0 6px 18px rgba(12,113,195,.06)}
+.pbar .wrap{padding-block:10px;display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap}
+.pbar .lbl{margin-right:2px}
+.seg{display:flex;gap:4px;background:var(--sunk);border:1px solid var(--line);border-radius:999px;padding:3px;flex-wrap:wrap}
+.seg button{border:0;background:none;border-radius:999px;padding:6px 14px;cursor:pointer;font-weight:800;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.wbox{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:999px;background:var(--sunk);overflow:hidden;height:40px}
+.wbox input{width:6.5ch;border:0;background:none;padding:0 6px 0 14px;font-size:1.25rem;font-weight:900;font-variant-numeric:tabular-nums}
+.wbox input:focus{outline:none}
+.wbox:focus-within{outline:2px solid var(--accent);outline-offset:1px}
+.wbox select{border:0;background:none;padding:0 6px;font-weight:900;cursor:pointer}
+.wbox button{border:0;background:var(--surface);width:34px;cursor:pointer;font-size:1.15rem;font-weight:900;color:var(--accent-strong)}
+.pname{display:flex;align-items:center;gap:8px;min-width:0}
+.pname input{border:1px solid var(--line);background:var(--sunk);border-radius:999px;padding:7px 14px;width:200px;max-width:100%;font-weight:800}
+.whint{font-size:.82rem;color:var(--muted)}
+.whint.bad{color:var(--warn);font-weight:800}
+
+/* app shell */
+.app{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px;padding-block:22px 48px;align-items:start}
+.side{position:sticky;top:76px;display:flex;flex-direction:column;gap:2px}
+.side button{display:flex;align-items:center;gap:11px;border:0;background:none;text-align:left;padding:10px 14px;border-radius:999px;cursor:pointer;font-weight:800;color:var(--ink)}
+.side button:hover{background:var(--accent-soft);color:var(--accent-strong)}
+.side button[aria-current="true"]{background:var(--accent);color:var(--accent-ink)}
+.side .sep{height:1px;background:var(--line);margin:8px 10px}
+.side .count{margin-left:auto;background:var(--accent-soft);color:var(--accent-strong);border-radius:999px;padding:0 8px;font-size:.75rem}
+.side button[aria-current="true"] .count{background:#fff;color:var(--accent-strong)}
+.side .urg{color:var(--danger)}
+.side .urg[aria-current="true"]{background:var(--danger);color:#fff}
+@media (max-width:920px){
+  .app{grid-template-columns:minmax(0,1fr);gap:16px}
+  .side{position:static;flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  .side button{white-space:nowrap;padding:8px 12px}
+  .side .sep{display:none}
+  .pbar{position:static}
+}
+main{min-width:0;display:flex;flex-direction:column;gap:18px}
+
+/* generic */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 4px 18px rgba(12,113,195,.05);min-width:0}
+.pad{padding:22px}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.eyebrow{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:900}
+h2.t{font-weight:900;font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.01em;margin:2px 0 0;line-height:1.1;text-wrap:balance}
+h3.t{font-weight:900;font-size:1.15rem;margin:0;color:var(--accent-strong)}
+.sub{color:var(--muted);margin-top:4px}
+.btn{border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:8px 18px;font-weight:900;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--accent-strong);border-color:var(--accent-strong)}
+.btn.ghost{background:none;color:var(--accent-strong)}
+.btn.ghost:hover{background:var(--accent-soft)}
+.btn.danger{border-color:var(--danger);background:var(--danger);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1100px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:680px){.grid2,.grid3,.grid4{grid-template-columns:minmax(0,1fr)}}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:.84rem;color:var(--muted);font-weight:800}
+.field input,.field select,.field textarea{border:1px solid var(--line);background:var(--sunk);border-radius:10px;padding:9px 11px;font-weight:700;min-width:0;width:100%}
+.field textarea{min-height:90px;resize:vertical}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.84rem;cursor:pointer;color:var(--muted);font-weight:800}
+.chips button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+
+.banner{border-radius:12px;padding:12px 14px;font-size:.93rem;display:flex;gap:10px;align-items:flex-start}
+.banner b{display:block;font-weight:900}
+.banner svg{flex:none;width:18px;height:18px;margin-top:2px;fill:currentColor}
+.banner.danger{background:var(--danger-soft);color:var(--danger)}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.ok{background:var(--ok-soft);color:var(--ok)}
+.banner.info{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+.banner.info b{color:var(--ink)}
+
+.kpi{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:2px;background:var(--sunk);min-width:0}
+.kpi .v{font-weight:900;font-size:1.65rem;line-height:1.15;font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:.85rem;font-weight:700;margin-left:4px}
+.kpi .s{font-size:.82rem;color:var(--muted)}
+.kpi.main{background:linear-gradient(135deg,var(--accent),var(--band));color:var(--band-ink);border-color:transparent}
+.kpi.main .eyebrow,.kpi.main .s{color:var(--band-muted)}
+
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th{text-align:left;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:900;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.hl td{background:var(--accent-soft)}
+.amt{font-weight:900;font-size:1.05rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+.r{text-align:right}
+.small{font-size:.82rem;color:var(--muted);font-weight:600}
+.tag{display:inline-block;font-size:.74rem;padding:2px 8px;border-radius:999px;font-weight:900;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.danger{background:var(--danger-soft);color:var(--danger)}
+.tag.info{background:var(--accent-soft);color:var(--accent-strong)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+@media (max-width:680px){.facts{grid-template-columns:minmax(0,1fr)}}
+.facts div{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.facts b{font-weight:900}
+.stack{display:flex;flex-direction:column;gap:16px}
+.stack-s{display:flex;flex-direction:column;gap:8px}
+
+/* home */
+.hello{background:linear-gradient(120deg,var(--accent),var(--band));color:#fff;border-radius:var(--r);padding:26px 24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-end}
+.hello h2{margin:4px 0 0;font-weight:900;font-size:clamp(1.6rem,3.4vw,2.3rem);line-height:1.1}
+.hello p{margin:6px 0 0;color:var(--band-muted);max-width:60ch}
+.hello .eyebrow{color:var(--band-muted)}
+.hello .btn{background:#fff;border-color:#fff;color:var(--accent-strong)}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1100px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.tiles{grid-template-columns:minmax(0,1fr)}}
+.tile{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:16px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:transform .15s, box-shadow .15s}
+.tile:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(12,113,195,.12)}
+.tile .ic{width:40px;height:40px;border-radius:50%;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center}
+.tile.urg .ic{background:var(--danger-soft);color:var(--danger)}
+.tile b{font-weight:900;font-size:1.02rem}
+.tile span{font-size:.85rem;color:var(--muted)}
+
+/* formulary */
+.fx{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:1100px){.fx{grid-template-columns:minmax(0,1fr)}}
+.list{display:flex;flex-direction:column;min-width:0}
+.list .search{padding:14px 14px 8px}
+.list .search input{width:100%;border:1px solid var(--line);background:var(--sunk);border-radius:999px;padding:9px 16px}
+.list .chips{padding:0 14px 10px}
+.list ul{list-style:none;margin:0;padding:0 8px 10px;max-height:640px;overflow-y:auto}
+@media (max-width:1100px){.list ul{max-height:300px}}
+.grp{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding:12px 8px 4px;font-weight:900}
+.item{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;border:0;background:none;text-align:left;padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+.item:hover{background:var(--sunk)}
+.item[aria-current="true"]{background:var(--accent-soft);color:var(--accent-strong);font-weight:900}
+.dot{font-size:.68rem;padding:1px 7px;border-radius:999px;white-space:nowrap;font-weight:900}
+.dot.x{background:var(--danger-soft);color:var(--danger)}
+.dot.n{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+.dose{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}
+@media (max-width:680px){.dose{grid-template-columns:minmax(0,1fr)}}
+.ctl{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.dose-in{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.dose-in input{width:8ch;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 10px;font-size:1.35rem;font-weight:900;font-variant-numeric:tabular-nums}
+.dose-in span{color:var(--muted);font-weight:800}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.ends{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);font-weight:800;font-variant-numeric:tabular-nums}
+.total{border-radius:var(--r);padding:18px;background:linear-gradient(135deg,var(--accent),var(--band));color:var(--band-ink);display:flex;flex-direction:column;gap:4px;justify-content:center;min-width:0}
+.total .eyebrow{color:var(--band-muted)}
+.total .big{font-size:2.4rem;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}
+.total .big small{font-size:1rem;font-weight:700;color:var(--band-muted);margin-left:6px}
+.total .calc{font-size:.84rem;color:var(--band-muted);font-variant-numeric:tabular-nums}
+tr.pres{cursor:pointer}
+tr.pres:hover td{background:var(--sunk)}
+tr.pres[aria-selected="true"] td{background:var(--accent-soft)}
+tr.pres[aria-selected="true"] td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+
+/* crash chart */
+.crash td.amt{font-size:1.2rem}
+.crash tr.sec td{background:var(--sunk);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:900;color:var(--muted);padding:7px 10px}
+
+.empty{padding:34px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r)}
+.x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:1.2rem;padding:0 6px;font-weight:900}
+.x:hover{color:var(--danger)}
+.sig{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-top:26px}
+.sig div{min-width:220px;border-top:1px solid var(--ink);padding-top:6px;font-size:.85rem;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:900;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20}
+.toast.show{opacity:1}
+footer{background:var(--foot);color:var(--foot-ink);font-size:.85rem}
+footer .wrap{padding-block:26px 30px;display:flex;flex-direction:column;gap:8px}
+footer b{color:#fff;font-weight:900;font-size:1rem}
+footer p{max-width:85ch;margin:0}
+.print-only{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  .no-print{display:none!important}
+  .print-only{display:block}
+  body{background:#fff;color:#000;font-size:12px}
+  .app{display:block;padding:0}
+  .panel{box-shadow:none;border:0}
+  .pad{padding:0}
+  .total,.kpi.main{background:#fff!important;color:#000;border:1px solid #000}
+  .total .eyebrow,.total .calc,.kpi.main .eyebrow,.kpi.main .s{color:#333}
+  th,td{border-color:#999}
+  .crash td.amt{font-size:14px}
+}
+</style>
+</head>
+<body>
+
+
+<div class="topbar no-print"><div class="wrap"><span>Calculadora clínica veterinaria</span><span>Perro y gato</span></div></div>
+<header class="site no-print">
+  <div class="wrap">
+    <div class="brand">
+      <img class="logo" src="data:image/webp;base64,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" alt="Logo de Xavi Vet" width="56" height="56">
+      <div class="name">Xavi Vet<span>Dosis y protocolos</span></div>
+    </div>
+    <div class="user"><div class="avatar" aria-hidden="true">X</div><div><b>Dr. Xavier</b><small>Veterinario · Sesión activa</small></div></div>
+  </div>
+</header>
+
+<div class="pbar no-print">
+  <div class="wrap">
+    <span class="eyebrow">Paciente</span>
+    <div class="pname"><input id="pName" type="text" placeholder="Nombre del paciente" aria-label="Nombre del paciente"></div>
+    <div class="seg" id="spSeg" role="group" aria-label="Especie"></div>
+    <div class="wbox">
+      <button id="wMinus" aria-label="Restar peso">−</button>
+      <input id="weight" type="text" inputmode="decimal" aria-label="Peso">
+      <select id="wUnit" aria-label="Unidad de peso"><option value="kg">kg</option><option value="g">g</option></select>
+      <button id="wPlus" aria-label="Sumar peso">+</button>
+    </div>
+    <span class="whint" id="wHint"></span>
+  </div>
+</div>
+
+<div class="wrap app">
+  <nav class="side no-print" id="side" aria-label="Módulos"></nav>
+  <main id="view"></main>
+</div>
+
+<footer class="no-print">
+  <div class="wrap">
+    <b>Xavi Vet</b>
+    <p>Herramienta de apoyo a la prescripción. Los rangos son orientativos y proceden de formularios veterinarios de referencia; algunos usos están fuera de ficha técnica. Comprueba siempre la concentración del producto, la ficha técnica (CIMAVet) y el estado clínico del paciente antes de administrar.</p>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =================== DATA =================== */
+const LOGO=document.querySelector(".logo").src;
+const SPECIES={
+  d:{n:'Perro',min:0.5,max:90,def:12,range:'0,5–90 kg'},
+  c:{n:'Gato',min:0.5,max:12,def:4,range:'0,5–12 kg'}
+};
+const D=(min,max,def,route,freq,note)=>({min,max,def,route,freq,note});
+const X=x=>({x});
+const L=(label,c)=>({label,t:'liq',c});
+const T=(label,c)=>({label,t:'tab',c});
+const C=(label,c)=>({label,t:'cap',c});
+
+const DRUGS=[
+ // AINE y analgesia
+ {id:'meloxicam',n:'Meloxicam',cat:'AINE y analgesia',u:'mg',
+  pres:[L('Inyectable 5 mg/mL',5),L('Suspensión oral 1,5 mg/mL',1.5),L('Suspensión oral felina 0,5 mg/mL',0.5),T('Comprimido 1 mg',1),T('Comprimido 2,5 mg',2.5)],
+  sp:{d:D(0.1,0.2,0.2,'SC, IV, PO','q24h','0,2 mg/kg el primer día; mantenimiento 0,1 mg/kg/día.'),
+      c:D(0.05,0.3,0.3,'SC (inyectable), PO','Dosis única SC; oral q24h','0,3 mg/kg SC en dosis única; mantenimiento oral 0,05 mg/kg/día. Vigilar función renal.'),
+      r:D(0.3,1,0.5,'SC, PO','q24h','El conejo metaboliza rápido el meloxicam y necesita dosis más altas que perro y gato.'),
+      f:D(0.1,0.2,0.2,'SC, PO','q24h')},
+  warn:'No combinar con corticoides ni con otro AINE. Evitar en deshidratación, hipotensión, enfermedad renal o úlcera gastrointestinal.'},
+ {id:'robenacoxib',n:'Robenacoxib',cat:'AINE y analgesia',u:'mg',
+  pres:[L('Inyectable 20 mg/mL',20),T('Comprimido 6 mg (gato)',6),T('Comprimido 10 mg (perro)',10),T('Comprimido 20 mg (perro)',20)],
+  sp:{d:D(1,2,2,'SC (2 mg/kg); PO (1–2 mg/kg)','q24h'),
+      c:D(1,2,2,'SC (2 mg/kg); PO (1–2 mg/kg)','q24h (SC máximo 3 días)')},
+  warn:'No combinar con corticoides ni con otro AINE. Administrar los comprimidos fuera de las comidas.'},
+ {id:'carprofeno',n:'Carprofeno',cat:'AINE y analgesia',u:'mg',
+  pres:[L('Inyectable 50 mg/mL',50),T('Comprimido 20 mg',20),T('Comprimido 50 mg',50),T('Comprimido 100 mg',100)],
+  sp:{d:D(2,4,4,'SC, IV, PO','q24h (o 2 mg/kg q12h)'),
+      c:D(4,4,4,'SC, IV','Dosis única perioperatoria','En gato solo está autorizada una dosis única.'),
+      r:D(2,4,4,'SC, PO','q24h','Uso fuera de ficha técnica.')},
+  warn:'No combinar con corticoides ni con otro AINE. Hepatotoxicidad idiosincrásica descrita en perros (más frecuente en Labrador).'},
+ {id:'paracetamol',n:'Paracetamol',cat:'AINE y analgesia',u:'mg',
+  pres:[L('Solución IV 10 mg/mL',10),T('Comprimido 500 mg',500)],
+  sp:{d:D(10,15,10,'PO, IV lento (15 min)','q8–12h'),
+      c:X('Tóxico en gatos incluso a dosis bajas: metahemoglobinemia, anemia hemolítica y necrosis hepática. No administrar nunca.'),
+      f:X('Los hurones tienen una glucuronidación deficiente y son muy sensibles al paracetamol. Evitar.')},
+  warn:'Analgésico sin efecto antiinflamatorio. No exceder la dosis en hepatópatas.'},
+ {id:'gabapentina',n:'Gabapentina',cat:'AINE y analgesia',u:'mg',
+  pres:[L('Solución oral 50 mg/mL',50),C('Cápsula 100 mg',100),C('Cápsula 300 mg',300)],
+  sp:{d:D(5,20,10,'PO','q8–12h','Indicada en dolor neuropático y crónico.'),
+      c:D(5,20,10,'PO','q8–12h; 2–3 h antes de la visita si es ansiolítico','Como ansiolítico previo a la visita se usa una dosis fija de 50–100 mg por gato.')},
+  warn:'Produce sedación y ataxia. Reducir la dosis en insuficiencia renal. Algunas soluciones de uso humano contienen xilitol: no usarlas en perros.'},
+ // Opioides
+ {id:'buprenorfina',n:'Buprenorfina',cat:'Opioides',u:'mg',
+  pres:[L('Inyectable 0,3 mg/mL',0.3)],
+  sp:{d:D(0.01,0.02,0.02,'IV, IM','q6–8h'),
+      c:D(0.02,0.03,0.02,'IV, IM, transmucosa oral','q6–8h','Buena absorción por vía transmucosa oral en gato.'),
+      r:D(0.01,0.05,0.03,'SC, IM, IV','q6–12h'),
+      f:D(0.01,0.03,0.02,'SC, IM','q8–12h')},
+  warn:'Agonista parcial: inicio lento (30–45 min). Medicamento sujeto a control de estupefacientes.'},
+ {id:'metadona',n:'Metadona',cat:'Opioides',u:'mg',
+  pres:[L('Inyectable 10 mg/mL',10)],
+  sp:{d:D(0.2,0.5,0.3,'IV lento, IM','q4h'),
+      c:D(0.2,0.3,0.2,'IV lento, IM','q4h')},
+  warn:'Agonista µ completo. Vigilar depresión respiratoria y bradicardia. Revertir con naloxona. Estupefaciente.'},
+ {id:'morfina',n:'Morfina',cat:'Opioides',u:'mg',
+  pres:[L('Inyectable 1 % (10 mg/mL)',10),L('Inyectable 2 % (20 mg/mL)',20)],
+  sp:{d:D(0.2,0.5,0.3,'IM, SC; IV lento 0,1–0,2 mg/kg','q4h'),
+      c:D(0.1,0.2,0.1,'IM, SC','q4–6h')},
+  warn:'Liberación de histamina si se administra IV rápido. Puede provocar vómito en premedicación. Estupefaciente.'},
+ {id:'fentanilo',n:'Fentanilo (bolo)',cat:'Opioides',u:'µg',
+  pres:[L('Inyectable 50 µg/mL',50)],
+  sp:{d:D(2,5,3,'IV','Bolo; efecto 20–30 min','Para analgesia mantenida usar el módulo de infusiones continuas.'),
+      c:D(1,3,2,'IV','Bolo; efecto 20–30 min')},
+  warn:'Depresión respiratoria y bradicardia: tener ventilación disponible. Estupefaciente.'},
+ {id:'butorfanol',n:'Butorfanol',cat:'Opioides',u:'mg',
+  pres:[L('Inyectable 10 mg/mL',10)],
+  sp:{d:D(0.2,0.4,0.2,'IV, IM','q1–2h'),
+      c:D(0.2,0.4,0.2,'IV, IM','q1–2h'),
+      r:D(0.1,0.5,0.3,'SC, IM','q2–4h'),
+      f:D(0.05,0.4,0.2,'SC, IM','q4–6h')},
+  warn:'Analgesia corta con efecto techo. Útil sobre todo como sedante y antitusivo.'},
+ {id:'tramadol',n:'Tramadol',cat:'Opioides',u:'mg',
+  pres:[L('Gotas orales 100 mg/mL',100),T('Comprimido 50 mg',50)],
+  sp:{d:D(2,5,4,'PO','q8–12h','Eficacia analgésica limitada en el perro como fármaco único.'),
+      c:D(1,2,2,'PO','q12h','Muy amargo; puede causar midriasis y disforia.')},
+  warn:'Riesgo de síndrome serotoninérgico con ISRS, trazodona, selegilina o amitraz.'},
+ // Sedación y anestesia
+ {id:'dexmedetomidina',n:'Dexmedetomidina',cat:'Sedación y anestesia',u:'µg',
+  pres:[L('Inyectable 0,5 mg/mL (500 µg/mL)',500),L('Inyectable 0,1 mg/mL (100 µg/mL)',100)],
+  sp:{d:D(1,10,5,'IV, IM','Dosis única (premedicación)','Dosis bajas (1–3 µg/kg) por vía IV en combinación con opioide.'),
+      c:D(2,20,10,'IM, IV','Dosis única (premedicación)'),
+      r:D(25,100,50,'IM, SC','Dosis única','Siempre combinada con ketamina u opioide. Uso fuera de ficha técnica.')},
+  warn:'Contraindicada en cardiopatía significativa, shock o enfermedad sistémica grave. Produce bradicardia y vasoconstricción. Revertir con atipamezol.'},
+ {id:'acepromacina',n:'Acepromacina',cat:'Sedación y anestesia',u:'mg',
+  pres:[L('Inyectable 5 mg/mL',5),L('Inyectable 2 mg/mL',2)],
+  sp:{d:D(0.01,0.05,0.02,'IV, IM, SC','Dosis única (premedicación)'),
+      c:D(0.02,0.05,0.03,'IM, SC, IV','Dosis única (premedicación)'),
+      r:D(0.1,0.5,0.25,'IM, SC','Dosis única'),
+      f:D(0.1,0.25,0.1,'IM, SC','Dosis única')},
+  warn:'Sin analgesia ni reversión. Reducir la dosis en braquicéfalos, Bóxer, razas gigantes y perros con mutación MDR1 (ABCB1). Evitar en hipovolemia.'},
+ {id:'midazolam',n:'Midazolam',cat:'Sedación y anestesia',u:'mg',
+  pres:[L('Inyectable 5 mg/mL',5),L('Inyectable 1 mg/mL',1)],
+  sp:{d:D(0.1,0.3,0.2,'IV, IM, IN','Dosis única'),
+      c:D(0.1,0.3,0.2,'IV, IM','Dosis única'),
+      r:D(0.25,1,0.5,'IM, IV, IN','Dosis única'),
+      f:D(0.25,0.5,0.3,'IM, SC','Dosis única')},
+  warn:'En animales jóvenes y sanos puede causar excitación si se usa solo. Reversible con flumazenil.'},
+ {id:'ketamina',n:'Ketamina',cat:'Sedación y anestesia',u:'mg',
+  pres:[L('Inyectable 100 mg/mL',100),L('Inyectable 50 mg/mL',50)],
+  sp:{d:D(2,5,3,'IV, IM','Dosis única','Siempre combinada con benzodiacepina o alfa-2 agonista.'),
+      c:D(2,10,5,'IM, IV','Dosis única','Siempre combinada con benzodiacepina o alfa-2 agonista.'),
+      r:D(10,25,15,'IM','Dosis única','En combinación con dexmedetomidina o midazolam.'),
+      f:D(5,10,5,'IM','Dosis única')},
+  warn:'Contraindicada en miocardiopatía hipertrófica, hipertensión intracraneal o glaucoma. Lubricar los ojos.'},
+ {id:'propofol',n:'Propofol',cat:'Sedación y anestesia',u:'mg',
+  pres:[L('Emulsión IV 10 mg/mL',10)],
+  sp:{d:D(2,6,4,'IV lento a efecto','Inducción','Con premedicación suelen bastar 2–4 mg/kg.'),
+      c:D(2,8,4,'IV lento a efecto','Inducción','Repetido en días consecutivos puede causar cuerpos de Heinz.'),
+      r:D(2,10,5,'IV lento (vena marginal de la oreja)','Inducción')},
+  warn:'Administrar a efecto en 30–60 s: riesgo de apnea. Desechar el vial abierto a las 6 h (sin conservante).'},
+ {id:'alfaxalona',n:'Alfaxalona',cat:'Sedación y anestesia',u:'mg',
+  pres:[L('Inyectable 10 mg/mL',10)],
+  sp:{d:D(1,3,2,'IV lento a efecto','Inducción'),
+      c:D(2,5,3,'IV lento a efecto; IM para sedación','Inducción'),
+      r:D(1,3,2,'IV lento','Inducción','Uso fuera de ficha técnica.')},
+  warn:'Administrar a efecto en 60 s. Recuperaciones agitadas sin premedicación adecuada.'},
+ {id:'atipamezol',n:'Atipamezol',cat:'Sedación y anestesia',u:'µg',
+  pres:[L('Inyectable 5 mg/mL (5000 µg/mL)',5000)],
+  sp:{d:D(25,100,50,'IM','Reversión','Perro: 10 veces la dosis de dexmedetomidina en µg (mismo volumen que dexmedetomidina 0,5 mg/mL).'),
+      c:D(25,100,50,'IM','Reversión','Gato: 5 veces la dosis de dexmedetomidina en µg (la mitad del volumen de dexmedetomidina 0,5 mg/mL).')},
+  warn:'Revierte también la analgesia del alfa-2: asegurar otra analgesia antes de revertir. Evitar la vía IV salvo urgencia.'},
+ // Anestesia local
+ {id:'bupivacaina',n:'Bupivacaína',cat:'Anestesia local',u:'mg',
+  pres:[L('0,5 % (5 mg/mL)',5),L('0,25 % (2,5 mg/mL)',2.5)],
+  sp:{d:D(0.5,2,1,'Perineural, infiltración, epidural','Dosis total máxima: 2 mg/kg'),
+      c:D(0.5,1,0.5,'Perineural, infiltración','Dosis total máxima: 1 mg/kg')},
+  warn:'Nunca por vía IV: cardiotóxica. Aspirar antes de inyectar. Inicio 20–30 min; duración 4–8 h.'},
+ {id:'lidocainaloc',n:'Lidocaína (bloqueo local)',cat:'Anestesia local',u:'mg',
+  pres:[L('2 % (20 mg/mL)',20),L('1 % (10 mg/mL)',10)],
+  sp:{d:D(1,6,2,'Infiltración, perineural','Dosis total máxima: 6 mg/kg'),
+      c:D(1,3,1,'Infiltración, perineural','Dosis total máxima: 3 mg/kg')},
+  warn:'Inicio rápido (5 min); duración 1–2 h. Toxicidad: temblores, convulsiones, depresión cardiaca.'},
+ // Antibióticos
+ {id:'amoxiclav',n:'Amoxicilina-clavulánico',cat:'Antibióticos',u:'mg',
+  pres:[L('Inyectable 175 mg/mL (140 + 35)',175),T('Comprimido 50 mg',50),T('Comprimido 250 mg',250),T('Comprimido 500 mg',500)],
+  sp:{d:D(8.75,25,12.5,'PO 12,5–25 mg/kg; SC 8,75 mg/kg','q12h (SC q24h)'),
+      c:D(8.75,25,12.5,'PO 12,5–25 mg/kg; SC 8,75 mg/kg','q12h (SC q24h)'),
+      r:X('Las penicilinas por vía oral alteran la flora cecal y provocan enterotoxemia por clostridios, a menudo mortal. No usar por vía oral en conejo.'),
+      f:D(12.5,25,12.5,'PO','q12h')},
+  warn:'Dosis expresada como producto combinado (amoxicilina + ácido clavulánico).'},
+ {id:'cefalexina',n:'Cefalexina',cat:'Antibióticos',u:'mg',
+  pres:[L('Suspensión oral 50 mg/mL',50),T('Comprimido 250 mg',250),T('Comprimido 500 mg',500)],
+  sp:{d:D(15,30,20,'PO','q12h','Pioderma: 22–30 mg/kg q12h.'),
+      c:D(15,30,20,'PO','q12h'),
+      r:X('Las cefalosporinas orales pueden provocar disbiosis y enterotoxemia en conejo. No usar por vía oral.'),
+      f:D(15,30,20,'PO','q8–12h')},
+  warn:'Administrar con comida si produce vómitos.'},
+ {id:'cefazolina',n:'Cefazolina',cat:'Antibióticos',u:'mg',
+  pres:[L('Vial reconstituido 100 mg/mL',100)],
+  sp:{d:D(22,22,22,'IV lento','30–60 min antes de la incisión; repetir cada 90 min','Profilaxis quirúrgica.'),
+      c:D(22,22,22,'IV lento','30–60 min antes de la incisión; repetir cada 90 min','Profilaxis quirúrgica.')},
+  warn:'Reconstituir según ficha (1 g en 10 mL). Usar en las 24 h siguientes.'},
+ {id:'cefovecina',n:'Cefovecina',cat:'Antibióticos',u:'mg',
+  pres:[L('Inyectable 80 mg/mL (reconstituido)',80)],
+  sp:{d:D(8,8,8,'SC','Dosis única; efecto 14 días'),
+      c:D(8,8,8,'SC','Dosis única; efecto 14 días')},
+  warn:'Cefalosporina de 3.ª generación: reservar para casos en que la vía oral no sea viable. Conservar el vial reconstituido en nevera.'},
+ {id:'enrofloxacino',n:'Enrofloxacino',cat:'Antibióticos',u:'mg',
+  pres:[L('Inyectable 50 mg/mL',50),L('Inyectable 25 mg/mL',25),T('Comprimido 50 mg',50),T('Comprimido 150 mg',150)],
+  sp:{d:D(5,20,5,'SC, IV lento, PO','q24h','Evitar en cachorros en crecimiento (artropatía), especialmente razas grandes.'),
+      c:D(5,5,5,'SC, PO','q24h','No superar nunca 5 mg/kg/día: riesgo de degeneración retiniana y ceguera irreversible.'),
+      r:D(10,20,10,'SC, PO','q24h (o 5–10 mg/kg q12h)','La inyección SC repetida puede causar abscesos estériles; diluir o pasar a vía oral.'),
+      f:D(5,20,10,'SC, PO','q12–24h')},
+  warn:'Fluoroquinolona de importancia crítica (categoría B): usar con cultivo y antibiograma.'},
+ {id:'marbofloxacino',n:'Marbofloxacino',cat:'Antibióticos',u:'mg',
+  pres:[L('Inyectable 10 mg/mL',10),T('Comprimido 5 mg',5),T('Comprimido 20 mg',20),T('Comprimido 80 mg',80)],
+  sp:{d:D(2,2,2,'SC, IV, PO','q24h'),
+      c:D(2,2,2,'SC, PO','q24h'),
+      r:D(2,5,2,'SC, PO','q24h','Uso fuera de ficha técnica.')},
+  warn:'Fluoroquinolona de importancia crítica (categoría B): usar con antibiograma. Evitar en animales en crecimiento.'},
+ {id:'clindamicina',n:'Clindamicina',cat:'Antibióticos',u:'mg',
+  pres:[L('Solución oral 25 mg/mL',25),C('Cápsula 25 mg',25),C('Cápsula 75 mg',75),C('Cápsula 150 mg',150),C('Cápsula 300 mg',300)],
+  sp:{d:D(5.5,11,11,'PO','q12h'),
+      c:D(5.5,11,11,'PO','q12h','Toxoplasmosis: 12,5 mg/kg q12h durante 4 semanas. Dar con agua o comida: riesgo de esofagitis.'),
+      r:X('Las lincosamidas causan enterotoxemia mortal en conejo. Contraindicada.'),
+      f:D(5.5,10,5.5,'PO','q12h')},
+  warn:'Buena penetración ósea y en cavidad oral.'},
+ {id:'metronidazol',n:'Metronidazol',cat:'Antibióticos',u:'mg',
+  pres:[L('Solución IV 5 mg/mL',5),T('Comprimido 250 mg',250)],
+  sp:{d:D(10,15,10,'PO, IV lento','q12h'),
+      c:D(10,15,10,'PO','q12h','Sabor muy amargo; valorar fórmula magistral con benzoato de metronidazol.'),
+      r:D(20,20,20,'PO, IV','q12h'),
+      f:D(15,20,15,'PO','q12h')},
+  warn:'Dosis altas o tratamientos largos: neurotoxicidad (ataxia, nistagmo, convulsiones).'},
+ {id:'doxiciclina',n:'Doxiciclina',cat:'Antibióticos',u:'mg',
+  pres:[T('Comprimido 50 mg',50),T('Comprimido 100 mg',100),T('Comprimido 200 mg',200)],
+  sp:{d:D(5,10,5,'PO','q12h (5 mg/kg) o q24h (10 mg/kg)'),
+      c:D(5,10,5,'PO','q12h (5 mg/kg) o q24h (10 mg/kg)','Dar siempre seguido de agua o comida: riesgo de esofagitis y estenosis esofágica.'),
+      r:D(2.5,5,2.5,'PO','q12h'),
+      f:D(5,10,5,'PO','q12h')},
+  warn:'Separar 2 h de antiácidos, hierro o calcio.'},
+ {id:'tms',n:'Trimetoprim-sulfametoxazol',cat:'Antibióticos',u:'mg',
+  pres:[L('Suspensión oral 48 mg/mL',48),T('Comprimido 480 mg',480)],
+  sp:{d:D(15,30,15,'PO','q12h','Dóberman especialmente predispuestos a reacciones de hipersensibilidad.'),
+      c:D(15,30,15,'PO','q12h'),
+      r:D(15,30,30,'PO','q12h'),
+      f:D(15,30,15,'PO','q12h')},
+  warn:'Dosis expresada como producto combinado. En tratamientos largos vigilar queratoconjuntivitis seca (test de Schirmer) e hipotiroidismo.'},
+ // Antiparasitarios
+ {id:'fenbendazol',n:'Fenbendazol',cat:'Antiparasitarios',u:'mg',
+  pres:[L('Suspensión oral 100 mg/mL',100),T('Comprimido 500 mg',500)],
+  sp:{d:D(50,50,50,'PO','q24h durante 3–5 días','Giardia: 5 días.'),
+      c:D(50,50,50,'PO','q24h durante 3–5 días'),
+      r:D(20,20,20,'PO','q24h durante 9–28 días','Encephalitozoon cuniculi: 28 días.'),
+      f:D(20,50,20,'PO','q24h durante 5 días')},
+  warn:'Margen de seguridad amplio.'},
+ {id:'praziquantel',n:'Praziquantel',cat:'Antiparasitarios',u:'mg',
+  pres:[T('Comprimido 50 mg',50)],
+  sp:{d:D(5,5,5,'PO','Dosis única'),
+      c:D(5,5,5,'PO','Dosis única'),
+      f:D(5,10,5,'PO','Dosis única')},
+  warn:'Cestodos. Suele combinarse con otros antiparasitarios según el producto.'},
+ // Gastrointestinal
+ {id:'maropitant',n:'Maropitant',cat:'Gastrointestinal',u:'mg',
+  pres:[L('Inyectable 10 mg/mL',10),T('Comprimido 16 mg',16),T('Comprimido 24 mg',24),T('Comprimido 60 mg',60),T('Comprimido 160 mg',160)],
+  sp:{d:D(1,2,1,'SC, IV (1 mg/kg); PO (2 mg/kg)','q24h hasta 5 días','Mareo cinético: 8 mg/kg PO hasta 2 días.'),
+      c:D(1,1,1,'SC, IV, PO','q24h hasta 5 días'),
+      r:D(1,2,1,'SC, PO','q24h','Uso fuera de ficha técnica.'),
+      f:D(1,1,1,'SC','q24h','Uso fuera de ficha técnica.')},
+  warn:'La inyección SC es dolorosa: refrigerar el vial. No usar en cachorros menores de 8 semanas.'},
+ {id:'metoclopramida',n:'Metoclopramida',cat:'Gastrointestinal',u:'mg',
+  pres:[L('Inyectable 5 mg/mL',5),T('Comprimido 10 mg',10)],
+  sp:{d:D(0.2,0.5,0.3,'SC, IM, IV, PO','q6–8h'),
+      c:D(0.2,0.5,0.3,'SC, IM, IV, PO','q6–8h'),
+      r:D(0.2,1,0.5,'SC, PO','q8–12h','Procinético en estasis gastrointestinal, tras descartar obstrucción.'),
+      f:D(0.2,1,0.2,'SC, PO','q8h')},
+  warn:'Contraindicada en obstrucción o perforación gastrointestinal y en epilepsia.'},
+ {id:'ondansetron',n:'Ondansetrón',cat:'Gastrointestinal',u:'mg',
+  pres:[L('Inyectable 2 mg/mL',2),T('Comprimido 4 mg',4)],
+  sp:{d:D(0.1,1,0.5,'IV lento, PO','q8–12h'),
+      c:D(0.1,1,0.5,'IV lento, PO','q8–12h')},
+  warn:'Precaución en perros con mutación MDR1 y en hepatopatía.'},
+ {id:'omeprazol',n:'Omeprazol',cat:'Gastrointestinal',u:'mg',
+  pres:[C('Cápsula 10 mg',10),C('Cápsula 20 mg',20)],
+  sp:{d:D(0.7,1,1,'PO','q12h','En ayunas, 30–60 min antes de la comida.'),
+      c:D(0.7,1,1,'PO','q12h','En ayunas, 30–60 min antes de la comida.'),
+      f:D(0.7,1,0.7,'PO','q24h')},
+  warn:'No abrir los gránulos gastrorresistentes; para dosis pequeñas, fórmula magistral.'},
+ // Cardio
+ {id:'furosemida',n:'Furosemida',cat:'Cardio y renal',u:'mg',
+  pres:[L('Inyectable 50 mg/mL',50),L('Inyectable 10 mg/mL',10),T('Comprimido 10 mg',10),T('Comprimido 40 mg',40)],
+  sp:{d:D(1,4,2,'IV, IM, SC, PO','q6–12h según respuesta','Edema pulmonar agudo: 2–4 mg/kg IV cada 1–2 h hasta respuesta.'),
+      c:D(1,2,1,'IV, IM, SC, PO','q8–12h','Más sensibles: riesgo de deshidratación, hipopotasemia y fallo renal.'),
+      r:D(1,4,2,'SC, IV, IM','q8–12h'),
+      f:D(1,4,2,'SC, IV, IM, PO','q8–12h')},
+  warn:'Controlar creatinina y electrolitos. Asegurar acceso a agua.'},
+ {id:'pimobendan',n:'Pimobendan',cat:'Cardio y renal',u:'mg',
+  pres:[T('Comprimido 1,25 mg',1.25),T('Comprimido 2,5 mg',2.5),T('Comprimido 5 mg',5),T('Comprimido 10 mg',10)],
+  sp:{d:D(0.2,0.3,0.25,'PO','q12h','Dosis diaria total 0,4–0,6 mg/kg repartida en dos tomas, 1 h antes de comer.'),
+      c:D(0.25,0.25,0.25,'PO','q12h','Uso fuera de ficha técnica en gato.')},
+  warn:'Contraindicado en miocardiopatía hipertrófica obstructiva y estenosis aórtica.'},
+ {id:'benazepril',n:'Benazepril',cat:'Cardio y renal',u:'mg',
+  pres:[T('Comprimido 2,5 mg',2.5),T('Comprimido 5 mg',5),T('Comprimido 20 mg',20)],
+  sp:{d:D(0.25,0.5,0.25,'PO','q24h'),
+      c:D(0.5,1,0.5,'PO','q24h','Proteinuria en enfermedad renal crónica felina.')},
+  warn:'Controlar creatinina y potasio a las 1–2 semanas. Evitar en hipotensión o deshidratación.'},
+ {id:'espironolactona',n:'Espironolactona',cat:'Cardio y renal',u:'mg',
+  pres:[T('Comprimido 10 mg',10),T('Comprimido 40 mg',40),T('Comprimido 80 mg',80)],
+  sp:{d:D(2,2,2,'PO','q24h con comida'),
+      c:D(1,2,1,'PO','q24h','Dermatitis facial ulcerativa descrita en Maine Coon. Uso fuera de ficha técnica.')},
+  warn:'Riesgo de hiperpotasemia combinada con IECA: controlar potasio.'},
+ {id:'amlodipino',n:'Amlodipino',cat:'Cardio y renal',u:'mg',
+  pres:[T('Comprimido 1,25 mg',1.25),T('Comprimido 5 mg',5)],
+  sp:{d:D(0.1,0.5,0.2,'PO','q24h'),
+      c:D(0.125,0.25,0.18,'PO','q24h','Dosis habitual: 0,625 mg/gato (< 5 kg) o 1,25 mg/gato (≥ 5 kg).')},
+  warn:'Medir la presión arterial a los 7–10 días. Hiperplasia gingival en perro con tratamientos largos.'},
+ {id:'clopidogrel',n:'Clopidogrel',cat:'Cardio y renal',u:'mg',
+  pres:[T('Comprimido 75 mg',75)],
+  sp:{d:D(1,3,2,'PO','q24h','Dosis de carga de 4–10 mg/kg el primer día.'),
+      c:D(3.5,5,4.7,'PO','q24h','Dosis estándar: 18,75 mg/gato (¼ de comprimido de 75 mg).')},
+  warn:'Suspender 5–7 días antes de cirugía.'},
+ // Endocrino
+ {id:'insulinalenta',n:'Insulina lenta porcina',cat:'Endocrino',u:'UI',
+  pres:[L('Vial 40 UI/mL',40)],
+  sp:{d:D(0.25,0.5,0.25,'SC','q12h con comida','Ajustar con curvas de glucosa cada 1–2 semanas.'),
+      c:D(0.25,0.5,0.25,'SC','q12h con comida','Calcular sobre el peso ideal.')},
+  warn:'Usar siempre jeringas U-40 con insulina de 40 UI/mL. Agitar suavemente. No inyectar si el animal no ha comido.'},
+ {id:'glargina',n:'Insulina glargina',cat:'Endocrino',u:'UI',
+  pres:[L('Pluma o vial 100 UI/mL',100)],
+  sp:{c:D(0.25,0.5,0.25,'SC','q12h','Calcular sobre el peso ideal. Indicada para buscar la remisión diabética en gato.')},
+  warn:'Usar jeringas U-100. No diluir ni mezclar con otras insulinas.'},
+ {id:'levotiroxina',n:'Levotiroxina',cat:'Endocrino',u:'µg',
+  pres:[L('Solución oral 1 mg/mL (1000 µg/mL)',1000),T('Comprimido 200 µg',200),T('Comprimido 400 µg',400),T('Comprimido 800 µg',800)],
+  sp:{d:D(10,20,20,'PO','q12h (comprimidos) o q24h (solución)','Control de T4 total 4–6 h tras la dosis, a las 4 semanas.')},
+  warn:'En cardiópatas iniciar con el 25–50 % de la dosis.'},
+ {id:'metimazol',n:'Metimazol',cat:'Endocrino',u:'mg',
+  pres:[T('Comprimido 2,5 mg',2.5),T('Comprimido 5 mg',5)],
+  sp:{c:D(0.3,0.6,0.3,'PO','q12h','Dosis inicial habitual: 2,5 mg/gato/día repartidos en dos tomas.')},
+  warn:'Control de T4, hemograma y función renal a las 3 semanas. Suspender si hay excoriación facial, neutropenia o trombocitopenia.'},
+ // Corticoides
+ {id:'dexametasona',n:'Dexametasona',cat:'Corticoides',u:'mg',
+  pres:[L('Inyectable 2 mg/mL',2)],
+  sp:{d:D(0.1,0.2,0.1,'IV, IM, SC','q24h','Dosis antiinflamatoria.'),
+      c:D(0.1,0.2,0.1,'IV, IM, SC','q24h','Dosis antiinflamatoria.'),
+      r:D(0.1,0.2,0.1,'SC, IM','q24h','El conejo es muy sensible a la inmunosupresión y a la ulceración gástrica: usar con cautela.')},
+  warn:'No combinar con AINE: riesgo de ulceración gastrointestinal. Unas 7 veces más potente que la prednisolona.'},
+ {id:'prednisolona',n:'Prednisolona',cat:'Corticoides',u:'mg',
+  pres:[T('Comprimido 5 mg',5),T('Comprimido 20 mg',20)],
+  sp:{d:D(0.5,2,0.5,'PO','q24h','Antiinflamatoria 0,5–1 mg/kg/día; inmunosupresora 2 mg/kg/día.'),
+      c:D(1,2,1,'PO','q24h','En el gato usar prednisolona y no prednisona (conversión hepática deficiente).'),
+      f:D(0.25,1,0.5,'PO','q12h','Insulinoma: empezar con 0,25 mg/kg q12h e ir ajustando.')},
+  warn:'No combinar con AINE. Retirar de forma progresiva tras tratamientos de más de 2 semanas.'},
+ // Neurología y conducta
+ {id:'diazepam',n:'Diazepam',cat:'Neurología y conducta',u:'mg',
+  pres:[L('Inyectable 5 mg/mL',5)],
+  sp:{d:D(0.5,1,0.5,'IV; intrarrectal 1–2 mg/kg','Bolo, repetir según efecto','Estatus epiléptico.'),
+      c:D(0.5,1,0.5,'IV','Bolo, repetir según efecto','No usar por vía oral de forma repetida: necrosis hepática idiosincrásica.'),
+      r:D(0.5,2,1,'IV, intranasal','Bolo'),
+      f:D(0.5,1,0.5,'IV, IM','Bolo')},
+  warn:'Absorción IM errática: sin vía IV, preferir midazolam IM o intranasal. Se adsorbe al plástico de los sistemas de infusión.'},
+ {id:'levetiracetam',n:'Levetiracetam',cat:'Neurología y conducta',u:'mg',
+  pres:[L('Solución IV 100 mg/mL',100),T('Comprimido 250 mg',250),T('Comprimido 500 mg',500)],
+  sp:{d:D(20,60,30,'IV (bolo 30–60 mg/kg); PO 20 mg/kg','IV en bolo; PO q8h'),
+      c:D(20,20,20,'PO, IV','q8h')},
+  warn:'Ajustar en insuficiencia renal. Margen de seguridad amplio.'},
+ {id:'fenobarbital',n:'Fenobarbital',cat:'Neurología y conducta',u:'mg',
+  pres:[T('Comprimido 15 mg',15),T('Comprimido 60 mg',60),T('Comprimido 100 mg',100)],
+  sp:{d:D(2,3,2.5,'PO','q12h','Concentración sérica objetivo 15–35 µg/mL a las 2 semanas.'),
+      c:D(1.5,2.5,2,'PO','q12h')},
+  warn:'Hepatotóxico: bioquímica cada 6 meses. No retirar de forma brusca.'},
+ {id:'trazodona',n:'Trazodona',cat:'Neurología y conducta',u:'mg',
+  pres:[T('Comprimido 100 mg',100)],
+  sp:{d:D(3,7,5,'PO','1–2 h antes del evento; hasta q8–12h','Ansiedad situacional, confinamiento postquirúrgico.')},
+  warn:'Riesgo de síndrome serotoninérgico con tramadol, ISRS u otros serotoninérgicos.'},
+ // Urgencias
+ {id:'adrenalina',n:'Adrenalina',cat:'Urgencias y RCP',u:'mg',
+  pres:[L('Inyectable 1 mg/mL',1)],
+  sp:{d:D(0.01,0.01,0.01,'IV, IO','Cada 3–5 min (cada 2 ciclos de RCP)','Vía intratraqueal: 0,02–0,1 mg/kg diluida.'),
+      c:D(0.01,0.01,0.01,'IV, IO','Cada 3–5 min (cada 2 ciclos de RCP)','Vía intratraqueal: 0,02–0,1 mg/kg diluida.'),
+      r:D(0.01,0.01,0.01,'IV, IO','Cada 3–5 min'),
+      f:D(0.02,0.02,0.02,'IV, IO','Cada 3–5 min')},
+  warn:'Dosis baja según guías RECOVER. La dosis alta (0,1 mg/kg) solo se valora en RCP prolongada.'},
+ {id:'atropina',n:'Atropina',cat:'Urgencias y RCP',u:'mg',
+  pres:[L('Inyectable 1 mg/mL',1),L('Inyectable 0,5 mg/mL',0.5)],
+  sp:{d:D(0.02,0.04,0.04,'IV, IM, SC, IO','Bradicardia; RCP cada 3–5 min'),
+      c:D(0.02,0.04,0.04,'IV, IM, SC, IO','Bradicardia; RCP cada 3–5 min'),
+      r:D(0.1,0.5,0.1,'IM, SC','Según necesidad','Hasta la mitad de los conejos produce atropinesterasa y la inactiva: preferir glicopirrolato.'),
+      f:D(0.05,0.05,0.05,'SC, IM, IV','Según necesidad')},
+  warn:'Puede provocar taquicardia y empeorar la oxigenación miocárdica.'},
+ {id:'glicopirrolato',n:'Glicopirrolato',cat:'Urgencias y RCP',u:'mg',
+  pres:[L('Inyectable 0,2 mg/mL',0.2)],
+  sp:{d:D(0.005,0.01,0.01,'IV, IM, SC','Según necesidad'),
+      c:D(0.005,0.01,0.01,'IV, IM, SC','Según necesidad'),
+      r:D(0.01,0.02,0.01,'SC, IM','Según necesidad'),
+      f:D(0.01,0.02,0.01,'SC, IM','Según necesidad')},
+  warn:'No atraviesa la barrera hematoencefálica. Inicio más lento que la atropina.'},
+ {id:'lidocaina',n:'Lidocaína (antiarrítmico)',cat:'Urgencias y RCP',u:'mg',
+  pres:[L('Inyectable 2 % (20 mg/mL)',20)],
+  sp:{d:D(2,2,2,'IV lento','Bolo; repetir hasta 8 mg/kg en total','Taquicardia ventricular. Infusión posterior 25–80 µg/kg/min.'),
+      c:D(0.25,0.5,0.25,'IV muy lento','Bolo único','El gato es muy sensible: convulsiones y depresión cardiaca.')},
+  warn:'Usar lidocaína sin adrenalina por vía IV. Signos de toxicidad: temblores, convulsiones, vómitos.'},
+ {id:'naloxona',n:'Naloxona',cat:'Urgencias y RCP',u:'mg',
+  pres:[L('Inyectable 0,4 mg/mL',0.4)],
+  sp:{d:D(0.01,0.04,0.04,'IV, IM, SC, IO','Repetir según efecto','Vida media corta: vigilar la renarcotización.'),
+      c:D(0.01,0.04,0.04,'IV, IM, SC, IO','Repetir según efecto','Vida media corta: vigilar la renarcotización.'),
+      r:D(0.01,0.1,0.04,'IV, IM, SC','Repetir según efecto'),
+      f:D(0.04,0.04,0.04,'IV, IM, SC','Repetir según efecto')},
+  warn:'Revierte también la analgesia. Para revertir parcialmente, diluir y titular a efecto.'},
+ // Toxicología
+ {id:'apomorfina',n:'Apomorfina',cat:'Toxicología',u:'mg',
+  pres:[L('Inyectable 1 mg/mL',1)],
+  sp:{d:D(0.02,0.04,0.03,'IV (0,03 mg/kg); IM o SC (0,04 mg/kg)','Dosis única','Emesis en 5–10 min.'),
+      c:X('Poco eficaz y no recomendada en gato. Para inducir el vómito en gato usar dexmedetomidina 7–10 µg/kg IM.')},
+  warn:'No inducir el vómito con corrosivos, hidrocarburos, animales deprimidos o con convulsiones. Tratar las náuseas posteriores con maropitant.'},
+ {id:'vitk1',n:'Vitamina K1 (fitomenadiona)',cat:'Toxicología',u:'mg',
+  pres:[L('Inyectable 10 mg/mL',10),T('Comprimido 50 mg',50)],
+  sp:{d:D(2.5,5,5,'PO con comida grasa; SC solo la primera dosis','q24h (o repartida q12h) durante 4–6 semanas','Control del tiempo de protrombina 48–72 h tras finalizar.'),
+      c:D(2.5,5,5,'PO con comida grasa; SC solo la primera dosis','q24h (o repartida q12h) durante 4–6 semanas','Control del tiempo de protrombina 48–72 h tras finalizar.'),
+      r:D(2,10,5,'PO, SC','q24h')},
+  warn:'Nunca por vía IV: riesgo de anafilaxia. Raticidas de 2.ª generación: tratamiento de 4–6 semanas.'}
+];
+const CATS=['Todos',...new Set(DRUGS.map(d=>d.cat))];
+
+/* Infusiones continuas */
+const CRI=[
+ {id:'fentanilo',n:'Fentanilo',c:50,cu:'µg',du:'µg/kg/h',load:{d:'2–5 µg/kg IV',c:'1–3 µg/kg IV'},
+  sp:{d:[2,10,5],c:[1,5,2]},note:'Analgesia intraoperatoria 5–20 µg/kg/h con monitorización de la ventilación.'},
+ {id:'lidocaina',n:'Lidocaína',c:20000,cu:'µg',cl:'20 mg/mL (2 %)',du:'µg/kg/min',load:{d:'1–2 mg/kg IV lento'},
+  sp:{d:[25,80,50],c:X('En gato la infusión continua de lidocaína produce depresión cardiovascular: desaconsejada.')},note:'Analgesia multimodal, procinético y antiarrítmico ventricular.'},
+ {id:'ketamina',n:'Ketamina (subanestésica)',c:100000,cu:'µg',cl:'100 mg/mL',du:'µg/kg/min',load:{d:'0,5 mg/kg IV',c:'0,5 mg/kg IV'},
+  sp:{d:[2,10,5],c:[2,10,5]},note:'Antagonista NMDA: previene la sensibilización central.'},
+ {id:'dexmed',n:'Dexmedetomidina',c:500,cu:'µg',cl:'0,5 mg/mL',du:'µg/kg/h',load:{d:'0,5–1 µg/kg IV (opcional)',c:'0,5–1 µg/kg IV (opcional)'},
+  sp:{d:[0.5,3,1],c:[0.5,3,1]},note:'Sedación y analgesia en UCI. Vigilar bradicardia.'},
+ {id:'dobutamina',n:'Dobutamina',c:12500,cu:'µg',cl:'12,5 mg/mL',du:'µg/kg/min',
+  sp:{d:[2,15,5],c:[1,5,2]},note:'Inotrópico. En gato, convulsiones a dosis altas. Monitorizar ECG.'},
+ {id:'dopamina',n:'Dopamina',c:40000,cu:'µg',cl:'40 mg/mL',du:'µg/kg/min',
+  sp:{d:[5,10,5],c:[5,10,5]},note:'5–10 µg/kg/min: efecto inotrópico beta. Dosis mayores: vasoconstricción alfa.'},
+ {id:'noradrenalina',n:'Noradrenalina',c:1000,cu:'µg',cl:'1 mg/mL',du:'µg/kg/min',
+  sp:{d:[0.05,2,0.1],c:[0.05,2,0.1]},note:'Vasopresor de elección en shock distributivo. Monitorizar presión arterial; vía de calibre grueso.'},
+ {id:'metoclo',n:'Metoclopramida',c:5,cu:'mg',du:'mg/kg/día',
+  sp:{d:[1,2,1],c:[1,2,1]},note:'Proteger de la luz. Contraindicada en obstrucción gastrointestinal.'},
+ {id:'furosemida',n:'Furosemida',c:50,cu:'mg',du:'mg/kg/h',load:{d:'1–2 mg/kg IV',c:'1 mg/kg IV'},
+  sp:{d:[0.1,1,0.5],c:[0.1,0.5,0.2]},note:'Mayor diuresis y menos pérdida de potasio que en bolos. Controlar electrolitos.'},
+ {id:'midazolam',n:'Midazolam',c:5,cu:'mg',du:'mg/kg/h',load:{d:'0,2–0,5 mg/kg IV',c:'0,2–0,5 mg/kg IV'},
+  sp:{d:[0.1,0.5,0.2],c:[0.1,0.5,0.2]},note:'Estatus epiléptico refractario.'},
+ {id:'insulina',n:'Insulina regular (CAD)',c:100,cu:'UI',du:'UI/kg/h',
+  sp:{d:[0.05,0.1,0.05],c:[0.05,0.1,0.05]},note:'Purgar el sistema con 50 mL de la mezcla (se adsorbe al plástico). Glucemia cada 1–2 h; añadir dextrosa cuando baje de 250 mg/dL.'}
+];
+
+/* =================== STATE =================== */
+const S={p:{name:'',hc:'',breed:'',age:'',sp:'d',kg:12,unit:'kg'},view:'inicio',
+  drug:'meloxicam',doses:{},pres:{},cat:'Todos',q:'',
+  cri:'fentanilo',criDose:{},criMode:'jeringa',syr:50,syrRate:2,bag:500,bagRate:null,
+  fl:{dehyd:5,hours:24,losses:0,set:20,k:3.5,bagK:1000,dex:0,bagDex:500},
+  tx:{prod:'se',rec:15,des:null,don:null},
+  nut:{bcs:5,fac:0,kcal:370,meals:2},
+  tox:{t:'choc',chocType:2,g:100,xg:5,mg:400},
+  ref:{conv:'kg',cv:10,cre:1.8,creU:'mg',sdma:'',upc:'',pas:''},
+  sheet:[],notes:''};
+try{const s=JSON.parse(localStorage.getItem('xavi-vet')||'null'); if(s){S.sheet=s.sheet||[];S.notes=s.notes||'';if(s.p)Object.assign(S.p,s.p);}}catch(e){}
+function save(){try{localStorage.setItem('xavi-vet',JSON.stringify({sheet:S.sheet,notes:S.notes,p:S.p}));}catch(e){}}
+
+/* =================== HELPERS =================== */
+const $=s=>document.querySelector(s);
+const kg=()=>S.p.kg>0?S.p.kg:0;
+const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?NaN:n;};
+const fmt=(n,d=2)=>Number(n).toLocaleString('es-ES',{maximumFractionDigits:d});
+const smart=n=>{n=Math.abs(n)<1e-12?0:n;return n>=100?fmt(n,0):n>=10?fmt(n,1):n>=1?fmt(n,2):n>=0.1?fmt(n,3):fmt(n,4);};
+const vol=v=>v>=10?fmt(v,1):v>=0.1?fmt(v,2):fmt(v,3);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const spN=()=>SPECIES[S.p.sp].n;
+const isDC=()=>S.p.sp==='d'||S.p.sp==='c';
+function frac(q){const w=Math.floor(q+1e-9),r=Math.round((q-w)*4);const f=['','¼','½','¾'][r]||'';return w?(w+(f?' '+f:'')):(f||'0');}
+function syringe(v){if(v<=0.3)return'Jeringa de insulina 0,3 mL';if(v<=0.5)return'Jeringa de insulina 0,5 mL';if(v<=1)return'Jeringa de 1 mL';if(v<=2.5)return'Jeringa de 2,5 mL';if(v<=5)return'Jeringa de 5 mL';if(v<=10)return'Jeringa de 10 mL';if(v<=20)return'Jeringa de 20 mL';return'Jeringa de 50 mL';}
+function stepFor(max){return max<=0.05?0.001:max<=1?0.005:max<=10?0.05:0.5;}
+const ICON={
+ warn:'<svg viewBox="0 0 24 24"><path d="M12 2 1 21h22L12 2zm1 15h-2v-2h2v2zm0-4h-2V9h2v4z"/></svg>',
+ x:'<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm5 13.6L15.6 17 12 13.4 8.4 17 7 15.6 10.6 12 7 8.4 8.4 7 12 10.6 15.6 7 17 8.4 13.4 12 17 15.6z"/></svg>',
+ i:'<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>',
+ ok:'<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.5 14.5L6 12l1.4-1.4 3.1 3.1 6.1-6.1L18 9z"/></svg>'
+};
+const NI={
+ inicio:'<path d="M3 11 12 3l9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
+ farmacos:'<path d="M10.5 20.5 3.5 13.5a4.95 4.95 0 0 1 7-7l7 7a4.95 4.95 0 0 1-7 7z"/><path d="m8.5 8.5 7 7"/>',
+ cri:'<path d="m18 2 4 4"/><path d="m17 7 3-3"/><path d="M19 9 8.7 19.3a2.4 2.4 0 0 1-3.4 0l-.6-.6a2.4 2.4 0 0 1 0-3.4L15 5"/><path d="m9 11 4 4"/><path d="m5 19-3 3"/><path d="m14 4 6 6"/>',
+ rcp:'<path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/><path d="M3.2 12h4.3l1.5-3 3 6 1.5-3h7.3"/>',
+ fluidos:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5S12.5 5 12 2.5C11.5 5 10 7.9 8 9.5S5 13 5 15a7 7 0 0 0 7 7z"/>',
+ transf:'<rect x="6" y="2" width="12" height="15" rx="3"/><path d="M12 17v5"/><path d="M9.5 9.5h5"/><path d="M12 7v5"/>',
+ nutri:'<path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M8 7c0-1.5 1.5-1.5 1.5-3"/><path d="M13 7c0-1.5 1.5-1.5 1.5-3"/>',
+ tox:'<path d="M9 2h6"/><path d="M10 2v7l-6 11a1.4 1.4 0 0 0 1.2 2h13.6a1.4 1.4 0 0 0 1.2-2L14 9V2"/><path d="M7 15h10"/>',
+ ref:'<path d="M2 4h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+ hoja:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 2h6v4H9z"/><path d="M9 11h6"/><path d="M9 15h6"/><path d="M9 19h3"/>'
+};
+const ic=k=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${NI[k]}</svg>`;
+const MODS=[
+ ['inicio','Inicio','Resumen del paciente'],
+ ['farmacos','Formulario','Dosis por peso, presentaciones y precauciones'],
+ ['cri','Infusiones continuas','Jeringa, bolsa o sin diluir'],
+ ['rcp','Urgencias y RCP','Hoja de parada con volúmenes'],
+ ['fluidos','Fluidoterapia','Mantenimiento, déficit, potasio y dextrosa'],
+ ['transf','Transfusión','Volumen, velocidad y controles'],
+ ['nutri','Nutrición','RER, MER y ración diaria'],
+ ['tox','Toxicología','Dosis tóxicas y descontaminación'],
+ ['ref','Referencias','Constantes, IRIS y conversiones'],
+ ['hoja','Hoja de tratamiento','Prescripción imprimible']
+];
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),1900);}
+function banner(type,title,body){const icn=type==='danger'?ICON.x:type==='warn'?ICON.warn:type==='ok'?ICON.ok:ICON.i;return`<div class="banner ${type}">${icn}<div>${title?`<b>${title}</b>`:''}${body||''}</div></div>`;}
+function addSheet(item){S.sheet.push(Object.assign({spn:spN(),kg:kg(),time:new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})},item));save();renderSide();toast(`${item.n} añadido a la hoja`);}
+function patientLine(){return`${esc(S.p.name)||'Paciente sin nombre'} · ${spN()} · <span class="tn">${fmt(kg(),3)} kg</span>`;}
+function noWeight(){return !(S.p.kg>0);}
+
+/* =================== PATIENT BAR =================== */
+function renderPatientBar(){
+  $('#spSeg').innerHTML=Object.entries(SPECIES).map(([k,s])=>`<button data-sp="${k}" aria-pressed="${S.p.sp===k}">${s.n}</button>`).join('');
+  const s=SPECIES[S.p.sp],h=$('#wHint');
+  if(!(S.p.kg>0)){h.textContent='Introduce el peso del paciente';h.className='whint bad';}
+  else if(S.p.kg<s.min||S.p.kg>s.max){h.textContent=`Fuera del rango habitual (${s.range}). Revisa el peso.`;h.className='whint bad';}
+  else{h.textContent=S.p.unit==='kg'?`${fmt(S.p.kg*1000,0)} g`:`${fmt(S.p.kg,3)} kg`;h.className='whint';}
+}
+function setWeightField(){$('#weight').value=S.p.unit==='kg'?String(+S.p.kg.toFixed(3)).replace('.',','):String(Math.round(S.p.kg*1000));$('#wUnit').value=S.p.unit;}
+function renderSide(){
+  $('#side').innerHTML=MODS.map(([k,n],i)=>(i===2||i===9?'<div class="sep"></div>':'')+`<button data-nav="${k}" aria-current="${S.view===k}" class="${k==='rcp'?'urg':''}">${ic(k)}<span>${n}</span>${k==='hoja'?`<span class="count">${S.sheet.length}</span>`:''}</button>`).join('');
+}
+
+/* =================== INICIO =================== */
+function renderInicio(){
+  const h=new Date().getHours(); const g=h<6?'Buenas noches':h<14?'Buenos días':h<21?'Buenas tardes':'Buenas noches';
+  const date=new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const w=kg(),sp=S.p.sp;
+  const rer=70*Math.pow(w,0.75);
+  const maint=sp==='d'?132*Math.pow(w,0.75):sp==='c'?80*Math.pow(w,0.75):sp==='r'?100*w:75*w;
+  const bv=sp==='d'?90:sp==='c'?60:sp==='r'?60:null;
+  return`
+  <section class="hello"><div class="hello-main"><img class="hello-logo" src="${LOGO}" alt="" width="96" height="96"><div><div class="eyebrow">${date}</div><h2>${g}, Dr. Xavier</h2><p>Introduce los datos del paciente una sola vez: todos los módulos calculan con la especie y el peso de la barra superior.</p></div></div>
+    <button class="btn" data-nav="rcp">Abrir hoja de parada</button></section>
+  <section class="panel pad stack">
+    <div class="head"><div><h3 class="t">Ficha del paciente</h3><div class="sub">Se guarda en este navegador y aparece en la hoja de tratamiento.</div></div></div>
+    <div class="grid4">
+      <div class="field"><label for="pName2">Nombre</label><input id="pName2" type="text" value="${esc(S.p.name)}" placeholder="Ej.: Luna"></div>
+      <div class="field"><label for="pHc">N.º de historia</label><input id="pHc" type="text" value="${esc(S.p.hc)}" placeholder="Ej.: 20417"></div>
+      <div class="field"><label for="pBreed">Raza</label><input id="pBreed" type="text" value="${esc(S.p.breed)}" placeholder="Ej.: Border Collie"></div>
+      <div class="field"><label for="pAge">Edad</label><input id="pAge" type="text" value="${esc(S.p.age)}" placeholder="Ej.: 7 años"></div>
+    </div>
+    ${S.p.sp==='d'&&/collie|pastor australiano|shetland|pastor ingl|bobtail|whippet|pastor alem|border/i.test(S.p.breed)?banner('warn','Posible raza con mutación MDR1 (ABCB1)','Precaución con ivermectina, loperamida, acepromacina, butorfanol y algunos citostáticos. Valorar el test genético.'):''}
+    ${S.p.sp==='d'&&/bulldog|carlino|pug|bóxer|boxer|shih|pequin|bostón|boston|cavalier/i.test(S.p.breed)?banner('warn','Raza braquicéfala','Riesgo de obstrucción de vías altas: preoxigenar, intubación rápida, extubación tardía y vigilancia estrecha en la recuperación.'):''}
+  </section>
+  <section class="stack-s">
+    <div class="eyebrow">Datos rápidos · ${spN()} de ${fmt(w,3)} kg</div>
+    <div class="grid4">
+      <div class="kpi main"><span class="eyebrow">Fluidos de mantenimiento</span><span class="v">${fmt(maint/24,1)}<small>mL/h</small></span><span class="s">${fmt(maint,0)} mL/día</span></div>
+      <div class="kpi"><span class="eyebrow">Energía en reposo</span><span class="v">${isDC()||sp==='f'?fmt(rer,0):'—'}<small>${isDC()||sp==='f'?'kcal/día':''}</small></span><span class="s">${isDC()||sp==='f'?'RER = 70 × kg^0,75':'Conejo: heno a demanda'}</span></div>
+      <div class="kpi"><span class="eyebrow">Volemia estimada</span><span class="v">${bv?fmt(bv*w,0):'—'}<small>${bv?'mL':''}</small></span><span class="s">${bv?bv+' mL/kg':'Sin referencia fiable'}</span></div>
+      <div class="kpi"><span class="eyebrow">Adrenalina RCP</span><span class="v">${vol(0.01*w*(sp==='f'?2:1))}<small>mL</small></span><span class="s">${sp==='f'?'0,02':'0,01'} mg/kg · 1 mg/mL</span></div>
+    </div>
+  </section>
+  <section class="stack-s">
+    <div class="eyebrow">Módulos</div>
+    <div class="tiles">${MODS.slice(1).map(([k,n,d])=>`<button class="tile ${k==='rcp'?'urg':''}" data-nav="${k}"><span class="ic">${ic(k)}</span><b>${n}</b><span>${d}</span></button>`).join('')}</div>
+  </section>`;
+}
+
+/* =================== FORMULARIO =================== */
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function getDose(drug){const sd=drug.sp[S.p.sp];if(!sd||sd.x)return null;const k=drug.id+'|'+S.p.sp;return S.doses[k]!=null?S.doses[k]:sd.def;}
+function computeRows(drug,dose){
+  const sd=drug.sp[S.p.sp],w=kg(),total=dose*w;
+  return drug.pres.map((p,i)=>{
+    if(p.t==='liq'){
+      const v=total/p.c;let extra='',sub=v>0?syringe(v):'';
+      if(drug.u==='UI') sub=`Jeringa de insulina U-${p.c}: ${smart(total)} UI`;
+      else if(v<0.05&&v>0) extra=`Volumen muy pequeño: diluye 1:10 con suero salino (${smart(p.c/10)} ${drug.u}/mL) y administra ${vol(v*10)} mL.`;
+      return{i,p,amount:`${vol(v)} mL`,sub,status:'ok',real:dose,extra};
+    }
+    const step=p.t==='cap'?1:0.25,exact=total/p.c,q=Math.round(exact/step)*step;
+    if(q===0)return{i,p,amount:p.t==='cap'?'< 1 cápsula':'< ¼ comp.',sub:'Dosis demasiado baja para esta presentación',status:'danger',real:0,extra:'Usa una presentación líquida o fórmula magistral.'};
+    const real=q*p.c/w,t=1e-9;
+    const status=(real<sd.min*0.9-t||real>sd.max*1.1+t)?'danger':(real<sd.min-t||real>sd.max+t)?'warn':'ok';
+    const amount=p.t==='cap'?`${q} ${q===1?'cápsula':'cápsulas'}`:`${frac(q)} comp.`;
+    return{i,p,amount,sub:`Exacto: ${fmt(exact,2)} · ${smart(q*p.c)} ${drug.u}`,status,real,extra:''};
+  });
+}
+function renderFarmacos(){
+  const q=norm(S.q.trim());
+  const list=DRUGS.filter(d=>(S.cat==='Todos'||d.cat===S.cat)&&(!q||norm(d.n).includes(q)||norm(d.cat).includes(q)));
+  let items='',last='';
+  list.forEach(d=>{if(d.cat!==last){items+=`<li class="grp">${esc(d.cat)}</li>`;last=d.cat;}
+    const sd=d.sp[S.p.sp];const b=!sd?'<span class="dot n">sin datos</span>':sd.x?'<span class="dot x">contraindicado</span>':'';
+    items+=`<li><button class="item" data-drug="${d.id}" aria-current="${S.drug===d.id}"><span>${esc(d.n)}</span>${b}</button></li>`;});
+  return`<div class="fx">
+    <section class="panel list" aria-label="Formulario">
+      <div class="search"><input id="q" type="search" placeholder="Buscar entre ${DRUGS.length} fármacos…" value="${esc(S.q)}" aria-label="Buscar fármaco"></div>
+      <div class="chips">${CATS.map(c=>`<button data-cat="${esc(c)}" aria-pressed="${S.cat===c}">${esc(c)}</button>`).join('')}</div>
+      <ul>${items||'<li class="grp">Sin resultados</li>'}</ul>
+    </section>
+    <article class="panel pad stack">${drugDetail()}</article></div>`;
+}
+function drugDetail(){
+  const drug=DRUGS.find(d=>d.id===S.drug),sd=drug.sp[S.p.sp],sp=spN(),u=drug.u,w=kg();
+  const head=`<div class="head"><div><div class="eyebrow">${esc(drug.cat)}</div><h2 class="t">${esc(drug.n)}</h2><div class="sub">${patientLine()}</div></div>`;
+  if(!sd)return head+`</div>`+banner('info',`Sin dosis de referencia para ${sp.toLowerCase()}`,'No hay una pauta establecida en esta especie en el formulario. Consulta bibliografía especializada antes de usarlo.');
+  if(sd.x)return head+`</div>`+banner('danger',`Contraindicado en ${sp.toLowerCase()}`,esc(sd.x));
+  const dose=getDose(drug),total=dose*w,fixed=sd.min===sd.max,stv=stepFor(sd.max),out=dose<sd.min-1e-9||dose>sd.max+1e-9;
+  const rows=computeRows(drug,dose),sel=S.pres[drug.id]!=null&&S.pres[drug.id]<drug.pres.length?S.pres[drug.id]:0,ok=w>0;
+  return head+`<button class="btn" data-act="addDrug" ${ok?'':'disabled'}>Añadir a la hoja</button></div>
+   ${out?banner('warn','Dosis fuera del rango de referencia',`El rango habitual en ${sp.toLowerCase()} es ${smart(sd.min)}–${smart(sd.max)} ${u}/kg. Revisa la pauta.`):''}
+   <div class="dose">
+     <div class="ctl"><label class="eyebrow" for="doseIn">Dosis</label>
+       <div class="dose-in"><input id="doseIn" type="text" inputmode="decimal" value="${String(+dose.toFixed(4)).replace('.',',')}"><span>${u}/kg</span></div>
+       ${fixed?`<div class="small">Dosis fija de referencia: ${smart(sd.min)} ${u}/kg</div>`:
+       `<input type="range" id="doseRange" min="${sd.min}" max="${sd.max}" step="${stv}" value="${Math.min(Math.max(dose,sd.min),sd.max)}" aria-label="Ajustar dosis">
+        <div class="ends"><span>${smart(sd.min)}</span><span>rango ${u}/kg</span><span>${smart(sd.max)}</span></div>`}
+     </div>
+     <div class="total"><div class="eyebrow">Dosis total</div><div class="big">${ok?`${smart(total)}<small>${u}</small>`:'—'}</div>
+       <div class="calc">${smart(dose)} ${u}/kg × ${fmt(w,3)} kg${u==='µg'?` = ${smart(total/1000)} mg`:''}</div></div>
+   </div>
+   <div><div class="eyebrow" style="margin-bottom:6px">Presentaciones · selecciona la que vas a usar</div>
+    <div class="tw"><table><thead><tr><th>Presentación</th><th>Administrar</th><th>Dosis real</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr class="pres" data-pres="${r.i}" aria-selected="${r.i===sel}" tabindex="0">
+      <td>${esc(r.p.label)}${r.extra?`<div class="small" style="color:var(--warn)">${esc(r.extra)}</div>`:''}</td>
+      <td><div class="amt">${ok?r.amount:'—'}</div><div class="small">${ok?esc(r.sub):''}</div></td>
+      <td>${r.p.t==='liq'||!ok?`<span class="tag ok">${smart(dose)} ${u}/kg</span>`:r.real?`<span class="tag ${r.status}">${smart(r.real)} ${u}/kg</span>`:'<span class="tag danger">—</span>'}</td></tr>`).join('')}
+    </tbody></table></div></div>
+   <div class="facts">
+     <div><span class="eyebrow">Vía</span><b>${esc(sd.route)}</b></div>
+     <div><span class="eyebrow">Frecuencia</span><b>${esc(sd.freq)}</b></div>
+     <div><span class="eyebrow">Rango ${esc(sp.toLowerCase())}</span><b class="tn">${fixed?smart(sd.min):smart(sd.min)+'–'+smart(sd.max)} ${u}/kg</b></div>
+   </div>
+   ${sd.note?banner('info',`Nota para ${sp.toLowerCase()}`,esc(sd.note)):''}
+   ${drug.warn?banner('warn','Precauciones',esc(drug.warn)):''}`;
+}
+
+/* =================== CRI =================== */
+function criPerHour(c,dose){const w=kg();if(c.du.includes('/min'))return dose*w*60;if(c.du.includes('/día'))return dose*w/24;return dose*w;}
+function renderCRI(){
+  const c=CRI.find(x=>x.id===S.cri),sd=c.sp[S.p.sp],sp=spN();
+  const list=CRI.map(x=>{const s=x.sp[S.p.sp];const b=!s?'<span class="dot n">sin datos</span>':s.x?'<span class="dot x">no recomendado</span>':'';return`<li><button class="item" data-cri="${x.id}" aria-current="${S.cri===x.id}"><span>${esc(x.n)}</span>${b}</button></li>`;}).join('');
+  let body;
+  const head=`<div class="head"><div><div class="eyebrow">Infusión continua</div><h2 class="t">${esc(c.n)}</h2><div class="sub">${patientLine()} · ${esc(c.cl||(fmt(c.c,2)+' '+c.cu+'/mL'))}</div></div>`;
+  if(!sd||sd.x){ body=head+'</div>'+(sd&&sd.x?banner('danger',`No recomendado en ${sp.toLowerCase()}`,esc(sd.x)):banner('info',`Sin pauta para ${sp.toLowerCase()}`,'No hay una infusión de referencia para esta especie.')); }
+  else{
+    const [mn,mx,df]=sd; const key=c.id+'|'+S.p.sp; const dose=S.criDose[key]!=null?S.criDose[key]:df;
+    const ph=criPerHour(c,dose); const undil=ph/c.c; const w=kg();
+    const massU=c.cu; const conc=c.c;
+    let res='';
+    if(S.criMode==='jeringa'){
+      const V=S.syr,R=S.syrRate>0?S.syrRate:0; const hrs=R?V/R:0; const amt=ph*hrs; const mL=amt/conc; const dil=V-mL; const over=mL>V;
+      res=`<div class="grid3">
+        <div class="kpi main"><span class="eyebrow">Fármaco a cargar</span><span class="v">${R?vol(mL):'—'}<small>mL</small></span><span class="s">${R?smart(amt)+' '+massU:''}</span></div>
+        <div class="kpi"><span class="eyebrow">Diluyente (NaCl 0,9 %)</span><span class="v">${R&&!over?vol(dil):'—'}<small>mL</small></span><span class="s">hasta ${V} mL totales</span></div>
+        <div class="kpi"><span class="eyebrow">Programar bomba</span><span class="v">${fmt(R,2)}<small>mL/h</small></span><span class="s">dura ${R?fmt(hrs,1):'—'} h</span></div></div>
+        ${over?banner('danger','El fármaco no cabe en la jeringa','Aumenta la velocidad de infusión o usa una jeringa mayor.'):''}
+        <div class="small">Concentración final: ${R&&!over?smart(amt/V)+' '+massU+'/mL':'—'}</div>`;
+    }else if(S.criMode==='bolsa'){
+      const B=S.bag; const R=S.bagRate!=null?S.bagRate:(S.p.sp==='d'?132*Math.pow(w,0.75):S.p.sp==='c'?80*Math.pow(w,0.75):100*w)/24;
+      const hrs=R>0?B/R:0; const amt=ph*hrs; const mL=amt/conc;
+      res=`<div class="grid3">
+        <div class="kpi main"><span class="eyebrow">Añadir a la bolsa</span><span class="v">${R>0?vol(mL):'—'}<small>mL</small></span><span class="s">${R>0?smart(amt)+' '+massU:''}</span></div>
+        <div class="kpi"><span class="eyebrow">Ritmo de la bolsa</span><span class="v">${fmt(R,1)}<small>mL/h</small></span><span class="s">dura ${R>0?fmt(hrs,1):'—'} h</span></div>
+        <div class="kpi"><span class="eyebrow">Concentración</span><span class="v">${R>0?smart(amt/B):'—'}<small>${massU}/mL</small></span><span class="s">en ${B} mL</span></div></div>
+        ${banner('info','Preparación',`Retira ${R>0?vol(mL):'—'} mL de la bolsa antes de añadir el fármaco y etiquétala con el nombre, la dosis y la hora. Si cambias el ritmo de fluidos, cambia también la dosis del fármaco.`)}`;
+    }else{
+      res=`<div class="grid3">
+        <div class="kpi main"><span class="eyebrow">Sin diluir</span><span class="v">${vol(undil)}<small>mL/h</small></span><span class="s">${smart(ph)} ${massU}/h</span></div>
+        <div class="kpi"><span class="eyebrow">En 24 h</span><span class="v">${vol(undil*24)}<small>mL</small></span><span class="s">${smart(ph*24)} ${massU}</span></div>
+        <div class="kpi"><span class="eyebrow">Dosis</span><span class="v">${smart(dose)}<small>${c.du}</small></span><span class="s">${fmt(w,3)} kg</span></div></div>
+        ${undil<0.5?banner('warn','Ritmo muy bajo','Por debajo de 0,5 mL/h la precisión de muchas bombas disminuye: diluye en jeringa.'):''}`;
+    }
+    const ld=c.load&&(c.load[S.p.sp]);
+    body=head+`<button class="btn" data-act="addCri" ${w>0?'':'disabled'}>Añadir a la hoja</button></div>
+      <div class="dose"><div class="ctl"><label class="eyebrow" for="criIn">Dosis</label>
+        <div class="dose-in"><input id="criIn" type="text" inputmode="decimal" value="${String(+dose.toFixed(4)).replace('.',',')}"><span>${c.du}</span></div>
+        <input type="range" id="criRange" min="${mn}" max="${mx}" step="${stepFor(mx)}" value="${Math.min(Math.max(dose,mn),mx)}" aria-label="Ajustar dosis de infusión">
+        <div class="ends"><span>${smart(mn)}</span><span>rango ${c.du}</span><span>${smart(mx)}</span></div></div>
+        <div class="total"><div class="eyebrow">Cantidad por hora</div><div class="big">${smart(ph)}<small>${massU}/h</small></div><div class="calc">${smart(dose)} ${c.du} × ${fmt(w,3)} kg</div></div></div>
+      ${ld?banner('info','Dosis de carga',esc(ld)):''}
+      <div class="chips">${[['jeringa','Bomba de jeringa'],['bolsa','En bolsa de fluidos'],['directo','Sin diluir']].map(([k,n])=>`<button data-crimode="${k}" aria-pressed="${S.criMode===k}">${n}</button>`).join('')}</div>
+      ${S.criMode==='jeringa'?`<div class="grid2"><div class="field"><label for="syr">Volumen final de la jeringa</label><select id="syr">${[10,20,50,60].map(v=>`<option value="${v}" ${S.syr==v?'selected':''}>${v} mL</option>`).join('')}</select></div>
+        <div class="field"><label for="syrRate">Velocidad de la bomba (mL/h)</label><input id="syrRate" type="text" inputmode="decimal" value="${String(S.syrRate).replace('.',',')}"></div></div>`:''}
+      ${S.criMode==='bolsa'?`<div class="grid2"><div class="field"><label for="bag">Volumen de la bolsa</label><select id="bag">${[100,250,500,1000].map(v=>`<option value="${v}" ${S.bag==v?'selected':''}>${v} mL</option>`).join('')}</select></div>
+        <div class="field"><label for="bagRate">Ritmo de fluidos (mL/h) · por defecto, mantenimiento</label><input id="bagRate" type="text" inputmode="decimal" value="${S.bagRate!=null?String(S.bagRate).replace('.',','):''}" placeholder="${fmt((S.p.sp==='d'?132*Math.pow(kg(),0.75):S.p.sp==='c'?80*Math.pow(kg(),0.75):100*kg())/24,1)}"></div></div>`:''}
+      ${res}
+      ${banner('warn','Notas clínicas',esc(c.note))}`;
+  }
+  return`<div class="fx"><section class="panel list"><div class="search"><div class="eyebrow">Infusiones disponibles</div></div><ul>${list}</ul></section><article class="panel pad stack">${body}</article></div>`;
+}
+
+/* =================== RCP =================== */
+function renderRCP(){
+  const w=kg(),sp=S.p.sp,cat=sp==='c';
+  const R=(n,dose,du,conc,cu,note,only)=>({n,dose,du,conc,cu,note,only});
+  const rows=[
+   ['Parada cardiorrespiratoria'],
+   R('Adrenalina (dosis baja)',sp==='f'?0.02:0.01,'mg/kg',1,'mg/mL','IV/IO cada 3–5 min'),
+   R('Adrenalina (dosis alta)',0.1,'mg/kg',1,'mg/mL','Solo RCP prolongada'),
+   R('Vasopresina',0.8,'UI/kg',20,'UI/mL','IV/IO cada 3–5 min, alternativa a adrenalina'),
+   R('Atropina',0.04,'mg/kg',1,'mg/mL','Bradicardia vagal / asistolia'+(sp==='r'?' · poco eficaz en conejo':'')),
+   R('Lidocaína',cat?0.25:2,'mg/kg',20,'mg/mL',cat?'IV muy lento, gato sensible':'FV/TV sin pulso refractaria'),
+   R('Amiodarona',5,'mg/kg',50,'mg/mL','IV lento; FV refractaria a desfibrilación','d'),
+   R('Bicarbonato sódico 8,4 %',1,'mEq/kg',1,'mEq/mL','Solo RCP > 10–15 min'),
+   ['Reversores'],
+   R('Naloxona',0.04,'mg/kg',0.4,'mg/mL','Opioides'),
+   R('Flumazenil',0.01,'mg/kg',0.1,'mg/mL','Benzodiacepinas'),
+   R('Atipamezol',0.1,'mg/kg',5,'mg/mL','Alfa-2 agonistas (IM)'),
+   ['Metabólico y neurológico'],
+   R('Gluconato cálcico 10 %',50,'mg/kg',100,'mg/mL','IV en 10–20 min con ECG (0,5–1,5 mL/kg)'),
+   R('Dextrosa 50 %',0.5,'g/kg',0.5,'g/mL','Diluir 1:2–1:4 antes de administrar'),
+   R('Manitol 20 %',0.5,'g/kg',0.2,'g/mL','En 15–20 min; edema cerebral'),
+   R('Salino hipertónico 7,5 %',cat?2:4,'mL/kg',null,'','En 10–15 min; shock / hipertensión intracraneal'),
+   R('Diazepam',0.5,'mg/kg',5,'mg/mL','IV o rectal (1–2 mg/kg)'),
+   R('Midazolam',0.2,'mg/kg',5,'mg/mL','IV, IM o intranasal'),
+   R('Levetiracetam',60,'mg/kg',100,'mg/mL','IV en bolo, estatus epiléptico','dc')
+  ];
+  const tbody=rows.map(r=>{
+    if(Array.isArray(r))return`<tr class="sec"><td colspan="4">${r[0]}</td></tr>`;
+    if(r.only&&!r.only.includes(sp))return'';
+    const total=r.dose*w; const v=r.conc?total/r.conc:total;
+    const unit=r.du.split('/')[0];
+    return`<tr><td><b>${esc(r.n)}</b><div class="small">${esc(r.note)}</div></td><td class="tn">${smart(r.dose)} ${r.du}<div class="small">${r.conc?smart(r.conc)+' '+r.cu:''}</div></td><td class="tn">${r.conc?smart(total)+' '+unit:''}</td><td class="amt r">${vol(v)} mL</td></tr>`;
+  }).join('');
+  const et=w<2?'3,0–4,0':w<5?'4,5–5,5':w<10?'6,0–7,0':w<15?'7,5–8,0':w<20?'8,5–9,0':w<30?'9,5–10':w<40?'10–11':'11–14';
+  return`<section class="panel pad stack">
+        <div class="head"><div><div class="eyebrow" style="color:var(--danger)">Urgencias</div><h2 class="t">Hoja de parada</h2><div class="sub">${patientLine()}</div></div></div>
+    ${noWeight()?banner('danger','Falta el peso','Introduce el peso del paciente en la barra superior.'):''}
+    ${!isDC()?banner('warn',`${spN()}: dosis extrapoladas`,'Las pautas de RCP proceden de perro y gato. En exóticos, valorar acceso IO y dosis con cautela.'):''}
+    <div class="grid4">
+      <div class="kpi main"><span class="eyebrow">Desfibrilación externa</span><span class="v">${fmt(2*w,0)}–${fmt(4*w,0)}<small>J</small></span><span class="s">Bifásico 2–4 J/kg</span></div>
+      <div class="kpi"><span class="eyebrow">Monofásico externo</span><span class="v">${fmt(4*w,0)}–${fmt(6*w,0)}<small>J</small></span><span class="s">4–6 J/kg</span></div>
+      <div class="kpi"><span class="eyebrow">Interna (bifásico)</span><span class="v">${fmt(0.2*w,1)}–${fmt(0.4*w,1)}<small>J</small></span><span class="s">0,2–0,4 J/kg</span></div>
+      <div class="kpi"><span class="eyebrow">Tubo endotraqueal</span><span class="v">${sp==='c'?'3,0–4,5':isDC()?et:'—'}<small>${isDC()?'mm DI':''}</small></span><span class="s">Orientativo: palpar tráquea</span></div>
+    </div>
+    <div class="tw"><table class="crash"><thead><tr><th>Fármaco</th><th>Dosis · concentración</th><th>Cantidad</th><th class="r">Volumen</th></tr></thead><tbody>${tbody}</tbody></table></div>
+    <div class="grid2">
+      ${banner('danger','Soporte vital básico','Compresiones 100–120/min, ⅓–½ del ancho torácico, ciclos de 2 min sin interrupciones y cambio de compresor en cada ciclo. Intubar y ventilar a 10 respiraciones/min con O₂ al 100 % y volumen tidal ≈ 10 mL/kg.')}
+      ${banner('info','Monitorización','EtCO₂ > 18 mmHg indica compresiones eficaces; una subida brusca sugiere retorno de la circulación espontánea. Revisar el ECG solo en las pausas entre ciclos.')}
+    </div>
+    <div class="grid2">
+      ${banner('info','Bolo de choque (cristaloide)',`${fmt((cat?5:10)*w,0)}–${fmt((cat?10:20)*w,0)} mL (${cat?'5–10':'10–20'} mL/kg) en 15 min y reevaluar. No en parada euvolémica.`)}
+      ${banner('info','Coloide / sangre',`Volemia estimada: ${isDC()?fmt((cat?60:90)*w,0)+' mL':'—'}. Valorar transfusión si hay hemorragia.`)}
+    </div>
+  </section>`;
+}
+
+/* =================== FLUIDOS =================== */
+function fluidPlan(){
+  const w=kg(),F=S.fl,sp=S.p.sp;
+  let maint,method;
+  if(sp==='d'){maint=132*Math.pow(w,0.75);method='132 × kg<sup>0,75</sup> mL/día';}
+  else if(sp==='c'){maint=80*Math.pow(w,0.75);method='80 × kg<sup>0,75</sup> mL/día';}
+  else if(sp==='r'){maint=100*w;method='100 mL/kg/día';}
+  else{maint=75*w;method='75 mL/kg/día';}
+  const deficit=F.dehyd/100*w*1000;const perH=maint/24+deficit/F.hours+F.losses/24;const after=maint/24+F.losses/24;
+  return{w,maint,method,deficit,perH,after};
+}
+function kScale(k){if(k<=2)return[80,6];if(k<=2.5)return[60,8];if(k<=3)return[40,12];if(k<=3.5)return[28,18];return[20,25];}
+function renderFluidos(){
+  const F=S.fl,{w,maint,method,deficit,perH,after}=fluidPlan(),cat=S.p.sp==='c';
+  const dpm=perH*F.set/60,spd=dpm>0?60/dpm:0;
+  const [kc,kmax]=kScale(F.k);const kmEq=kc*F.bagK/1000;const kmL=kmEq/2;const kRate=w>0?kc*perH/1000/w:0;
+  const dexmL=F.dex*F.bagDex/50;
+  return`<section class="panel pad stack">
+    <div class="head"><div><div class="eyebrow">Fluidoterapia</div><h2 class="t">Plan de fluidos</h2><div class="sub">${patientLine()}</div></div>
+      <button class="btn" data-act="addFluid" ${w>0?'':'disabled'}>Añadir a la hoja</button></div>
+    <div class="grid4">
+      <div class="field"><label for="flDehyd">Deshidratación estimada</label><select id="flDehyd">${[[0,'< 5 % · no detectable'],[5,'5 % · mucosas secas'],[6,'6–8 % · pliegue cutáneo lento'],[8,'8 % · TRC aumentado'],[10,'10–12 % · ojos hundidos'],[12,'12 % · shock']].map(([v,l])=>`<option value="${v}" ${F.dehyd==v?'selected':''}>${l}</option>`).join('')}</select></div>
+      <div class="field"><label for="flHours">Reponer el déficit en</label><select id="flHours">${[6,12,24].map(h=>`<option value="${h}" ${F.hours==h?'selected':''}>${h} horas</option>`).join('')}</select></div>
+      <div class="field"><label for="flLoss">Pérdidas continuas (mL/día)</label><input id="flLoss" type="text" inputmode="decimal" value="${F.losses}"></div>
+      <div class="field"><label for="flSet">Equipo de infusión</label><select id="flSet">${[[10,'Macrogotero 10 gotas/mL'],[15,'Macrogotero 15 gotas/mL'],[20,'Macrogotero 20 gotas/mL'],[60,'Microgotero 60 gotas/mL']].map(([v,l])=>`<option value="${v}" ${F.set==v?'selected':''}>${l}</option>`).join('')}</select></div>
+    </div>
+    <div class="grid3">
+      <div class="kpi main"><span class="eyebrow">Ritmo inicial</span><span class="v">${fmt(perH,1)}<small>mL/h</small></span><span class="s">primeras ${F.hours} h</span></div>
+      <div class="kpi"><span class="eyebrow">Goteo</span><span class="v">${fmt(dpm,1)}<small>gotas/min</small></span><span class="s">1 gota cada ${spd?fmt(spd,1):'—'} s</span></div>
+      <div class="kpi"><span class="eyebrow">Después</span><span class="v">${fmt(after,1)}<small>mL/h</small></span><span class="s">mantenimiento + pérdidas</span></div>
+    </div>
+    <div class="tw"><table><thead><tr><th>Componente</th><th>Cálculo</th><th class="r">Volumen</th></tr></thead><tbody>
+      <tr><td>Mantenimiento</td><td class="small">${method}</td><td class="amt r">${fmt(maint,0)} mL/día</td></tr>
+      <tr><td>Déficit</td><td class="small">${F.dehyd} % × ${fmt(w,3)} kg × 1000</td><td class="amt r">${fmt(deficit,0)} mL</td></tr>
+      <tr><td>Pérdidas continuas</td><td class="small">vómitos, diarrea, poliuria</td><td class="amt r">${fmt(F.losses,0)} mL/día</td></tr>
+      <tr class="hl"><td><b>Total primeras 24 h</b></td><td class="small">mantenimiento + déficit + pérdidas</td><td class="amt r">${fmt(maint+deficit+F.losses,0)} mL</td></tr>
+    </tbody></table></div>
+    <div class="facts">
+      <div><span class="eyebrow">Bolo de choque</span><b class="tn">${fmt((cat?5:10)*w,0)}–${fmt((cat?10:20)*w,0)} mL</b><span class="small">${cat?'5–10':'10–20'} mL/kg en 15 min; reevaluar</span></div>
+      <div><span class="eyebrow">Ritmo quirúrgico</span><b class="tn">${fmt((cat?3:5)*w,1)} mL/h</b><span class="small">${cat?3:5} mL/kg/h (guías AAHA)</span></div>
+      <div><span class="eyebrow">Diuresis esperada</span><b class="tn">${fmt(w,1)}–${fmt(2*w,1)} mL/h</b><span class="small">1–2 mL/kg/h</span></div>
+    </div>
+    ${cat?banner('warn','Gato','Más propenso a la sobrecarga de volumen: auscultar, vigilar frecuencia respiratoria y peso cada 4–6 h.'):''}
+  </section>
+  <div class="grid2">
+  <section class="panel pad stack">
+    <div><h3 class="t">Suplementación de potasio</h3><div class="sub">Escala de Scott para KCl 2 mEq/mL</div></div>
+    <div class="grid2">
+      <div class="field"><label for="flK">Potasio sérico (mmol/L)</label><input id="flK" type="text" inputmode="decimal" value="${String(F.k).replace('.',',')}"></div>
+      <div class="field"><label for="flBagK">Volumen de la bolsa</label><select id="flBagK">${[250,500,1000].map(v=>`<option value="${v}" ${F.bagK==v?'selected':''}>${v} mL</option>`).join('')}</select></div>
+    </div>
+    <div class="grid2">
+      <div class="kpi main"><span class="eyebrow">Añadir KCl 2 mEq/mL</span><span class="v">${fmt(kmL,1)}<small>mL</small></span><span class="s">${fmt(kmEq,1)} mEq · ${kc} mEq/L</span></div>
+      <div class="kpi"><span class="eyebrow">Aporte al ritmo inicial</span><span class="v">${fmt(kRate,2)}<small>mEq/kg/h</small></span><span class="s">máx. 0,5 mEq/kg/h</span></div>
+    </div>
+    ${kRate>0.5?banner('danger','Supera 0,5 mEq/kg/h',`Reduce el ritmo de fluidos (máximo ${kmax} mL/kg/h con esta concentración) o la concentración de potasio.`):banner('ok','Velocidad de potasio segura',`Con ${kc} mEq/L no superar ${kmax} mL/kg/h (${fmt(kmax*w,0)} mL/h).`)}
+    <div class="small">Escala: ≤ 2,0 → 80 · 2,1–2,5 → 60 · 2,6–3,0 → 40 · 3,1–3,5 → 28 · 3,6–5,0 → 20 mEq/L. Mezclar bien la bolsa.</div>
+  </section>
+  <section class="panel pad stack">
+    <div><h3 class="t">Suplementación de dextrosa</h3><div class="sub">A partir de dextrosa al 50 %</div></div>
+    <div class="grid2">
+      <div class="field"><label for="flDex">Concentración final</label><select id="flDex">${[[0,'Sin dextrosa'],[1.25,'1,25 %'],[2.5,'2,5 %'],[5,'5 %']].map(([v,l])=>`<option value="${v}" ${F.dex==v?'selected':''}>${l}</option>`).join('')}</select></div>
+      <div class="field"><label for="flBagDex">Volumen de la bolsa</label><select id="flBagDex">${[250,500,1000].map(v=>`<option value="${v}" ${F.bagDex==v?'selected':''}>${v} mL</option>`).join('')}</select></div>
+    </div>
+    <div class="kpi main"><span class="eyebrow">Añadir dextrosa 50 %</span><span class="v">${fmt(dexmL,1)}<small>mL</small></span><span class="s">retirar antes el mismo volumen de la bolsa</span></div>
+    ${banner('info','Bolo en hipoglucemia',`Dextrosa 50 %: ${fmt(0.5*w,1)}–${fmt(1*w,1)} mL (0,5–1 mL/kg) diluida 1:2–1:4, IV lento. Después, infusión al 2,5–5 %.`)}
+    ${banner('warn','Vía periférica','Por vía periférica no superar el 5 % de dextrosa (riesgo de flebitis).')}
+  </section></div>`;
+}
+
+/* =================== TRANSFUSIÓN =================== */
+function renderTransf(){
+  const w=kg(),sp=S.p.sp,T=S.tx;
+  if(!isDC())return`<section class="panel pad stack"><div><div class="eyebrow">Transfusión</div><h2 class="t">Transfusión</h2><div class="sub">${patientLine()}</div></div>${banner('info',`Sin cálculo para ${spN().toLowerCase()}`,'En conejo y hurón, la transfusión se realiza con donante de la misma especie; volumen orientativo 10–20 mL/kg de sangre entera. Los hurones no tienen grupos sanguíneos detectables.')}</section>`;
+  const bv=sp==='d'?90:60;
+  const prods={se:['Sangre entera',40],ch:['Concentrado de hematíes',65],pfc:['Plasma fresco congelado',null]};
+  const don=T.don!=null?T.don:prods[T.prod][1];const des=T.des!=null?T.des:(sp==='d'?25:20);
+  let main='';
+  if(T.prod==='pfc'){
+    main=`<div class="grid3"><div class="kpi main"><span class="eyebrow">Volumen de plasma</span><span class="v">${fmt(10*w,0)}–${fmt(20*w,0)}<small>mL</small></span><span class="s">10–20 mL/kg</span></div>
+      <div class="kpi"><span class="eyebrow">Velocidad máxima</span><span class="v">${fmt(4*w,0)}–${fmt(6*w,0)}<small>mL/h</small></span><span class="s">4–6 mL/kg/h</span></div>
+      <div class="kpi"><span class="eyebrow">Indicación</span><span class="v" style="font-size:1.1rem">Coagulopatía</span><span class="s">reevaluar TP/TTPa tras la transfusión</span></div></div>`;
+  }else{
+    const v=Math.max(0,w*bv*(des-T.rec)/don);const rule=w*(sp==='d'?2:1)*(des-T.rec)*(T.prod==='ch'?0.6:1);
+    const r1=0.25*w;const rest=Math.max(0,v-r1*0.5);const rate=rest/3.5;const maxR=10*w;
+    main=`<div class="grid3"><div class="kpi main"><span class="eyebrow">Volumen a transfundir</span><span class="v">${fmt(v,0)}<small>mL</small></span><span class="s">${fmt(w,3)} kg × ${bv} × (${des} − ${T.rec}) / ${don}</span></div>
+      <div class="kpi"><span class="eyebrow">Primeros 30 min</span><span class="v">${fmt(r1,1)}<small>mL/h</small></span><span class="s">0,25 mL/kg/h · vigilar reacciones</span></div>
+      <div class="kpi"><span class="eyebrow">Resto (≈ 3,5 h)</span><span class="v">${fmt(Math.min(rate,maxR),1)}<small>mL/h</small></span><span class="s">máx. ${fmt(maxR,0)} mL/h · terminar en < 4 h</span></div></div>
+      <div class="small">Regla rápida: ${sp==='d'?'2 mL/kg':'1 mL/kg'} de sangre entera sube el hematocrito ≈ 1 %. Estimación: ${fmt(rule,0)} mL. En cardiópatas limitar a 2–4 mL/kg/h (${fmt(2*w,0)}–${fmt(4*w,0)} mL/h).</div>`;
+  }
+  return`<section class="panel pad stack">
+    <div class="head"><div><div class="eyebrow">Transfusión</div><h2 class="t">Cálculo de transfusión</h2><div class="sub">${patientLine()}</div></div>
+      <button class="btn" data-act="addTx" ${w>0?'':'disabled'}>Añadir a la hoja</button></div>
+    <div class="chips">${Object.entries(prods).map(([k,[n]])=>`<button data-prod="${k}" aria-pressed="${T.prod===k}">${n}</button>`).join('')}</div>
+    ${T.prod!=='pfc'?`<div class="grid3">
+      <div class="field"><label for="txRec">Hematocrito del receptor (%)</label><input id="txRec" type="text" inputmode="decimal" value="${T.rec}"></div>
+      <div class="field"><label for="txDes">Hematocrito deseado (%)</label><input id="txDes" type="text" inputmode="decimal" value="${des}"></div>
+      <div class="field"><label for="txDon">Hematocrito del donante / unidad (%)</label><input id="txDon" type="text" inputmode="decimal" value="${don}"></div></div>`:''}
+    ${main}
+  </section>
+  <div class="grid2">
+    <section class="panel pad stack"><h3 class="t">Antes de transfundir</h3>
+      ${sp==='c'?banner('danger','Tipaje obligatorio en gato','Los gatos tienen aloanticuerpos naturales: una transfusión incompatible (A/B) puede ser mortal desde la primera vez. Tipar siempre y hacer prueba cruzada.'):banner('warn','Perro','Tipar DEA 1 si es posible. Prueba cruzada obligatoria si ha recibido transfusiones hace más de 4 días.')}
+      ${banner('info','Administración','Filtro de 170–260 µm. No mezclar con soluciones con calcio (Ringer lactato) ni con dextrosa. Calentar a temperatura ambiente, no por encima de 37 °C.')}
+    </section>
+    <section class="panel pad stack"><h3 class="t">Monitorización</h3>
+      ${banner('info','Constantes','Temperatura, FC, FR y mucosas basales; después cada 15 min la primera hora y cada 30–60 min hasta finalizar. Hematocrito a las 1–2 h y a las 24 h.')}
+      ${banner('danger','Detener si aparece','Fiebre (> 1 °C sobre la basal), urticaria, vómito, taquicardia, disnea, hemoglobinuria o hipotensión. Valorar difenhidramina o corticoide según la reacción.')}
+    </section>
+  </div>`;
+}
+
+/* =================== NUTRICIÓN =================== */
+const FAC={d:[['Adulto castrado',1.6],['Adulto entero',1.8],['Inactivo o tendencia a obesidad',1.4],['Pérdida de peso (sobre peso ideal)',1.0],['Cachorro < 4 meses',3.0],['Cachorro > 4 meses',2.0],['Gestación (últimas 3 semanas)',3.0],['Lactación',4.0],['Trabajo o deporte',2.5],['Hospitalizado (RER)',1.0]],
+ c:[['Adulto castrado',1.2],['Adulto entero',1.4],['Tendencia a obesidad',1.0],['Pérdida de peso (sobre peso ideal)',0.8],['Gatito',2.5],['Gestación',1.6],['Lactación',3.0],['Hospitalizado (RER)',1.0]]};
+function renderNutri(){
+  const w=kg(),N=S.nut,sp=S.p.sp;
+  if(sp==='r')return`<section class="panel pad stack"><div><div class="eyebrow">Nutrición</div><h2 class="t">Nutrición del conejo</h2><div class="sub">${patientLine()}</div></div>
+    ${banner('info','Dieta de base','Heno ilimitado (80 % de la dieta), verdura de hoja 1 taza por cada 2 kg al día y pienso de heno comprimido como máximo 25 g/kg/día.')}
+    <div class="grid2"><div class="kpi main"><span class="eyebrow">Alimentación asistida</span><span class="v">${fmt(50*w,0)}<small>mL/día</small></span><span class="s">≈ 50 mL/kg/día de papilla de recuperación</span></div>
+    <div class="kpi"><span class="eyebrow">Por toma</span><span class="v">${fmt(50*w/5,0)}<small>mL</small></span><span class="s">repartido en 4–6 tomas</span></div></div>
+    ${banner('warn','Anorexia','Más de 12–24 h sin comer es una urgencia (estasis gastrointestinal y lipidosis hepática). Iniciar alimentación asistida, analgesia y procinéticos tras descartar obstrucción.')}</section>`;
+  const rer=70*Math.pow(w,0.75);
+  const ideal=w/(1+0.1*(N.bcs-5));
+  if(sp==='f')return`<section class="panel pad stack"><div><div class="eyebrow">Nutrición</div><h2 class="t">Nutrición del hurón</h2><div class="sub">${patientLine()}</div></div>
+    <div class="grid2"><div class="kpi main"><span class="eyebrow">Energía en reposo</span><span class="v">${fmt(rer,0)}<small>kcal/día</small></span><span class="s">70 × kg^0,75</span></div>
+    <div class="kpi"><span class="eyebrow">Hospitalizado</span><span class="v">${fmt(rer,0)}<small>kcal/día</small></span><span class="s">empezar con el 33 % y subir en 3 días</span></div></div>
+    ${banner('info','Carnívoro estricto','Dieta alta en proteína animal (30–40 %) y grasa (15–30 %), baja en fibra. Tránsito intestinal de 3–4 h: comidas frecuentes.')}</section>`;
+  const facs=FAC[sp];const fi=Math.min(N.fac,facs.length-1);const [fn,f]=facs[fi];
+  const base=f<=1&&fi===3?ideal:w; const mer=70*Math.pow(base,0.75)*f; const grams=N.kcal>0?mer/N.kcal*100:0;
+  return`<section class="panel pad stack">
+    <div class="head"><div><div class="eyebrow">Nutrición</div><h2 class="t">Necesidades energéticas</h2><div class="sub">${patientLine()}</div></div>
+      <button class="btn" data-act="addNut" ${w>0?'':'disabled'}>Añadir a la hoja</button></div>
+    <div class="grid4">
+      <div class="field"><label for="nFac">Estado</label><select id="nFac">${facs.map(([n,v],i)=>`<option value="${i}" ${i===fi?'selected':''}>${n} · ×${fmt(v,1)}</option>`).join('')}</select></div>
+      <div class="field"><label for="nBcs">Condición corporal (1–9)</label><select id="nBcs">${[1,2,3,4,5,6,7,8,9].map(v=>`<option value="${v}" ${N.bcs==v?'selected':''}>${v}/9${v===5?' · ideal':v<5?' · delgado':' · sobrepeso'}</option>`).join('')}</select></div>
+      <div class="field"><label for="nKcal">Densidad del alimento (kcal/100 g)</label><input id="nKcal" type="text" inputmode="decimal" value="${N.kcal}"></div>
+      <div class="field"><label for="nMeals">Tomas al día</label><select id="nMeals">${[1,2,3,4,6].map(v=>`<option value="${v}" ${N.meals==v?'selected':''}>${v}</option>`).join('')}</select></div>
+    </div>
+    <div class="grid4">
+      <div class="kpi"><span class="eyebrow">RER</span><span class="v">${fmt(rer,0)}<small>kcal/día</small></span><span class="s">70 × kg^0,75</span></div>
+      <div class="kpi main"><span class="eyebrow">MER</span><span class="v">${fmt(mer,0)}<small>kcal/día</small></span><span class="s">${esc(fn)} · ×${fmt(f,1)}${base!==w?' sobre peso ideal':''}</span></div>
+      <div class="kpi"><span class="eyebrow">Ración diaria</span><span class="v">${fmt(grams,0)}<small>g/día</small></span><span class="s">${fmt(grams/N.meals,0)} g por toma</span></div>
+      <div class="kpi"><span class="eyebrow">Peso ideal estimado</span><span class="v">${fmt(ideal,1)}<small>kg</small></span><span class="s">10 % por punto sobre 5/9</span></div>
+    </div>
+    <div class="tw"><table><thead><tr><th>Realimentación del paciente hospitalizado</th><th class="r">kcal/día</th><th class="r">g/día de este alimento</th></tr></thead><tbody>
+      ${[['Día 1 · 33 % RER',1/3],['Día 2 · 66 % RER',2/3],['Día 3 · 100 % RER',1]].map(([n,p])=>`<tr><td>${n}</td><td class="amt r">${fmt(rer*p,0)}</td><td class="amt r">${N.kcal>0?fmt(rer*p/N.kcal*100,0):'—'}</td></tr>`).join('')}
+    </tbody></table></div>
+    ${banner('info','Referencias de densidad','Pienso seco: 340–420 kcal/100 g. Comida húmeda: 70–130 kcal/100 g. Dietas de recuperación: ≈ 100–130 kcal/100 g. Consulta la etiqueta del producto.')}
+    ${sp==='c'?banner('warn','Gato en anorexia','Más de 3 días sin comer: riesgo de lipidosis hepática. Valorar sonda de esofagostomía.'):''}
+  </section>`;
+}
+
+/* =================== TOXICOLOGÍA =================== */
+const CHOC=[['Cacao en polvo',26],['Chocolate de repostería (sin azúcar)',15],['Chocolate negro ≥ 70 %',8],['Chocolate negro o semiamargo',5.5],['Chocolate con leche',2.3],['Chocolate blanco',0.04]];
+function renderTox(){
+  const w=kg(),T=S.tox,sp=S.p.sp;
+  const tabs=[['choc','Chocolate'],['xil','Xilitol'],['ibu','Ibuprofeno'],['para','Paracetamol'],['uva','Uvas y pasas'],['rat','Raticidas anticoagulantes'],['perm','Permetrina (gato)']];
+  let body='';
+  if(T.t==='choc'){
+    const [cn,cc]=CHOC[T.chocType];const mgkg=w>0?T.g*cc/w:0;
+    const lvl=mgkg>=60?['danger','Riesgo de convulsiones','Potencialmente mortal. Hospitalizar.']:mgkg>=40?['danger','Signos cardiacos','Taquicardia, arritmias e hipertensión probables.']:mgkg>=20?['warn','Signos leves a moderados','Vómito, diarrea, poliuria, agitación.']:['ok','Riesgo bajo','Posibles molestias gastrointestinales leves.'];
+    body=`<div class="grid2"><div class="field"><label for="chocType">Tipo de chocolate</label><select id="chocType">${CHOC.map(([n,c],i)=>`<option value="${i}" ${T.chocType==i?'selected':''}>${n} (${fmt(c,2)} mg/g)</option>`).join('')}</select></div>
+      <div class="field"><label for="chocG">Cantidad ingerida (g)</label><input id="chocG" type="text" inputmode="decimal" value="${T.g}"></div></div>
+      <div class="grid2"><div class="kpi main"><span class="eyebrow">Metilxantinas</span><span class="v">${fmt(mgkg,1)}<small>mg/kg</small></span><span class="s">${fmt(T.g*cc,0)} mg ingeridos</span></div>
+      <div class="kpi"><span class="eyebrow">Umbrales</span><span class="s">20 mg/kg: leves · 40–50: cardiacos · ≥ 60: convulsiones · DL50 100–200</span></div></div>
+      ${banner(lvl[0],lvl[1],lvl[2])}
+      ${banner('info','Tratamiento','Inducir el vómito si han pasado menos de 2–4 h. Carbón activado 1–2 g/kg y repetir 0,5 g/kg cada 4–6 h (recirculación enterohepática). Fluidoterapia, sondaje urinario para evitar la reabsorción vesical, ECG y control de la temperatura.')}`;
+  }else if(T.t==='xil'){
+    const gkg=w>0?T.xg/w:0;
+    const lvl=gkg>=0.5?['danger','Riesgo de fallo hepático agudo','Hospitalizar, glucemia seriada y función hepática a las 24, 48 y 72 h.']:gkg>=0.1?['danger','Riesgo de hipoglucemia','Hospitalizar y monitorizar glucemia cada 1–2 h durante 12 h.']:gkg>=0.075?['warn','Dosis límite','Monitorizar glucemia.']:['ok','Riesgo bajo','Vigilancia en casa con indicaciones al propietario.'];
+    body=`<div class="grid2"><div class="field"><label for="xG">Xilitol ingerido (g)</label><input id="xG" type="text" inputmode="decimal" value="${T.xg}"></div>
+      <div class="small" style="align-self:end">Un chicle sin azúcar contiene aproximadamente 0,2–1 g de xilitol según la marca. Comprueba la etiqueta.</div></div>
+      <div class="kpi main"><span class="eyebrow">Dosis</span><span class="v">${fmt(gkg,3)}<small>g/kg</small></span><span class="s">hipoglucemia ≥ 0,1 g/kg · daño hepático ≥ 0,5 g/kg</span></div>
+      ${banner(lvl[0],lvl[1],lvl[2])}
+      ${banner('info','Tratamiento',`Emesis solo si el paciente está normoglucémico y asintomático. Hipoglucemia: dextrosa 50 % ${fmt(0.5*w,1)}–${fmt(w,1)} mL diluida y después infusión al 2,5–5 %. Hepatoprotectores (N-acetilcisteína, SAMe). El carbón activado no adsorbe bien el xilitol.`)}
+      ${sp==='c'?banner('info','Gato','No hay evidencia de toxicidad relevante del xilitol en gatos.'):''}`;
+  }else if(T.t==='ibu'||T.t==='para'){
+    const mgkg=w>0?T.mg/w:0;let lvl;
+    if(T.t==='ibu'){const m=sp==='c'?0.5:1;
+      lvl=mgkg>=600*m?['danger','Potencialmente mortal','']:mgkg>=400*m?['danger','Signos neurológicos y fallo renal','Convulsiones, ataxia, coma.']:mgkg>=175*m?['danger','Fallo renal agudo','Fluidoterapia 48–72 h y creatinina seriada.']:mgkg>=25*m?['warn','Úlcera gastrointestinal','Protectores gástricos (omeprazol, sucralfato) 5–7 días.']:['ok','Riesgo bajo','Vigilancia.'];
+    }else{
+      lvl=sp==='c'?(mgkg>=10?['danger','Tóxico en gato','Metahemoglobinemia y anemia por cuerpos de Heinz. Cualquier dosis es peligrosa.']:['warn','Cualquier dosis es peligrosa en gato','Tratar como intoxicación.']):
+        mgkg>=200?['danger','Metahemoglobinemia y hepatotoxicidad','']:mgkg>=100?['danger','Hepatotoxicidad','Enzimas hepáticas a las 24–72 h.']:['warn','Riesgo bajo a moderado','Vigilancia y descontaminación.'];
+    }
+    const nac=T.t==='para'?banner('info','Antídoto: N-acetilcisteína',`Carga ${fmt(140*w,0)} mg (140 mg/kg) IV o PO; después ${fmt(70*w,0)} mg (70 mg/kg) cada 6 h, 7 dosis. Añadir SAMe y vitamina C; oxigenoterapia si hay cianosis.`):banner('info','Tratamiento','Emesis y carbón activado (repetir por recirculación enterohepática). Omeprazol, sucralfato y misoprostol; fluidoterapia IV 48 h si la dosis supera el umbral renal. Valorar emulsión lipídica en dosis muy altas.');
+    body=`<div class="grid2"><div class="field"><label for="tMg">Cantidad ingerida (mg)</label><input id="tMg" type="text" inputmode="decimal" value="${T.mg}"></div><div class="small" style="align-self:end">Comprimidos habituales: ${T.t==='ibu'?'200, 400, 600 mg':'500, 650, 1000 mg'}.</div></div>
+      <div class="kpi main"><span class="eyebrow">Dosis</span><span class="v">${fmt(mgkg,1)}<small>mg/kg</small></span><span class="s">${T.t==='ibu'?(sp==='c'?'gato: umbrales a la mitad que el perro':'perro: 25 GI · 175 renal · 400 SNC · 600 mortal'):(sp==='c'?'gato: tóxico a > 10 mg/kg':'perro: 100 hepático · 200 metahemoglobina')}</span></div>
+      ${banner(lvl[0],lvl[1],lvl[2])}${nac}`;
+  }else if(T.t==='uva'){
+    body=`${banner('danger','No existe dosis segura','La toxicidad es idiosincrásica (ácido tartárico): cualquier cantidad puede causar fallo renal agudo en el perro.')}
+      ${banner('info','Tratamiento',`Emesis aunque hayan pasado varias horas, carbón activado ${fmt(w,0)}–${fmt(2*w,0)} g y fluidoterapia IV a 2 veces el mantenimiento durante 48–72 h. Creatinina basal, a las 24, 48 y 72 h, y control de la diuresis.`)}`;
+  }else if(T.t==='rat'){
+    body=`<div class="grid2"><div class="kpi main"><span class="eyebrow">Vitamina K1 diaria</span><span class="v">${fmt(2.5*w,0)}–${fmt(5*w,0)}<small>mg/día</small></span><span class="s">2,5–5 mg/kg PO con comida grasa</span></div>
+      <div class="kpi"><span class="eyebrow">Duración</span><span class="v">4–6<small>semanas</small></span><span class="s">2.ª generación (bromadiolona, brodifacoum)</span></div></div>
+      ${banner('info','Protocolo','Ingesta reciente (< 2 h): emesis y carbón activado. Si no se trata con vitamina K1, medir el tiempo de protrombina a las 48–72 h. Al acabar el tratamiento, repetir el tiempo de protrombina 48–72 h después.')}
+      ${banner('danger','Sangrado activo','Plasma fresco congelado 10–20 mL/kg o sangre entera. La vitamina K1 tarda 6–12 h en actuar. Nunca vitamina K1 por vía IV.')}`;
+  }else{
+    body=`${sp!=='c'?banner('info','Este protocolo es para gato','La permetrina es bien tolerada por el perro en las concentraciones comerciales.'):''}
+      ${banner('danger','Sin dosis segura en gato','Las pipetas de perro (45–65 % de permetrina) causan temblores, hiperestesia y convulsiones en gatos.')}
+      ${banner('info','Tratamiento',`Baño con detergente lavavajillas y agua templada, secar bien y evitar la hipotermia. Metocarbamol ${fmt(55*w,0)}–${fmt(220*w,0)} mg (55–220 mg/kg) IV lento a efecto. Emulsión lipídica 20 %: ${fmt(1.5*w,1)} mL en bolo y después ${fmt(0.25*w,2)} mL/kg/min durante 30–60 min. Diazepam o midazolam si hay convulsiones.`)}`;
+  }
+  const decont=`<section class="panel pad stack"><h3 class="t">Descontaminación · ${spN()} de ${fmt(w,3)} kg</h3>
+    <div class="grid3">
+      <div class="kpi"><span class="eyebrow">${sp==='c'?'Emesis: dexmedetomidina':'Emesis: apomorfina'}</span><span class="v">${sp==='c'?vol(7*w/500):sp==='d'?vol(0.03*w/1):'—'}<small>${isDC()?'mL':''}</small></span><span class="s">${sp==='c'?'7 µg/kg IM · 0,5 mg/mL':sp==='d'?'0,03 mg/kg IV · 1 mg/mL':'Conejo y hurón no vomitan'}</span></div>
+      <div class="kpi"><span class="eyebrow">Carbón activado</span><span class="v">${fmt(w,0)}–${fmt(2*w,0)}<small>g</small></span><span class="s">1–2 g/kg PO; sorbitol solo la 1.ª dosis</span></div>
+      <div class="kpi"><span class="eyebrow">Emulsión lipídica 20 %</span><span class="v">${fmt(1.5*w,1)}<small>mL bolo</small></span><span class="s">luego ${fmt(0.25*w*30,0)}–${fmt(0.25*w*60,0)} mL en 30–60 min</span></div>
+    </div>
+    ${banner('warn','No inducir el vómito','Corrosivos, hidrocarburos, objetos cortantes, paciente deprimido o con convulsiones, braquicéfalos con compromiso respiratorio, o más de 2–4 h tras la ingesta.')}
+    ${banner('info','Centro de información toxicológica','Ante tóxicos poco habituales, consulta un centro de toxicología veterinaria con el nombre comercial y la composición del producto.')}
+  </section>`;
+  return`<section class="panel pad stack"><div><div class="eyebrow">Toxicología</div><h2 class="t">Calculadora de intoxicaciones</h2><div class="sub">${patientLine()}</div></div>
+    <div class="chips">${tabs.map(([k,n])=>`<button data-tox="${k}" aria-pressed="${T.t===k}">${n}</button>`).join('')}</div>${body}</section>${decont}`;
+}
+
+/* =================== REFERENCIAS =================== */
+const VITALS=[['d','60–140 lpm (razas toy hasta 180)','10–30 rpm','37,5–39,2 °C','37–55 %'],['c','140–220 lpm','20–30 rpm','38,1–39,2 °C','30–45 %'],['r','180–300 lpm','30–60 rpm','38,5–40,0 °C','30–50 %'],['f','180–250 lpm','33–36 rpm','37,8–40,0 °C','44–61 %']];
+const CONV={kg:['kg → lb',v=>v*2.20462,'lb'],lb:['lb → kg',v=>v/2.20462,'kg'],c:['°C → °F',v=>v*9/5+32,'°F'],f:['°F → °C',v=>(v-32)*5/9,'°C'],glu:['Glucosa mg/dL → mmol/L',v=>v/18,'mmol/L'],glu2:['Glucosa mmol/L → mg/dL',v=>v*18,'mg/dL'],cre:['Creatinina mg/dL → µmol/L',v=>v*88.4,'µmol/L'],cre2:['Creatinina µmol/L → mg/dL',v=>v/88.4,'mg/dL'],pct:['Solución % → mg/mL',v=>v*10,'mg/mL'],mgml:['mg/mL → %',v=>v/10,'%']};
+function renderRef(){
+  const w=kg(),sp=S.p.sp,R=S.ref;
+  const bsa=sp==='c'?0.1*Math.pow(w,2/3):0.101*Math.pow(w,2/3);
+  const [cn,cf,cu]=CONV[R.conv];const cres=cf(R.cv);
+  let iris='';
+  if(isDC()){
+    const cr=R.creU==='mg'?R.cre:R.cre/88.4;
+    const cst=sp==='d'?(cr<1.4?1:cr<=2.8?2:cr<=5?3:4):(cr<1.6?1:cr<=2.8?2:cr<=5?3:4);
+    const sd=num(R.sdma);const sst=isNaN(sd)?null:(sp==='d'?(sd<18?1:sd<=35?2:sd<=54?3:4):(sd<18?1:sd<=25?2:sd<=38?3:4));
+    const upc=num(R.upc);const up=isNaN(upc)?null:(upc<0.2?['No proteinúrico','ok']:upc<=(sp==='d'?0.5:0.4)?['Proteinuria límite','warn']:['Proteinúrico','danger']);
+    const pas=num(R.pas);const pa=isNaN(pas)?null:(pas<140?['Normotenso','ok']:pas<160?['Prehipertenso','warn']:pas<180?['Hipertenso','danger']:['Hipertensión grave','danger']);
+    iris=`<section class="panel pad stack"><div><h3 class="t">Estadiaje IRIS de la enfermedad renal crónica</h3><div class="sub">${spN()} · paciente estable e hidratado, dos determinaciones</div></div>
+      <div class="grid4">
+        <div class="field"><label for="rCre">Creatinina</label><input id="rCre" type="text" inputmode="decimal" value="${String(R.cre).replace('.',',')}"></div>
+        <div class="field"><label for="rCreU">Unidad</label><select id="rCreU"><option value="mg" ${R.creU==='mg'?'selected':''}>mg/dL</option><option value="um" ${R.creU==='um'?'selected':''}>µmol/L</option></select></div>
+        <div class="field"><label for="rSdma">SDMA (µg/dL, opcional)</label><input id="rSdma" type="text" inputmode="decimal" value="${esc(R.sdma)}"></div>
+        <div class="field"><label for="rUpc">UPC (opcional)</label><input id="rUpc" type="text" inputmode="decimal" value="${esc(R.upc)}"></div>
+      </div>
+      <div class="grid4">
+        <div class="kpi main"><span class="eyebrow">Estadio por creatinina</span><span class="v">IRIS ${cst}</span><span class="s">${fmt(cr,2)} mg/dL</span></div>
+        <div class="kpi"><span class="eyebrow">Estadio por SDMA</span><span class="v">${sst?'IRIS '+sst:'—'}</span><span class="s">${sst&&sst>cst?'Valorar el estadio superior':'Sin dato o concordante'}</span></div>
+        <div class="kpi"><span class="eyebrow">Proteinuria</span><span class="v" style="font-size:1.1rem">${up?`<span class="tag ${up[1]}">${up[0]}</span>`:'—'}</span><span class="s">UPC ${sp==='d'?'< 0,2 · 0,2–0,5 · > 0,5':'< 0,2 · 0,2–0,4 · > 0,4'}</span></div>
+        <div class="field"><label for="rPas">Presión sistólica (mmHg)</label><input id="rPas" type="text" inputmode="decimal" value="${esc(R.pas)}">${pa?`<span class="tag ${pa[1]}">${pa[0]}</span>`:''}</div>
+      </div>
+      <div class="small">Creatinina ${sp==='d'?'perro: 1 < 1,4 · 2: 1,4–2,8 · 3: 2,9–5,0 · 4 > 5,0':'gato: 1 < 1,6 · 2: 1,6–2,8 · 3: 2,9–5,0 · 4 > 5,0'} mg/dL. SDMA ${sp==='d'?'perro: 1 < 18 · 2: 18–35 · 3: 36–54 · 4 > 54':'gato: 1 < 18 · 2: 18–25 · 3: 26–38 · 4 > 38'} µg/dL.</div>
+    </section>`;
+  }
+  return`<section class="panel pad stack"><div><div class="eyebrow">Referencias</div><h2 class="t">Constantes fisiológicas</h2><div class="sub">Valores de referencia en reposo</div></div>
+    <div class="tw"><table><thead><tr><th>Especie</th><th>Frecuencia cardiaca</th><th>Frecuencia respiratoria</th><th>Temperatura</th><th>Hematocrito</th></tr></thead><tbody>
+    ${VITALS.filter(([k])=>SPECIES[k]).map(([k,...v])=>`<tr class="${k===sp?'hl':''}"><td><b>${SPECIES[k].n}</b></td>${v.map(x=>`<td class="tn">${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <div class="small">TRC normal < 2 s · diuresis 1–2 mL/kg/h · PAS normal perro y gato 110–140 mmHg.</div></section>
+  <div class="grid2">
+    <section class="panel pad stack"><h3 class="t">Superficie corporal</h3>
+      <div class="kpi main"><span class="eyebrow">${isDC()?spN()+' de '+fmt(w,3)+' kg':'Solo perro y gato'}</span><span class="v">${isDC()?fmt(bsa,3):'—'}<small>${isDC()?'m²':''}</small></span><span class="s">${sp==='c'?'0,100':'0,101'} × kg^(2/3)</span></div>
+      ${banner('warn','Quimioterapia','Las dosis en m² requieren verificación doble e independiente. En perros < 10 kg algunos fármacos (doxorrubicina) se dosifican en mg/kg.')}
+    </section>
+    <section class="panel pad stack"><h3 class="t">Conversiones</h3>
+      <div class="grid2"><div class="field"><label for="rConv">Conversión</label><select id="rConv">${Object.entries(CONV).map(([k,[n]])=>`<option value="${k}" ${R.conv===k?'selected':''}>${n}</option>`).join('')}</select></div>
+      <div class="field"><label for="rCv">Valor</label><input id="rCv" type="text" inputmode="decimal" value="${String(R.cv).replace('.',',')}"></div></div>
+      <div class="kpi main"><span class="eyebrow">Resultado</span><span class="v">${isNaN(cres)?'—':fmt(cres,2)}<small>${cu}</small></span><span class="s">${esc(cn)}</span></div>
+    </section>
+  </div>${iris}`;
+}
+
+/* =================== HOJA =================== */
+function renderHoja(){
+  const rows=S.sheet,today=new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+  return`<section class="panel pad stack">
+        <div class="head"><div><div class="eyebrow">Hoja de tratamiento · ${today}</div><h2 class="t">${esc(S.p.name)||'Paciente sin nombre'}</h2>
+      <div class="sub">${[S.p.hc?'HC '+esc(S.p.hc):'',spN(),esc(S.p.breed),esc(S.p.age),fmt(kg(),3)+' kg'].filter(Boolean).join(' · ')}</div></div>
+      <div class="btns no-print"><button class="btn ghost" data-act="clearSheet" ${rows.length?'':'disabled'}>Vaciar</button><button class="btn ghost" data-act="copySheet" ${rows.length?'':'disabled'}>Copiar texto</button></div></div>
+    <div class="small">Veterinario responsable: <b style="color:var(--ink)">Dr. Xavier</b></div>
+    ${rows.length?`<div class="tw"><table><thead><tr><th>Hora</th><th>Tratamiento</th><th>Dosis</th><th>Administrar</th><th>Vía · frecuencia</th><th class="no-print"></th></tr></thead><tbody>
+    ${rows.map((r,i)=>`<tr><td class="tn">${esc(r.time)}</td><td><b>${esc(r.n)}</b><div class="small">${esc(r.pres)}</div>${r.kg!==kg()||r.spn!==spN()?`<div class="small" style="color:var(--warn)">Calculado para ${esc(r.spn)} de ${fmt(r.kg,3)} kg</div>`:''}</td>
+      <td class="tn">${esc(r.dose)}<div class="small">${esc(r.total)}</div></td><td class="amt">${esc(r.amount)}</td><td>${esc(r.route)}<div class="small">${esc(r.freq)}</div></td>
+      <td class="no-print"><button class="x" data-del="${i}" aria-label="Quitar ${esc(r.n)}">×</button></td></tr>`).join('')}</tbody></table></div>`
+    :`<div class="empty">La hoja está vacía.<br>Añade tratamientos desde el formulario, las infusiones, la fluidoterapia, la transfusión o la nutrición.</div>`}
+    <div class="field"><label for="notes">Observaciones e indicaciones</label><textarea id="notes" placeholder="Ej.: control de glucemia cada 4 h; reevaluar dolor (Glasgow) a las 2 h; ayuno desde las 22:00.">${esc(S.notes)}</textarea></div>
+    <div class="sig"><div>Firma del veterinario · Dr. Xavier</div><div>Fecha y hora</div></div>
+  </section>`;
+}
+function sheetText(){
+  const p=S.p;const head=`XAVI VET — Hoja de tratamiento\n${p.name||'Paciente'}${p.hc?' · HC '+p.hc:''} · ${spN()}${p.breed?' · '+p.breed:''} · ${fmt(kg(),3)} kg · ${new Date().toLocaleDateString('es-ES')}\nVeterinario: Dr. Xavier\n`;
+  return head+S.sheet.map(r=>`• ${r.time} ${r.n}: ${r.dose} → ${r.total} = ${r.amount} (${r.pres}) · ${r.route} · ${r.freq}`).join('\n')+(S.notes?`\n\nObservaciones: ${S.notes}`:'');
+}
+
+/* =================== RENDER =================== */
+const VIEWS={inicio:renderInicio,farmacos:renderFarmacos,cri:renderCRI,rcp:renderRCP,fluidos:renderFluidos,transf:renderTransf,nutri:renderNutri,tox:renderTox,ref:renderRef,hoja:renderHoja};
+function render(){
+  const a=document.activeElement,id=a&&a.id,inView=a&&$('#view').contains(a);let raw=null,ss,se;
+  if(inView&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA')&&a.type!=='range'){raw=a.value;try{ss=a.selectionStart;se=a.selectionEnd;}catch(e){}}
+  $('#view').innerHTML=VIEWS[S.view]();
+  if(inView&&id){const el=document.getElementById(id);if(el){el.focus({preventScroll:true});if(raw!=null){el.value=raw;try{el.setSelectionRange(ss,se);}catch(e){}}}}
+}
+function all(){renderPatientBar();renderSide();render();}
+function go(v){S.view=v;all();try{history.replaceState(null,'','#'+v);}catch(e){}window.scrollTo({top:0,behavior:'smooth'});}
+
+/* =================== EVENTS =================== */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,tr.pres');if(!t)return;const ds=t.dataset;
+  if(ds.nav){go(ds.nav);return;}
+  if(ds.sp){S.p.sp=ds.sp;S.p.kg=SPECIES[ds.sp].def;S.p.unit=(ds.sp==='r'||ds.sp==='f')?'g':'kg';setWeightField();save();all();return;}
+  if(ds.cat){S.cat=ds.cat;render();return;}
+  if(ds.drug){S.drug=ds.drug;render();const ar=$('#view article');if(innerWidth<1100&&ar&&ar.scrollIntoView)ar.scrollIntoView({behavior:'smooth',block:'start'});return;}
+  if(ds.pres!=null&&t.matches('tr.pres')){S.pres[S.drug]=+ds.pres;render();return;}
+  if(ds.cri){S.cri=ds.cri;render();return;}
+  if(ds.crimode){S.criMode=ds.crimode;render();return;}
+  if(ds.prod){S.tx.prod=ds.prod;S.tx.don=null;render();return;}
+  if(ds.tox){S.tox.t=ds.tox;render();return;}
+  if(ds.del!=null){S.sheet.splice(+ds.del,1);save();renderSide();render();return;}
+  if(t.id==='wPlus'||t.id==='wMinus'){const st=S.p.unit==='g'?0.05:(S.p.kg<5?0.1:0.5);S.p.kg=Math.max(0,+(S.p.kg+(t.id==='wPlus'?st:-st)).toFixed(3));setWeightField();save();renderPatientBar();render();return;}
+  const act=ds.act;if(!act)return;
+  if(act==='addDrug'){const d=DRUGS.find(x=>x.id===S.drug),dose=getDose(d),rows=computeRows(d,dose),r=rows[S.pres[d.id]||0],sd=d.sp[S.p.sp];
+    addSheet({n:d.n,pres:r.p.label,dose:`${smart(dose)} ${d.u}/kg`,total:`${smart(dose*kg())} ${d.u}`,amount:r.amount,route:sd.route,freq:sd.freq});render();return;}
+  if(act==='addCri'){const c=CRI.find(x=>x.id===S.cri),sd=c.sp[S.p.sp],key=c.id+'|'+S.p.sp,dose=S.criDose[key]!=null?S.criDose[key]:sd[2],ph=criPerHour(c,dose);
+    let amount,pres;
+    if(S.criMode==='jeringa'){const hrs=S.syrRate>0?S.syr/S.syrRate:0,mL=ph*hrs/c.c;amount=`${vol(mL)} mL + ${vol(S.syr-mL)} mL NaCl a ${fmt(S.syrRate,2)} mL/h`;pres=`Jeringa de ${S.syr} mL`;}
+    else if(S.criMode==='bolsa'){const w=kg(),R=S.bagRate!=null?S.bagRate:(S.p.sp==='d'?132*Math.pow(w,0.75):S.p.sp==='c'?80*Math.pow(w,0.75):100*w)/24,mL=ph*(S.bag/R)/c.c;amount=`${vol(mL)} mL en bolsa de ${S.bag} mL a ${fmt(R,1)} mL/h`;pres=`Bolsa de ${S.bag} mL`;}
+    else{amount=`${vol(ph/c.c)} mL/h sin diluir`;pres=c.cl||`${fmt(c.c,2)} ${c.cu}/mL`;}
+    addSheet({n:c.n+' (infusión)',pres,dose:`${smart(dose)} ${c.du}`,total:`${smart(ph)} ${c.cu}/h`,amount,route:'IV, infusión continua',freq:'Continua'});render();return;}
+  if(act==='addFluid'){const p=fluidPlan();addSheet({n:'Fluidoterapia (cristaloide)',pres:`Deshidratación ${S.fl.dehyd} % · reposición en ${S.fl.hours} h`,dose:`${fmt(p.maint,0)} mL/día mant.`,total:`${fmt(p.maint+p.deficit+S.fl.losses,0)} mL/24 h`,amount:`${fmt(p.perH,1)} mL/h, después ${fmt(p.after,1)} mL/h`,route:'IV',freq:'Continua'});render();return;}
+  if(act==='addTx'){const T=S.tx,w=kg(),bv=S.p.sp==='d'?90:60;let amount,n;
+    if(T.prod==='pfc'){n='Plasma fresco congelado';amount=`${fmt(10*w,0)}–${fmt(20*w,0)} mL`;}
+    else{const don=T.don!=null?T.don:(T.prod==='se'?40:65),des=T.des!=null?T.des:(S.p.sp==='d'?25:20);n=T.prod==='se'?'Sangre entera':'Concentrado de hematíes';amount=`${fmt(Math.max(0,w*bv*(des-T.rec)/don),0)} mL`;}
+    addSheet({n:'Transfusión: '+n,pres:'Filtro 170–260 µm',dose:T.prod==='pfc'?'10–20 mL/kg':`Hto ${T.rec} → ${T.des!=null?T.des:(S.p.sp==='d'?25:20)} %`,total:'',amount,route:'IV',freq:'0,25 mL/kg/h 30 min; resto en < 4 h'});render();return;}
+  if(act==='addNut'){const w=kg(),N=S.nut,facs=FAC[S.p.sp],fi=Math.min(N.fac,facs.length-1),[fn,f]=facs[fi],ideal=w/(1+0.1*(N.bcs-5)),base=f<=1&&fi===3?ideal:w,mer=70*Math.pow(base,0.75)*f,g=mer/N.kcal*100;
+    addSheet({n:'Plan nutricional',pres:`${N.kcal} kcal/100 g`,dose:`${fmt(mer,0)} kcal/día`,total:fn,amount:`${fmt(g,0)} g/día`,route:'PO',freq:`${N.meals} tomas al día`});render();return;}
+  if(act==='clearSheet'){S.sheet=[];save();renderSide();render();toast('Hoja vaciada');return;}
+  if(act==='copySheet'){const txt=sheetText();const fb=()=>{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Hoja copiada');}catch(_){toast('Selecciona el texto y cópialo');}ta.remove();};
+    try{navigator.clipboard.writeText(txt).then(()=>toast('Hoja copiada'),fb);}catch(_){fb();}return;}
+});
+document.addEventListener('keydown',e=>{const p=e.target.closest&&e.target.closest('tr.pres');if(p&&(e.key==='Enter'||e.key===' ')){e.preventDefault();p.click();}});
+document.addEventListener('input',e=>{
+  const id=e.target.id,v=e.target.value,n=num(v);
+  switch(id){
+    case'weight':S.p.kg=isNaN(n)?0:(S.p.unit==='g'?n/1000:n);save();renderPatientBar();render();return;
+    case'pName':S.p.name=v;save();if(S.view==='hoja'||S.view==='inicio')render();return;
+    case'pName2':S.p.name=v;$('#pName').value=v;save();return;
+    case'pHc':S.p.hc=v;save();return;
+    case'pBreed':S.p.breed=v;save();render();return;
+    case'pAge':S.p.age=v;save();return;
+    case'q':S.q=v;render();return;
+    case'doseIn':case'doseRange':if(!isNaN(n)){S.doses[S.drug+'|'+S.p.sp]=n;render();}return;
+    case'criIn':case'criRange':if(!isNaN(n)){S.criDose[S.cri+'|'+S.p.sp]=n;render();}return;
+    case'syrRate':if(!isNaN(n)){S.syrRate=n;render();}return;
+    case'bagRate':S.bagRate=v.trim()===''||isNaN(n)?null:n;render();return;
+    case'flLoss':S.fl.losses=isNaN(n)?0:Math.max(0,n);render();return;
+    case'flK':if(!isNaN(n)){S.fl.k=n;render();}return;
+    case'txRec':if(!isNaN(n)){S.tx.rec=n;render();}return;
+    case'txDes':if(!isNaN(n)){S.tx.des=n;render();}return;
+    case'txDon':if(!isNaN(n)&&n>0){S.tx.don=n;render();}return;
+    case'nKcal':if(!isNaN(n)){S.nut.kcal=n;render();}return;
+    case'chocG':S.tox.g=isNaN(n)?0:n;render();return;
+    case'xG':S.tox.xg=isNaN(n)?0:n;render();return;
+    case'tMg':S.tox.mg=isNaN(n)?0:n;render();return;
+    case'rCv':if(!isNaN(n)){S.ref.cv=n;render();}return;
+    case'rCre':if(!isNaN(n)){S.ref.cre=n;render();}return;
+    case'rSdma':S.ref.sdma=v;render();return;
+    case'rUpc':S.ref.upc=v;render();return;
+    case'rPas':S.ref.pas=v;render();return;
+    case'notes':S.notes=v;save();return;
+  }
+});
+document.addEventListener('change',e=>{
+  const id=e.target.id,v=e.target.value;
+  const map={syr:()=>S.syr=+v,bag:()=>S.bag=+v,flDehyd:()=>S.fl.dehyd=+v,flHours:()=>S.fl.hours=+v,flSet:()=>S.fl.set=+v,flBagK:()=>S.fl.bagK=+v,flDex:()=>S.fl.dex=+v,flBagDex:()=>S.fl.bagDex=+v,
+    nFac:()=>S.nut.fac=+v,nBcs:()=>S.nut.bcs=+v,nMeals:()=>S.nut.meals=+v,chocType:()=>S.tox.chocType=+v,rConv:()=>S.ref.conv=v,rCreU:()=>S.ref.creU=v};
+  if(id==='wUnit'){S.p.unit=v;setWeightField();save();renderPatientBar();return;}
+  if(map[id]){map[id]();render();}
+});
+
+/* =================== INIT =================== */
+(function init(){
+  const h=(location.hash||'').slice(1);if(VIEWS[h])S.view=h;
+  if(!SPECIES[S.p.sp]){S.p.sp='d';S.p.kg=12;S.p.unit='kg';}
+  $('#pName').value=S.p.name;setWeightField();all();
+})();
+</script>
+
+</body>
+</html>
