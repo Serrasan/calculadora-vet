@@ -1,4 +1,4 @@
-# Xavi Vet
+# Calculadora Vet
 
 Calculadora clínica veterinaria para perro y gato. Es una página web de un solo archivo (`index.html`), sin dependencias ni instalación: se abre en cualquier navegador.
 
