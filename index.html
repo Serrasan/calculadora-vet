@@ -228,6 +228,13 @@ tr.pres[aria-selected="true"] td:first-child{box-shadow:inset 3px 0 0 var(--acce
 .pc b{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:900}
 .pc ul{margin:4px 0 0;padding-left:18px;font-size:.9rem;font-weight:600}
 .pc li{margin:2px 0}
+.lblrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mic{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--accent-strong);border-radius:999px;padding:4px 12px;font-weight:900;font-size:.82rem;cursor:pointer}
+.mic:hover{border-color:var(--accent)}
+.mic svg{width:16px;height:16px}
+.mic.on{background:var(--danger);border-color:var(--danger);color:#fff;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px var(--danger-soft)}}
+textarea.rec{outline:2px solid var(--danger);outline-offset:1px}
 .thinking{display:flex;align-items:center;gap:12px;padding:18px;border:1px dashed var(--line);border-radius:var(--r);color:var(--muted)}
 .spin{width:20px;height:20px;border-radius:50%;border:3px solid var(--accent-soft);border-top-color:var(--accent);animation:sp 0.9s linear infinite;flex:none}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -711,7 +718,7 @@ const S={p:{name:'',hc:'',breed:'',age:'',sp:'d',kg:12,unit:'kg'},view:'inicio',
   tox:{t:'choc',chocType:2,g:100,xg:5,mg:400},
   ref:{conv:'kg',cv:10,cre:1.8,creU:'mg',sdma:'',upc:'',pas:''},
   sheet:[],notes:'',vet:'',
-  ddx:{caso:'',lab:'',img:'',sex:'',busy:false,result:null,err:'',blocked:false}};
+  ddx:{caso:'',lab:'',img:'',sex:'',micErr:'',busy:false,result:null,err:'',blocked:false}};
 try{const s=JSON.parse(localStorage.getItem('xavi-vet')||'null'); if(s){S.sheet=s.sheet||[];S.notes=s.notes||'';S.vet=s.vet||'';if(s.p)Object.assign(S.p,s.p);}}catch(e){}
 function save(){try{localStorage.setItem('xavi-vet',JSON.stringify({sheet:S.sheet,notes:S.notes,p:S.p,vet:S.vet}));}catch(e){}}
 
@@ -1331,6 +1338,30 @@ async function runDdx(){
     else d.err='No se ha podido completar la consulta. Comprueba la conexión e inténtalo de nuevo.';
   }finally{d.busy=false;ddxCtl=null;if(S.view==='ddx')render();}
 }
+
+/* ---- Dictado por voz ---- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const MICF={ddxCaso:'caso',ddxLab:'lab',ddxImg:'img'};
+let rec=null,recField=null;
+const MIC_SVG='<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg>';
+function micBtn(id){if(!SR)return'';const on=recField===id;return`<button type="button" class="mic ${on?'on':''}" data-act="mic" data-field="${id}" aria-pressed="${on}">${MIC_SVG}${on?'Detener':'Dictar'}</button>`;}
+function stopDictation(){if(rec){try{rec.stop();}catch(e){}}}
+function startDictation(id){
+  if(rec){const same=recField===id;stopDictation();if(same)return;}
+  const key=MICF[id];if(!key)return;
+  const r=new SR();r.lang='es-ES';r.continuous=true;r.interimResults=true;
+  const base=S.ddx[key].replace(/\s+$/,'');let committed='';
+  rec=r;recField=id;S.ddx.micErr='';render();
+  r.onresult=e=>{let fin='',inter='';for(let i=0;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t;else inter+=t;}
+    committed=fin.trim();const sep=base&&committed?' ':'';S.ddx[key]=base+sep+committed;
+    const el=document.getElementById(id);if(el){const i2=inter.trim();el.value=S.ddx[key]+(i2?((S.ddx[key]?' ':'')+i2):'');el.scrollTop=el.scrollHeight;}};
+  r.onerror=e=>{const c=e.error;if(c==='not-allowed'||c==='service-not-allowed')S.ddx.micErr='No hay permiso para usar el micrófono aquí. Permite el micrófono en el navegador o abre la web pública; en el móvil también puedes usar el micrófono del teclado.';
+    else if(c==='no-speech')S.ddx.micErr='No se ha detectado voz. Pulsa Dictar y vuelve a intentarlo.';
+    else if(c==='audio-capture')S.ddx.micErr='No se encuentra ningún micrófono.';
+    else if(c==='network')S.ddx.micErr='El dictado necesita conexión a internet.';};
+  r.onend=()=>{if(rec===r){rec=null;recField=null;}if(S.view==='ddx')render();};
+  try{r.start();}catch(e){rec=null;recField=null;S.ddx.micErr='No se ha podido iniciar el dictado.';render();}
+}
 function renderDdx(){
   const d=S.ddx,avail=SAMPLE&&!d.blocked,pending=SAMPLE===undefined;
   const sexOpts=['','Macho entero','Macho castrado','Hembra entera','Hembra esterilizada'];
@@ -1352,13 +1383,14 @@ function renderDdx(){
       <div class="btns"><button class="btn ghost" data-act="ddxExample">Cargar ejemplo</button><button class="btn ghost" data-act="ddxClear">Limpiar</button></div></div>
     <div class="grid2">
       <div class="field"><label for="ddxSex">Sexo y estado reproductivo</label><select id="ddxSex">${sexOpts.map(o=>`<option value="${o}" ${d.sex===o?'selected':''}>${o||'No indicado'}</option>`).join('')}</select></div>
-      <div class="small" style="align-self:end">Especie, peso, raza y edad se toman de la ficha del paciente (Inicio y barra superior).</div>
+      <div class="small" style="align-self:end">Especie, peso, raza y edad se toman de la ficha del paciente. ${SR?'Pulsa <b>Dictar</b> en cualquier cuadro y habla: el texto se escribe solo.':'Para dictar por voz usa el micrófono del teclado del móvil o un navegador con dictado (Chrome, Safari, Edge).'}</div>
     </div>
-    <div class="field"><label for="ddxCaso">Descripción del caso</label><textarea id="ddxCaso" style="min-height:120px" placeholder="Motivo de consulta, anamnesis, evolución y hallazgos de la exploración física.">${esc(d.caso)}</textarea></div>
+    <div class="field"><div class="lblrow"><label for="ddxCaso">Descripción del caso</label>${micBtn('ddxCaso')}</div><textarea id="ddxCaso" class="${recField==='ddxCaso'?'rec':''}" style="min-height:120px" placeholder="Motivo de consulta, anamnesis, evolución y hallazgos de la exploración física.">${esc(d.caso)}</textarea></div>
     <div class="grid2">
-      <div class="field"><label for="ddxLab">Alteraciones analíticas</label><textarea id="ddxLab" style="min-height:120px" placeholder="Hemograma, bioquímica, urianálisis, electrolitos, gasometría, serologías…">${esc(d.lab)}</textarea></div>
-      <div class="field"><label for="ddxImg">Pruebas de imagen</label><textarea id="ddxImg" style="min-height:120px" placeholder="Radiografía, ecografía, TC, RM, ecocardiografía…">${esc(d.img)}</textarea></div>
+      <div class="field"><div class="lblrow"><label for="ddxLab">Alteraciones analíticas</label>${micBtn('ddxLab')}</div><textarea id="ddxLab" class="${recField==='ddxLab'?'rec':''}" style="min-height:120px" placeholder="Hemograma, bioquímica, urianálisis, electrolitos, gasometría, serologías…">${esc(d.lab)}</textarea></div>
+      <div class="field"><div class="lblrow"><label for="ddxImg">Pruebas de imagen</label>${micBtn('ddxImg')}</div><textarea id="ddxImg" class="${recField==='ddxImg'?'rec':''}" style="min-height:120px" placeholder="Radiografía, ecografía, TC, RM, ecocardiografía…">${esc(d.img)}</textarea></div>
     </div>
+    ${d.micErr?banner('warn','Dictado',esc(d.micErr)):''}
     ${d.err?banner('warn','',esc(d.err)):''}
     ${pending?banner('info','Conectando con Claude…','Un momento.'):avail?`<div class="btns"><button class="btn" data-act="ddxRun" ${d.busy?'disabled':''}>Generar diferenciales</button></div>`:
       banner('info',d.blocked?'Claude no está disponible en esta vista':'Esta copia de la app no puede consultar a Claude','Abre la versión publicada en Claude para generar la lista aquí, o copia el caso ya preparado y pégalo en un chat con Claude.')+`<div class="btns"><button class="btn" data-act="ddxCopyPrompt">Copiar caso para Claude</button></div>`}
@@ -1397,7 +1429,7 @@ function render(){
   if(inView&&id){const el=document.getElementById(id);if(el){el.focus({preventScroll:true});if(raw!=null){el.value=raw;try{el.setSelectionRange(ss,se);}catch(e){}}}}
 }
 function all(){renderPatientBar();renderSide();render();}
-function go(v){S.view=v;all();try{history.replaceState(null,'','#'+v);}catch(e){}window.scrollTo({top:0,behavior:'smooth'});}
+function go(v){if(v!=='ddx')stopDictation();S.view=v;all();try{history.replaceState(null,'','#'+v);}catch(e){}window.scrollTo({top:0,behavior:'smooth'});}
 
 /* =================== EVENTS =================== */
 document.addEventListener('click',e=>{
@@ -1429,7 +1461,8 @@ document.addEventListener('click',e=>{
     addSheet({n:'Transfusión: '+n,pres:'Filtro 170–260 µm',dose:T.prod==='pfc'?'10–20 mL/kg':`Hto ${T.rec} → ${T.des!=null?T.des:(S.p.sp==='d'?25:20)} %`,total:'',amount,route:'IV',freq:'0,25 mL/kg/h 30 min; resto en < 4 h'});render();return;}
   if(act==='addNut'){const w=kg(),N=S.nut,facs=FAC[S.p.sp],fi=Math.min(N.fac,facs.length-1),[fn,f]=facs[fi],ideal=w/(1+0.1*(N.bcs-5)),base=f<=1&&fi===3?ideal:w,mer=70*Math.pow(base,0.75)*f,g=mer/N.kcal*100;
     addSheet({n:'Plan nutricional',pres:`${N.kcal} kcal/100 g`,dose:`${fmt(mer,0)} kcal/día`,total:fn,amount:`${fmt(g,0)} g/día`,route:'PO',freq:`${N.meals} tomas al día`});render();return;}
-  if(act==='ddxRun'){runDdx();return;}
+  if(act==='mic'){startDictation(ds.field);return;}
+  if(act==='ddxRun'){stopDictation();runDdx();return;}
   if(act==='ddxStop'){ddxCtl&&ddxCtl.abort();return;}
   if(act==='ddxExample'){Object.assign(S.ddx,EXAMPLE,{result:null,err:''});if(!S.p.breed)S.p.breed='Caniche';if(!S.p.age)S.p.age='9 años';if(S.p.sp!=='d'){S.p.sp='d';S.p.kg=8;S.p.unit='kg';setWeightField();}renderPatientBar();render();toast('Ejemplo cargado');return;}
   if(act==='ddxClear'){Object.assign(S.ddx,{caso:'',lab:'',img:'',sex:'',result:null,err:''});render();return;}
