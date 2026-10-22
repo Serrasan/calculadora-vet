@@ -236,21 +236,6 @@ tr.pres[aria-selected="true"] td:first-child{box-shadow:inset 3px 0 0 var(--acce
 .rx-line{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:10px 12px;font-weight:700}
 .rx-line b{color:var(--accent-strong)}
 .preview{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;white-space:pre-wrap;font-weight:600;font-size:.94rem;line-height:1.6;overflow-wrap:anywhere}
-.lblrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-.mic{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--accent-strong);border-radius:999px;padding:4px 12px;font-weight:900;font-size:.82rem;cursor:pointer}
-.mic:hover{border-color:var(--accent)}
-.mic svg{width:16px;height:16px}
-.mic.on{background:var(--danger);border-color:var(--danger);color:#fff;animation:pulse 1.2s ease-in-out infinite}
-@keyframes pulse{50%{box-shadow:0 0 0 6px var(--danger-soft)}}
-.dict{border:2px dashed var(--accent);border-radius:var(--r);padding:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--accent-soft)}
-.dict.on{border-color:var(--danger);background:var(--danger-soft)}
-.dict .txt{flex:1;min-width:220px}
-.dict .txt b{display:block;font-weight:900;color:var(--ink)}
-.bigmic{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:12px 22px;font-weight:900;font-size:1rem;cursor:pointer;background:var(--accent);color:var(--accent-ink)}
-.bigmic svg{width:22px;height:22px}
-.dict.on .bigmic{background:var(--danger);color:#fff;animation:pulse 1.2s ease-in-out infinite}
-.live{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:3em;font-weight:600;white-space:pre-wrap}
-textarea.rec{outline:2px solid var(--danger);outline-offset:1px}
 .thinking{display:flex;align-items:center;gap:12px;padding:18px;border:1px dashed var(--line);border-radius:var(--r);color:var(--muted)}
 .spin{width:20px;height:20px;border-radius:50%;border:3px solid var(--accent-soft);border-top-color:var(--accent);animation:sp 0.9s linear infinite;flex:none}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -735,7 +720,7 @@ const S={p:{name:'',hc:'',breed:'',age:'',sp:'d',kg:12,unit:'kg'},view:'inicio',
   ref:{conv:'kg',cv:10,cre:1.8,creU:'mg',sdma:'',upc:'',pas:''},
   sheet:[],notes:'',vet:'',
   alta:[],altaNotes:'',altaRev:'',
-  ddx:{caso:'',lab:'',img:'',sex:'',micErr:'',live:'',organizing:false,busy:false,result:null,err:'',blocked:false}};
+  ddx:{caso:'',lab:'',img:'',sex:'',busy:false,result:null,err:'',blocked:false}};
 try{const s=JSON.parse(localStorage.getItem('xavi-vet')||'null'); if(s){S.sheet=s.sheet||[];S.notes=s.notes||'';S.vet=s.vet||'';S.alta=s.alta||[];S.altaNotes=s.altaNotes||'';S.altaRev=s.altaRev||'';if(s.p)Object.assign(S.p,s.p);}}catch(e){}
 function save(){try{localStorage.setItem('xavi-vet',JSON.stringify({sheet:S.sheet,notes:S.notes,p:S.p,vet:S.vet,alta:S.alta,altaNotes:S.altaNotes,altaRev:S.altaRev}));}catch(e){}}
 
@@ -1358,90 +1343,6 @@ async function runDdx(){
   }finally{d.busy=false;ddxCtl=null;if(S.view==='ddx')render();}
 }
 
-/* ---- Dictado por voz ---- */
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-const MICF={ddxCaso:'caso',ddxLab:'lab',ddxImg:'img'};
-let rec=null,recField=null;
-const MIC_SVG='<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg>';
-function micBtn(id){if(!SR)return'';const on=recField===id;return`<button type="button" class="mic ${on?'on':''}" data-act="mic" data-field="${id}" aria-pressed="${on}">${MIC_SVG}${on?'Detener':'Dictar'}</button>`;}
-function stopDictation(){if(rec){try{rec.stop();}catch(e){}}}
-function startDictation(id){
-  if(rec){const same=recField===id;stopDictation();if(same)return;}
-  const key=MICF[id];if(!key)return;
-  const r=new SR();r.lang='es-ES';r.continuous=true;r.interimResults=true;
-  const base=S.ddx[key].replace(/\s+$/,'');let committed='';
-  rec=r;recField=id;S.ddx.micErr='';render();
-  r.onresult=e=>{let fin='',inter='';for(let i=0;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t;else inter+=t;}
-    committed=fin.trim();const sep=base&&committed?' ':'';S.ddx[key]=base+sep+committed;
-    const el=document.getElementById(id);if(el){const i2=inter.trim();el.value=S.ddx[key]+(i2?((S.ddx[key]?' ':'')+i2):'');el.scrollTop=el.scrollHeight;}};
-  r.onerror=e=>{const c=e.error;if(c==='not-allowed'||c==='service-not-allowed')S.ddx.micErr='No hay permiso para usar el micrófono aquí. Permite el micrófono en el navegador o abre la web pública; en el móvil también puedes usar el micrófono del teclado.';
-    else if(c==='no-speech')S.ddx.micErr='No se ha detectado voz. Pulsa Dictar y vuelve a intentarlo.';
-    else if(c==='audio-capture')S.ddx.micErr='No se encuentra ningún micrófono.';
-    else if(c==='network')S.ddx.micErr='El dictado necesita conexión a internet.';};
-  r.onend=()=>{if(rec===r){rec=null;recField=null;}if(S.view==='ddx')render();};
-  try{r.start();}catch(e){rec=null;recField=null;S.ddx.micErr='No se ha podido iniciar el dictado.';render();}
-}
-
-/* ---- Dictado del caso completo ---- */
-const SEXES=['Macho entero','Macho castrado','Hembra entera','Hembra esterilizada'];
-function sexFrom(t){const m=norm(t).match(/\b(macho|hembra)\s+(entero|entera|castrado|castrada|esterilizado|esterilizada|no castrado|no castrada|sin castrar|sin esterilizar)\b/);
-  if(!m)return'';const mac=m[1]==='macho',neu=/castrad|esteriliz/.test(m[2])&&!/no |sin /.test(m[2]);return mac?(neu?'Macho castrado':'Macho entero'):(neu?'Hembra esterilizada':'Hembra entera');}
-function localSplit(t){
-  const out={caso:'',analitica:'',imagen:'',sexo:sexFrom(t),edad:'',peso_kg:null,raza:''};
-  const age=t.match(/(\d+(?:[.,]\d+)?)\s*(años|año|meses|mes)\b/i);if(age)out.edad=age[1]+' '+age[2].toLowerCase();
-  const kgm=t.match(/(?:pesa|peso(?: de)?)\s*(\d+(?:[.,]\d+)?)\s*(kilos|kilo|kg|kilogramos)/i);if(kgm)out.peso_kg=num(kgm[1]);
-  const LAB=/\b(analíticas?|análisis de sangre|alteraciones analíticas|hemograma|bioquímica|urianálisis)\b/i, IMG=/\b(pruebas? de imagen|imagen|radiografías?|rx|ecografías?|ecocardiografía|tac|tc|resonancia|rayos)\b/i;
-  const re=new RegExp(LAB.source+'|'+IMG.source,'gi');let sec='caso',last=0,m;const parts={caso:[],analitica:[],imagen:[]};
-  while((m=re.exec(t))){parts[sec].push(t.slice(last,m.index));sec=LAB.test(m[0])?'analitica':'imagen';LAB.lastIndex=0;IMG.lastIndex=0;last=m.index;}
-  parts[sec].push(t.slice(last));
-  for(const k of ['caso','analitica','imagen']){let x=parts[k].join(' ').replace(/\s+/g,' ').trim();if(x){x=x[0].toUpperCase()+x.slice(1);if(!/[.!?]$/.test(x))x+='.';}out[k]=x;}
-  return out;
-}
-async function organizeDictation(t){
-  let r=null;
-  if(SAMPLE&&!S.ddx.blocked){
-    S.ddx.organizing=true;render();
-    try{r=await SAMPLE.json(`Eres un asistente de una clínica veterinaria. Abajo tienes la transcripción literal de un veterinario dictando un caso clínico (sin puntuación y quizá con errores de reconocimiento de voz). Reparte su contenido en estos apartados, corrige la puntuación y los errores evidentes de transcripción de términos médicos, y no inventes ni omitas datos clínicos.
-Devuelve SOLO un objeto JSON:
-{"sexo":"Macho entero|Macho castrado|Hembra entera|Hembra esterilizada|","raza":"o cadena vacía","edad":"p. ej. 9 años, o cadena vacía","peso_kg":número o null,"caso":"motivo de consulta, anamnesis, evolución y exploración física","analitica":"alteraciones analíticas y valores de laboratorio","imagen":"hallazgos de pruebas de imagen"}
-Deja vacío lo que no se mencione.
-
-TRANSCRIPCIÓN:
-${t}`,{modelTier:'quick',cache:false});}
-    catch(e){if(['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].includes(e&&e.code))S.ddx.blocked=true;r=null;}
-    S.ddx.organizing=false;
-  }
-  if(!r||typeof r!=='object')r=localSplit(t);
-  const d=S.ddx,add=(k,v)=>{v=String(v||'').trim();if(v)d[k]=d[k].trim()?d[k].trim()+'\n'+v:v;};
-  add('caso',r.caso);add('lab',r.analitica);add('img',r.imagen);
-  const filled=[];
-  if(SEXES.includes(r.sexo)){d.sex=r.sexo;filled.push('sexo');}
-  if(r.raza&&!S.p.breed){S.p.breed=String(r.raza);filled.push('raza');}
-  if(r.edad&&!S.p.age){S.p.age=String(r.edad);filled.push('edad');}
-  const pk=num(r.peso_kg);if(pk>0&&pk<120){S.p.kg=pk;S.p.unit='kg';setWeightField();filled.push('peso');}
-  if(!String(r.caso||'').trim()&&!String(r.analitica||'').trim()&&!String(r.imagen||'').trim())add('caso',t);
-  d.live='';save();renderPatientBar();render();
-  toast(filled.length?`Caso rellenado · también ${filled.join(', ')}`:'Caso rellenado');
-}
-function startFullDictation(){
-  if(rec){const same=recField==='all';stopDictation();if(same)return;}
-  const r=new SR();r.lang='es-ES';r.continuous=true;r.interimResults=true;
-  let finalText='';rec=r;recField='all';S.ddx.live='';S.ddx.micErr='';render();
-  r.onresult=e=>{let fin='',inter='';for(let i=0;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t+' ';else inter+=t;}
-    finalText=fin.trim();S.ddx.live=finalText;const el=document.getElementById('ddxLive');if(el)el.textContent=(finalText+' '+inter).trim()||'Escuchando…';};
-  r.onerror=e=>{const c=e.error;if(c==='not-allowed'||c==='service-not-allowed')S.ddx.micErr='No hay permiso para usar el micrófono aquí. Permite el micrófono en el navegador o abre la web pública; en el móvil también puedes usar el micrófono del teclado.';
-    else if(c==='no-speech')S.ddx.micErr='No se ha detectado voz. Pulsa el botón y vuelve a intentarlo.';else if(c==='audio-capture')S.ddx.micErr='No se encuentra ningún micrófono.';else if(c==='network')S.ddx.micErr='El dictado necesita conexión a internet.';};
-  r.onend=()=>{if(rec===r){rec=null;recField=null;}const t=(finalText||S.ddx.live||'').trim();if(t)organizeDictation(t);else if(S.view==='ddx')render();};
-  try{r.start();}catch(e){rec=null;recField=null;S.ddx.micErr='No se ha podido iniciar el dictado.';render();}
-}
-function dictBox(){
-  const on=recField==='all',d=S.ddx;
-  if(!SR)return banner('info','Dictado por voz','Este navegador no permite dictar desde la página. En el móvil, toca el cuadro de descripción y usa el micrófono del teclado.');
-  if(d.organizing)return`<div class="dict"><span class="spin" aria-hidden="true"></span><div class="txt"><b>Organizando el dictado…</b><span class="small">Repartiendo el texto entre los apartados.</span></div></div>`;
-  return`<div class="dict ${on?'on':''}"><button type="button" class="bigmic" data-act="micAll" aria-pressed="${on}">${MIC_SVG}${on?'Terminar dictado':'Dictar caso completo'}</button>
-    <div class="txt"><b>${on?'Escuchando: habla con normalidad':'Rellena todo con un solo audio'}</b><span class="small">Cuenta el caso de corrido: sexo, edad, raza, peso, historia y exploración. Di <b style="display:inline">«analítica»</b> antes de los resultados de laboratorio y <b style="display:inline">«ecografía»</b>, <b style="display:inline">«radiografía»</b> o <b style="display:inline">«imagen»</b> antes de las pruebas de imagen.</span></div>
-    ${on?`<div class="live" id="ddxLive" aria-live="polite">${esc(d.live)||'Escuchando…'}</div>`:''}</div>`;
-}
 function renderDdx(){
   const d=S.ddx,avail=SAMPLE&&!d.blocked,pending=SAMPLE===undefined;
   const sexOpts=['','Macho entero','Macho castrado','Hembra entera','Hembra esterilizada'];
@@ -1461,17 +1362,15 @@ function renderDdx(){
   return`<section class="panel pad stack">
     <div class="head"><div><div class="eyebrow">Apoyo diagnóstico</div><h2 class="t">Diagnóstico diferencial</h2><div class="sub">${patientLine()}${S.p.breed?' · '+esc(S.p.breed):''}${S.p.age?' · '+esc(S.p.age):''}</div></div>
       <div class="btns"><button class="btn ghost" data-act="ddxExample">Cargar ejemplo</button><button class="btn ghost" data-act="ddxClear">Limpiar</button></div></div>
-    ${dictBox()}
     <div class="grid2">
       <div class="field"><label for="ddxSex">Sexo y estado reproductivo</label><select id="ddxSex">${sexOpts.map(o=>`<option value="${o}" ${d.sex===o?'selected':''}>${o||'No indicado'}</option>`).join('')}</select></div>
-      <div class="small" style="align-self:end">Especie, peso, raza y edad se toman de la ficha del paciente. ${SR?'También puedes dictar cada cuadro por separado con su botón <b>Dictar</b>.':''}</div>
+      <div class="small" style="align-self:end">Especie, peso, raza y edad se toman de la ficha del paciente.</div>
     </div>
-    <div class="field"><div class="lblrow"><label for="ddxCaso">Descripción del caso</label>${micBtn('ddxCaso')}</div><textarea id="ddxCaso" class="${recField==='ddxCaso'?'rec':''}" style="min-height:120px" placeholder="Motivo de consulta, anamnesis, evolución y hallazgos de la exploración física.">${esc(d.caso)}</textarea></div>
+    <div class="field"><label for="ddxCaso">Descripción del caso</label><textarea id="ddxCaso" style="min-height:120px" placeholder="Motivo de consulta, anamnesis, evolución y hallazgos de la exploración física.">${esc(d.caso)}</textarea></div>
     <div class="grid2">
-      <div class="field"><div class="lblrow"><label for="ddxLab">Alteraciones analíticas</label>${micBtn('ddxLab')}</div><textarea id="ddxLab" class="${recField==='ddxLab'?'rec':''}" style="min-height:120px" placeholder="Hemograma, bioquímica, urianálisis, electrolitos, gasometría, serologías…">${esc(d.lab)}</textarea></div>
-      <div class="field"><div class="lblrow"><label for="ddxImg">Pruebas de imagen</label>${micBtn('ddxImg')}</div><textarea id="ddxImg" class="${recField==='ddxImg'?'rec':''}" style="min-height:120px" placeholder="Radiografía, ecografía, TC, RM, ecocardiografía…">${esc(d.img)}</textarea></div>
+      <div class="field"><label for="ddxLab">Alteraciones analíticas</label><textarea id="ddxLab" style="min-height:120px" placeholder="Hemograma, bioquímica, urianálisis, electrolitos, gasometría, serologías…">${esc(d.lab)}</textarea></div>
+      <div class="field"><label for="ddxImg">Pruebas de imagen</label><textarea id="ddxImg" style="min-height:120px" placeholder="Radiografía, ecografía, TC, RM, ecocardiografía…">${esc(d.img)}</textarea></div>
     </div>
-    ${d.micErr?banner('warn','Dictado',esc(d.micErr)):''}
     ${d.err?banner('warn','',esc(d.err)):''}
     ${pending?banner('info','Conectando con Claude…','Un momento.'):avail?`<div class="btns"><button class="btn" data-act="ddxRun" ${d.busy?'disabled':''}>Generar diferenciales</button></div>`:
       banner('info',d.blocked?'Claude no está disponible en esta vista':'Esta copia de la app no puede consultar a Claude','Abre la versión publicada en Claude para generar la lista aquí, o copia el caso ya preparado y pégalo en un chat con Claude.')+`<div class="btns"><button class="btn" data-act="ddxCopyPrompt">Copiar caso para Claude</button></div>`}
@@ -1604,7 +1503,7 @@ function render(){
   if(inView&&id){const el=document.getElementById(id);if(el){el.focus({preventScroll:true});if(raw!=null){el.value=raw;try{el.setSelectionRange(ss,se);}catch(e){}}}}
 }
 function all(){renderPatientBar();renderSide();render();}
-function go(v){if(v!=='ddx')stopDictation();S.view=v;all();try{history.replaceState(null,'','#'+v);}catch(e){}window.scrollTo({top:0,behavior:'smooth'});}
+function go(v){S.view=v;all();try{history.replaceState(null,'','#'+v);}catch(e){}window.scrollTo({top:0,behavior:'smooth'});}
 
 /* =================== EVENTS =================== */
 document.addEventListener('click',e=>{
@@ -1640,9 +1539,7 @@ document.addEventListener('click',e=>{
     addSheet({n:'Plan nutricional',pres:`${N.kcal} kcal/100 g`,dose:`${fmt(mer,0)} kcal/día`,total:fn,amount:`${fmt(g,0)} g/día`,route:'PO',freq:`${N.meals} tomas al día`});render();return;}
   if(act==='altaCopy'){copyText(altaText(),'Pauta copiada');return;}
   if(act==='altaClear'){S.alta=[];S.altaNotes='';S.altaRev='';save();render();toast('Alta vaciada');return;}
-  if(act==='micAll'){startFullDictation();return;}
-  if(act==='mic'){startDictation(ds.field);return;}
-  if(act==='ddxRun'){stopDictation();runDdx();return;}
+  if(act==='ddxRun'){runDdx();return;}
   if(act==='ddxStop'){ddxCtl&&ddxCtl.abort();return;}
   if(act==='ddxExample'){Object.assign(S.ddx,EXAMPLE,{result:null,err:''});if(!S.p.breed)S.p.breed='Caniche';if(!S.p.age)S.p.age='9 años';if(S.p.sp!=='d'){S.p.sp='d';S.p.kg=8;S.p.unit='kg';setWeightField();}renderPatientBar();render();toast('Ejemplo cargado');return;}
   if(act==='ddxClear'){Object.assign(S.ddx,{caso:'',lab:'',img:'',sex:'',result:null,err:''});render();return;}
