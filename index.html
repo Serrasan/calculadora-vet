@@ -251,7 +251,6 @@ footer p{max-width:85ch;margin:0}
       <div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><ellipse cx="6" cy="9.5" rx="2.1" ry="2.7"/><ellipse cx="10" cy="5.5" rx="2.1" ry="2.7"/><ellipse cx="14.5" cy="5.5" rx="2.1" ry="2.7"/><ellipse cx="18.4" cy="9.5" rx="2.1" ry="2.7"/><path d="M12.2 11.2c-2.6 0-6.2 4.2-6.2 6.7 0 1.6 1.3 2.6 2.9 2.6 1.4 0 2.1-.7 3.3-.7s2 .7 3.4.7c1.6 0 2.8-1 2.8-2.6 0-2.5-3.6-6.7-6.2-6.7z"/></svg></div>
       <div class="name">Calculadora Vet<span>Dosis y protocolos</span></div>
     </div>
-    <div class="user"><div class="avatar" aria-hidden="true">X</div><div><b>Dr. Xavier</b><small>Veterinario · Sesión activa</small></div></div>
   </div>
 </header>
 
@@ -693,9 +692,9 @@ const S={p:{name:'',hc:'',breed:'',age:'',sp:'d',kg:12,unit:'kg'},view:'inicio',
   nut:{bcs:5,fac:0,kcal:370,meals:2},
   tox:{t:'choc',chocType:2,g:100,xg:5,mg:400},
   ref:{conv:'kg',cv:10,cre:1.8,creU:'mg',sdma:'',upc:'',pas:''},
-  sheet:[],notes:''};
-try{const s=JSON.parse(localStorage.getItem('xavi-vet')||'null'); if(s){S.sheet=s.sheet||[];S.notes=s.notes||'';if(s.p)Object.assign(S.p,s.p);}}catch(e){}
-function save(){try{localStorage.setItem('xavi-vet',JSON.stringify({sheet:S.sheet,notes:S.notes,p:S.p}));}catch(e){}}
+  sheet:[],notes:'',vet:''};
+try{const s=JSON.parse(localStorage.getItem('xavi-vet')||'null'); if(s){S.sheet=s.sheet||[];S.notes=s.notes||'';S.vet=s.vet||'';if(s.p)Object.assign(S.p,s.p);}}catch(e){}
+function save(){try{localStorage.setItem('xavi-vet',JSON.stringify({sheet:S.sheet,notes:S.notes,p:S.p,vet:S.vet}));}catch(e){}}
 
 /* =================== HELPERS =================== */
 const $=s=>document.querySelector(s);
@@ -769,7 +768,7 @@ function renderInicio(){
   const maint=sp==='d'?132*Math.pow(w,0.75):sp==='c'?80*Math.pow(w,0.75):sp==='r'?100*w:75*w;
   const bv=sp==='d'?90:sp==='c'?60:sp==='r'?60:null;
   return`
-  <section class="hello"><div class="hello-main"><div><div class="eyebrow">${date}</div><h2>${g}, Dr. Xavier</h2><p>Introduce los datos del paciente una sola vez: todos los módulos calculan con la especie y el peso de la barra superior.</p></div></div>
+  <section class="hello"><div class="hello-main"><div><div class="eyebrow">${date}</div><h2>${g}</h2><p>Introduce los datos del paciente una sola vez: todos los módulos calculan con la especie y el peso de la barra superior.</p></div></div>
     <button class="btn" data-nav="rcp">Abrir hoja de parada</button></section>
   <section class="panel pad stack">
     <div class="head"><div><h3 class="t">Ficha del paciente</h3><div class="sub">Se guarda en este navegador y aparece en la hoja de tratamiento.</div></div></div>
@@ -1247,18 +1246,18 @@ function renderHoja(){
         <div class="head"><div><div class="eyebrow">Hoja de tratamiento · ${today}</div><h2 class="t">${esc(S.p.name)||'Paciente sin nombre'}</h2>
       <div class="sub">${[S.p.hc?'HC '+esc(S.p.hc):'',spN(),esc(S.p.breed),esc(S.p.age),fmt(kg(),3)+' kg'].filter(Boolean).join(' · ')}</div></div>
       <div class="btns no-print"><button class="btn ghost" data-act="clearSheet" ${rows.length?'':'disabled'}>Vaciar</button><button class="btn ghost" data-act="copySheet" ${rows.length?'':'disabled'}>Copiar texto</button></div></div>
-    <div class="small">Veterinario responsable: <b style="color:var(--ink)">Dr. Xavier</b></div>
+    <div class="field" style="max-width:360px"><label for="vet">Veterinario responsable</label><input id="vet" type="text" value="${esc(S.vet)}" placeholder="Nombre del veterinario"></div>
     ${rows.length?`<div class="tw"><table><thead><tr><th>Hora</th><th>Tratamiento</th><th>Dosis</th><th>Administrar</th><th>Vía · frecuencia</th><th class="no-print"></th></tr></thead><tbody>
     ${rows.map((r,i)=>`<tr><td class="tn">${esc(r.time)}</td><td><b>${esc(r.n)}</b><div class="small">${esc(r.pres)}</div>${r.kg!==kg()||r.spn!==spN()?`<div class="small" style="color:var(--warn)">Calculado para ${esc(r.spn)} de ${fmt(r.kg,3)} kg</div>`:''}</td>
       <td class="tn">${esc(r.dose)}<div class="small">${esc(r.total)}</div></td><td class="amt">${esc(r.amount)}</td><td>${esc(r.route)}<div class="small">${esc(r.freq)}</div></td>
       <td class="no-print"><button class="x" data-del="${i}" aria-label="Quitar ${esc(r.n)}">×</button></td></tr>`).join('')}</tbody></table></div>`
     :`<div class="empty">La hoja está vacía.<br>Añade tratamientos desde el formulario, las infusiones, la fluidoterapia, la transfusión o la nutrición.</div>`}
     <div class="field"><label for="notes">Observaciones e indicaciones</label><textarea id="notes" placeholder="Ej.: control de glucemia cada 4 h; reevaluar dolor (Glasgow) a las 2 h; ayuno desde las 22:00.">${esc(S.notes)}</textarea></div>
-    <div class="sig"><div>Firma del veterinario · Dr. Xavier</div><div>Fecha y hora</div></div>
+    <div class="sig"><div>Firma del veterinario${S.vet?' · '+esc(S.vet):''}</div><div>Fecha y hora</div></div>
   </section>`;
 }
 function sheetText(){
-  const p=S.p;const head=`CALCULADORA VET — Hoja de tratamiento\n${p.name||'Paciente'}${p.hc?' · HC '+p.hc:''} · ${spN()}${p.breed?' · '+p.breed:''} · ${fmt(kg(),3)} kg · ${new Date().toLocaleDateString('es-ES')}\nVeterinario: Dr. Xavier\n`;
+  const p=S.p;const head=`CALCULADORA VET — Hoja de tratamiento\n${p.name||'Paciente'}${p.hc?' · HC '+p.hc:''} · ${spN()}${p.breed?' · '+p.breed:''} · ${fmt(kg(),3)} kg · ${new Date().toLocaleDateString('es-ES')}\n${S.vet?'Veterinario: '+S.vet+'\n':''}`;
   return head+S.sheet.map(r=>`• ${r.time} ${r.n}: ${r.dose} → ${r.total} = ${r.amount} (${r.pres}) · ${r.route} · ${r.freq}`).join('\n')+(S.notes?`\n\nObservaciones: ${S.notes}`:'');
 }
 
@@ -1337,6 +1336,7 @@ document.addEventListener('input',e=>{
     case'rUpc':S.ref.upc=v;render();return;
     case'rPas':S.ref.pas=v;render();return;
     case'notes':S.notes=v;save();return;
+    case'vet':S.vet=v;save();return;
   }
 });
 document.addEventListener('change',e=>{
