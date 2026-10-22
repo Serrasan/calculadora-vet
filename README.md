@@ -16,6 +16,10 @@ Calculadora clínica veterinaria para perro y gato. Es una página web de un sol
 - **Referencias:** constantes, estadiaje IRIS, superficie corporal y conversiones.
 - **Hoja de tratamiento:** recopila los tratamientos y se copia como texto.
 
+## Idiomas
+
+Botones CA, ES y EN en la cabecera: traducen toda la app, incluidas las pautas de alta y la hoja de tratamiento. La elección se recuerda en el navegador.
+
 ## Uso
 
 Abre `index.html` en el navegador. Para tenerla online, activa GitHub Pages en *Settings → Pages* con la rama `main`.
