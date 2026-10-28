@@ -1,0 +1,31 @@
+{
+  "titulo": "Calculadora Vet · Cómo va el proyecto",
+  "subtitulo": "Resumen para Xavi · 28 de octubre de 2026",
+  "aviso": "Todavía no se ha publicado nada. La app no saldrá a la tienda hasta que un veterinario haya revisado las dosis.",
+  "hecho": [
+    {"t": "10 módulos de cálculo", "s": "Formulario de 58 fármacos, altas, infusiones, urgencias y RCP, fluidos, transfusión, nutrición, toxicología, referencias y hoja de tratamiento"},
+    {"t": "En catalán, castellano e inglés", "s": "Con modo claro y modo noche"},
+    {"t": "Funciona sin internet", "s": "Lo que se escribe se queda solo en el móvil"},
+    {"t": "Pensada para el móvil", "s": "Menú abajo, compartir la hoja y las pautas, copia de seguridad"},
+    {"t": "Aviso clínico al abrirla y pantalla de fuentes"},
+    {"t": "Versión de Android lista para probar", "s": "iPhone, más adelante"}
+  ],
+  "tuyo": [
+    {"t": "Revisar las dosis de los 58 fármacos", "s": "Y decir de qué fuente sale cada dato. Es lo más importante"},
+    {"t": "Contestar el cuestionario", "s": "24 preguntas, unos 10 minutos, desde el móvil"},
+    {"t": "Probarla en consulta", "s": "Apuntar qué falla, qué sobra y qué falta"},
+    {"t": "Revisar los textos en catalán"},
+    {"t": "Pensar en compañeros que la prueben", "s": "Google pide un grupo de probadores antes de publicar"}
+  ],
+  "nuestro": [
+    "Elegir el logo y el icono definitivos",
+    "Datos legales del titular y política de privacidad",
+    "Revisión de los textos legales por un abogado",
+    "Cuenta de desarrollador de Google Play",
+    "Decidir precio y si se pide cuenta de usuario",
+    "Ficha y capturas de la tienda"
+  ],
+  "pasos": ["Probar la app", "Revisar las dosis", "Papeles y cuentas", "Pruebas con un grupo", "Publicar en Google Play"],
+  "paso_actual": 1,
+  "pie": "Aleix y Claude · Cualquier duda o idea: dilo, cuenta mucho."
+}
