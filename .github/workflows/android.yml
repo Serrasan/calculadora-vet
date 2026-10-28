@@ -9,6 +9,9 @@ on:
 jobs:
   debug-apk:
     runs-on: ubuntu-latest
+    env:
+      TG_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TG_CHATS: ${{ secrets.TELEGRAM_CHAT_IDS }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,3 +31,18 @@ jobs:
         with:
           name: calculadora-vet-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Enviar el APK por Telegram
+        if: ${{ env.TG_TOKEN != '' && env.TG_CHATS != '' && github.event_name != 'pull_request' }}
+        env:
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+          SHA: ${{ github.sha }}
+        run: |
+          APK=android/app/build/outputs/apk/debug/app-debug.apk
+          FIRST_LINE=$(printf '%s' "$COMMIT_MSG" | head -n1)
+          CAPTION="Calculadora Vet: nueva versión de prueba (${SHA:0:7})
+          $FIRST_LINE"
+          for id in ${TG_CHATS//,/ }; do
+            curl -sS --fail -o /dev/null -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendDocument" \
+              -F chat_id="$id" -F document=@"$APK;filename=calculadora-vet.apk" -F caption="$CAPTION" \
+              || echo "No se pudo enviar a uno de los destinatarios"
+          done
