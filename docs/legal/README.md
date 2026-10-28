@@ -28,5 +28,5 @@ Definidos en `.claude/agents/`. Cada uno trabaja en su especialidad:
 | `mobile-build` | Capacitor, Android/iOS, firma, versiones, CI |
 | `ux-design` | Interfaz móvil, accesibilidad, modo oscuro |
 | `qa-testing` | Pruebas en navegador, cálculos, regresiones |
-| `i18n-localization` | Catalán, castellano e inglés |
+| `idiomas` | Catalán, castellano e inglés |
 | `store-listing` | Fichas, capturas y formularios de App Store y Google Play |

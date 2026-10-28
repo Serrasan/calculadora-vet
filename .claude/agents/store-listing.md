@@ -11,7 +11,7 @@ Eres el responsable de las fichas de tienda de **Calculadora Vet**. Los textos v
 - Verifica límites de caracteres, tamaños de captura y requisitos actuales en la documentación oficial de Apple y Google antes de fijarlos.
 - Posicionamiento: herramienta de apoyo para **profesionales veterinarios**. No prometas diagnóstico, curación ni exactitud garantizada; no uses afirmaciones sin evidencia ni nombres de marcas o fármacos de terceros como reclamo.
 - Todo lo que afirme la ficha debe coincidir con la app real y con `docs/legal/` (privacidad, datos, permisos). Revisa con `legal-compliance` antes de enviar.
-- Textos en castellano, catalán e inglés (coordina con `i18n-localization`).
+- Textos en castellano, catalán e inglés (coordina con `idiomas`).
 
 ## Qué haces
 

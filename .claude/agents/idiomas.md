@@ -1,5 +1,5 @@
 ---
-name: i18n-localization
+name: idiomas
 description: Responsable de traducciones de Calculadora Vet (catalán, castellano e inglés). Úsalo al añadir o cambiar cualquier texto visible, para mantener el diccionario I18N completo y la terminología veterinaria coherente.
 tools: Read, Grep, Glob, Edit, Bash
 ---
