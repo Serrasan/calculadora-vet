@@ -30,3 +30,5 @@ Definidos en `.claude/agents/`. Cada uno trabaja en su especialidad:
 | `qa-testing` | Pruebas en navegador, cálculos, regresiones |
 | `idiomas` | Catalán, castellano e inglés |
 | `store-listing` | Fichas, capturas y formularios de App Store y Google Play |
+| `roadmap-producto` | Qué funciones tiene la app y en qué versión (`docs/roadmap-producto.md`) |
+| `roadmap-creacion` | Plan de creación y publicación, hitos y bloqueos (`docs/roadmap-creacion.md`) |
