@@ -4,10 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Calculadora Vet</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
 <style>
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400 900;font-display:swap;src:url(assets/fonts/nunito-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400 900;font-display:swap;src:url(assets/fonts/nunito-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
 /* Layout: hospital intranet app — blue urgent bar, white header with clinician chip, sticky patient bar, side navigation + module workspace, dark footer */
 :root{
   --bg:#F3F6F9; --surface:#FFFFFF; --sunk:#F6F9FC; --ink:#22282F; --muted:#646B73; --line:#E1E7ED;
@@ -786,6 +785,7 @@ const NI={
  hoja:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 2h6v4H9z"/><path d="M9 11h6"/><path d="M9 15h6"/><path d="M9 19h3"/>'
 };
 const ic=k=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${NI[k]}</svg>`;
+const FEATURES={ddx:false};
 const MODS=[
  ['inicio','Inicio','Resumen del paciente'],
  ['ddx','Diagnóstico diferencial','Diferenciales por probabilidad a partir del caso'],
@@ -799,7 +799,7 @@ const MODS=[
  ['tox','Toxicología','Dosis tóxicas y descontaminación'],
  ['ref','Referencias','Constantes, IRIS y conversiones'],
  ['hoja','Hoja de tratamiento','Prescripción imprimible']
-];
+].filter(m=>m[0]!=='ddx'||FEATURES.ddx);
 function copyText(txt,msg){msg=tr(msg);const fb=()=>{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg);}catch(_){toast('Selecciona el texto y cópialo');}ta.remove();};try{navigator.clipboard.writeText(txt).then(()=>toast(msg),fb);}catch(_){fb();}}
 function toast(m){const t=$('#toast');t.textContent=tr(m);t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),1900);}
 function banner(type,title,body){const icn=type==='danger'?ICON.x:type==='warn'?ICON.warn:type==='ok'?ICON.ok:ICON.i;return`<div class="banner ${type}">${icn}<div>${title?`<b>${title}</b>`:''}${body||''}</div></div>`;}
@@ -1646,7 +1646,7 @@ try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',paintTh
 paintTheme();
 /* =================== INIT =================== */
 (function init(){
-  const h=(location.hash||'').slice(1);if(VIEWS[h])S.view=h;
+  const h=(location.hash||'').slice(1);if(VIEWS[h]&&(h!=='ddx'||FEATURES.ddx))S.view=h;
   if(!SPECIES[S.p.sp]){S.p.sp='d';S.p.kg=12;S.p.unit='kg';}
   $('#pName').value=S.p.name;document.documentElement.lang=LANG;document.title=tr('Calculadora Vet');document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));setWeightField();i18nDom(document.body);all();
 })();

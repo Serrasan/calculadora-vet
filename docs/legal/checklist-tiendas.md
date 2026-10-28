@@ -4,15 +4,17 @@ Estado: `[ ]` pendiente · `[x]` hecho · `[!]` bloqueante. **Antes de afirmar c
 
 ## Previo (ambas tiendas)
 
-- [ ] [!] Decidir el titular (autónomo o sociedad) y datos de contacto.
-- [ ] [!] Autoalojar la fuente Nunito y eliminar toda conexión externa del `index.html`.
-- [ ] [!] Decidir qué pasa con el diagnóstico diferencial en la v1 (ocultar o backend de IA).
+- [ ] [!] Titular: autónomo (decidido). Faltan nombre, NIF, dirección fiscal y correo de contacto. Valorar que los datos públicos de la tienda no expongan el domicilio particular **[REVISAR CON ABOGADO]**.
+- [x] Fuente Nunito autoalojada y sin conexiones externas en `index.html`.
+- [x] Diagnóstico diferencial oculto en la v1.
 - [ ] [!] Publicar la política de privacidad en una URL pública estable (p. ej. GitHub Pages).
 - [ ] Sección "Fuentes y aviso" dentro de la app con la procedencia de las dosis.
 - [ ] Pantalla de aceptación de aviso clínico en el primer arranque.
 - [ ] Revisar que el formulario no copia texto con copyright de terceros.
 - [ ] Búsqueda de disponibilidad de la marca "Calculadora Vet" (OEPM, EUIPO, tiendas).
 - [ ] Revisión final por un abogado de política y condiciones.
+
+> Orden de plataformas: Android primero, iOS después. Monetización: por decidir (la v1 se prepara como gratuita).
 
 ## Apple App Store
 

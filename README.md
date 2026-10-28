@@ -4,7 +4,7 @@ Calculadora clínica veterinaria para perro y gato. Es una página web de un sol
 
 ## Módulos
 
-- **Diagnóstico diferencial:** a partir de la descripción del caso, las alteraciones analíticas y las pruebas de imagen, genera una lista de diferenciales por orden de probabilidad. Solo funciona dentro de Claude; en esta copia permite copiar el caso preparado para pegarlo en un chat con Claude.
+- **Diagnóstico diferencial (oculto en la versión de tienda, `FEATURES.ddx`):** a partir de la descripción del caso, las alteraciones analíticas y las pruebas de imagen, genera una lista de diferenciales por orden de probabilidad. Solo funciona dentro de Claude; en esta copia permite copiar el caso preparado para pegarlo en un chat con Claude.
 - **Altas:** buscador de fármacos de uso en casa (comprimidos, cápsulas, jarabes, gotas e insulinas) que genera la pauta para el propietario: cantidad por toma, frecuencia, días y total de unidades.
 - **Formulario:** 58 fármacos con dosis por kg, volumen o comprimidos según la presentación, y precauciones por especie.
 - **Infusiones continuas:** bomba de jeringa, bolsa de fluidos o sin diluir.

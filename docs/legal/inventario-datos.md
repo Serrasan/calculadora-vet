@@ -17,14 +17,14 @@ La app no tiene cuentas, ni registro, ni servidor propio, ni analítica, ni publ
 
 | Tercero | Qué recibe | Motivo | Estado |
 |---|---|---|---|
-| Google Fonts (`fonts.googleapis.com`, `fonts.gstatic.com`) | IP y cabeceras del dispositivo | Cargar la tipografía Nunito | **BLOQUEANTE**: autoalojar la fuente en `assets/` y quitar los `<link>` de `index.html` |
+| _Ninguno_ | — | — | Nunito (licencia SIL OFL) está alojada en `assets/fonts/`; `index.html` ya no hace peticiones externas (verificado con Playwright) |
 | Apple / Google (tiendas) | Datos de descarga y facturación | Distribución | Fuera de la app; regido por sus políticas |
 
 ## Módulo de diagnóstico diferencial
 
-Usa `window.claude`, que solo existe en el entorno del prototipo. **En la app de tienda este módulo no funciona.** Hay dos opciones:
+Usa `window.claude`, que solo existe en el entorno del prototipo. **Decidido: oculto en la v1** (`FEATURES.ddx=false` en `index.html`, también bloquea el acceso por `#ddx`). Para reactivarlo:
 
-1. Ocultarlo en la versión de tienda (recomendado para la v1).
+1. (hecho) Ocultarlo en la versión de tienda.
 2. Implementarlo con una API de IA a través de un backend propio. Eso cambia todo: política de privacidad, Data safety, contrato de encargado de tratamiento, transferencias internacionales, aviso de IA. Hay que rehacer este inventario antes.
 
 ## Permisos de plataforma previstos
@@ -33,7 +33,7 @@ Ninguno (sin cámara, ubicación, micrófono, contactos, notificaciones ni almac
 
 ## Pendientes de decisión
 
-- [ ] Titular (persona física o sociedad) y datos de contacto.
-- [ ] Autoalojar la fuente y eliminar conexiones externas.
-- [ ] Decidir si el diagnóstico diferencial entra en la v1.
+- [x] Titular: autónomo / persona física. Faltan nombre, NIF, dirección y correo de contacto.
+- [x] Autoalojar la fuente y eliminar conexiones externas.
+- [x] Diagnóstico diferencial fuera de la v1.
 - [ ] Decidir si se añade copia de seguridad o sincronización (cambiaría el rol de datos).
