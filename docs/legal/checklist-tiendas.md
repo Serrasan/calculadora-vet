@@ -8,8 +8,8 @@ Estado: `[ ]` pendiente · `[x]` hecho · `[!]` bloqueante. **Antes de afirmar c
 - [x] Fuente Nunito autoalojada y sin conexiones externas en `index.html`.
 - [x] Diagnóstico diferencial oculto en la v1.
 - [ ] [!] Publicar la política de privacidad en una URL pública estable (p. ej. GitHub Pages).
-- [ ] Sección "Fuentes y aviso" dentro de la app con la procedencia de las dosis.
-- [ ] Pantalla de aceptación de aviso clínico en el primer arranque.
+- [ ] Sección "Información y datos" en la app: hecha; falta la lista de fuentes por fármaco (veterinario).
+- [x] Pantalla de aviso clínico en el primer arranque (texto provisional **[REVISAR CON ABOGADO]**).
 - [ ] Revisar que el formulario no copia texto con copyright de terceros.
 - [ ] Búsqueda de disponibilidad de la marca "Calculadora Vet" (OEPM, EUIPO, tiendas).
 - [ ] Revisión final por un abogado de política y condiciones.

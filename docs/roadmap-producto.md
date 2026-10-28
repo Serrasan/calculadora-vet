@@ -19,17 +19,18 @@ Mantenido por el agente `roadmap-producto`. Cada función indica estado y esfuer
 | Catalán, castellano e inglés | Hecho |
 | Modo claro y oscuro | Hecho |
 | Funciona sin conexión | Hecho (fuente alojada) |
-| Aviso clínico en el primer arranque | Pendiente (S) |
-| Sección de fuentes y aviso | Pendiente (S) |
-| Icono y pantalla de arranque | Pendiente (S) |
+| Aviso clínico en el primer arranque | Hecho; texto provisional, falta revisión legal |
+| Pantalla «Información y datos» (aviso, fuentes, copia de seguridad) | Hecho; falta la lista de fuentes por fármaco (Xavier) |
+| Icono y pantalla de arranque | Provisionales (huella azul); falta decisión artística |
+| Menú inferior en móvil, botón atrás, compartir hoja y pauta | Hecho |
+| Copia de seguridad (exportar, importar, borrar) | Hecho |
+| Pruebas automáticas (`npm test`) | Hecho |
 
 ## v1.1 — Mejoras sobre la base
 
 | Función | Estado |
 |---|---|
-| Exportar e importar copia de seguridad local | Idea (M) |
-| Compartir la hoja de tratamiento con la hoja nativa del móvil | Idea (S) |
-| Navegación inferior pensada para móvil | Idea (M) |
+| Ajustes de textos que dicen «navegador» en lugar de «dispositivo» | Idea (S) |
 
 ## v2 — Por decidir
 

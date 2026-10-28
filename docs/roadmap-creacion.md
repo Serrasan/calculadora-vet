@@ -6,17 +6,19 @@ Mantenido por el agente `roadmap-creacion`. Estado: ✅ hecho · 🔄 en curso �
 - ✅ Web empaquetada con Capacitor (Android e iOS generados)
 - ✅ Sin conexiones externas (fuente alojada)
 - ✅ Diagnóstico diferencial oculto en la v1
-- 🔄 Compilación del APK en GitHub Actions (comprobar resultado)
+- ✅ Compilación del APK en GitHub Actions
 
 ## Hito 2 — Probar en el móvil · titular
 - ⏳ Instalar el APK en un móvil Android y anotar qué falla
 
 ## Hito 3 — Pulir la app · agentes
+- ✅ Menú inferior en móvil, botón atrás, compartir y copia de seguridad
 - ⏳ `ux-design`: revisión en móvil, claro y oscuro
+- ✅ Pruebas automáticas de humo (`npm test`)
 - ⏳ `qa-testing`: pruebas de cálculo y de los tres idiomas
 - ⏳ `idiomas`: textos sin traducir
-- ⏳ Icono y pantalla de arranque (🚧 necesita logo del titular)
-- ⏳ Pantalla de aviso clínico del primer arranque (texto de `legal-compliance`)
+- 🔄 Icono y pantalla de arranque: provisionales, 🚧 falta el logo definitivo
+- 🔄 Aviso clínico del primer arranque: hecho, texto provisional pendiente de revisión legal
 
 ## Hito 4 — Contenido clínico
 - ⏳ `clinical-content`: revisión de dosis y fuentes

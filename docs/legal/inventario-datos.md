@@ -9,6 +9,8 @@ Estado: versión de la app web empaquetada (sin servidor propio). Actualizar con
 | Nombre del paciente, nº de historia clínica, raza, edad, peso, especie | Veterinario | `localStorage` (`xavi-vet`) | No | Puede identificar indirectamente al propietario |
 | Nombre del veterinario responsable | Veterinario | `localStorage` (`xavi-vet`) | No | Dato personal del propio usuario |
 | Hoja de tratamiento, pautas de alta, notas | Veterinario | `localStorage` (`xavi-vet`) | Solo si el usuario copia/comparte el texto | El texto copiado puede contener los datos anteriores |
+| Copia de seguridad (archivo `.json`) | Veterinario, al pulsar «Exportar copia» | Donde el usuario lo guarde o comparta | Sí, por decisión del usuario | Contiene los mismos datos que `xavi-vet`. Al importar se valida y se sanea |
+| Aceptación del aviso clínico (`cv-ack`) | Veterinario | `localStorage` | No | Solo recuerda que se aceptó |
 | Idioma y tema (claro/oscuro) | Usuario | `localStorage` (`cv-lang`, `cv-theme`) | No | Preferencias |
 
 La app no tiene cuentas, ni registro, ni servidor propio, ni analítica, ni publicidad.

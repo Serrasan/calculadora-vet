@@ -20,7 +20,7 @@ No recogemos analítica, identificadores de publicidad, ubicación, contactos, f
 
 ## 4. Compartir información
 
-La app solo comparte información cuando tú copias o exportas un texto (hoja de tratamiento, pauta de alta) y lo pegas en otra aplicación. Ese texto es tuyo y decides con quién lo compartes.
+La app solo comparte información cuando tú copias, compartes o exportas un texto (hoja de tratamiento, pauta de alta) o un archivo de copia de seguridad. Esos datos son tuyos y decides con quién los compartes. Ese texto es tuyo y decides con quién lo compartes.
 
 [Si se mantiene Google Fonts, hay que informar aquí de que la tipografía se descarga de Google. Recomendado: autoalojarla y borrar este párrafo.]
 

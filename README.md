@@ -14,7 +14,8 @@ Calculadora clínica veterinaria para perro y gato. Es una página web de un sol
 - **Nutrición:** RER, MER, peso ideal y realimentación.
 - **Toxicología:** chocolate, xilitol, ibuprofeno, paracetamol, uvas, raticidas y permetrina.
 - **Referencias:** constantes, estadiaje IRIS, superficie corporal y conversiones.
-- **Hoja de tratamiento:** recopila los tratamientos y se copia como texto.
+- **Hoja de tratamiento:** recopila los tratamientos; se copia o se comparte como texto.
+- **Información y datos:** aviso clínico, fuentes y copia de seguridad (exportar, importar y borrar datos).
 
 ## Idiomas
 
