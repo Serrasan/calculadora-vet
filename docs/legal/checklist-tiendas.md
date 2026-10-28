@@ -38,6 +38,14 @@ Estado: `[ ]` pendiente · `[x]` hecho · `[!]` bloqueante. **Antes de afirmar c
 - [ ] Enlace a política de privacidad en la ficha y dentro de la app.
 - [ ] Firma de la app (guardar el keystore fuera del repo y con copia segura).
 
+## Si se activan cuentas (login real)
+
+- [ ] Elegir proveedor de identidad y firmar contrato de encargado de tratamiento.
+- [ ] Borrar la cuenta desde la app (obligatorio en Apple y en Google Play).
+- [ ] «Iniciar sesión con Apple» si hay otros accesos sociales.
+- [ ] Rehacer política de privacidad, Data safety y etiqueta de privacidad de Apple.
+- [ ] Revisión por abogado del cambio de rol sobre los datos.
+
 ## Si se añade monetización
 
 - [ ] Compras dentro de la app obligatorias en ambas tiendas para contenido digital.

@@ -277,6 +277,27 @@ footer p{max-width:85ch;margin:0}
   body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 }
+/* pantalla de acceso (vista previa) */
+body.auth .pbar,body.auth .side,body.auth #tabbar,body.auth footer,body.auth .topbar{display:none}
+.auth-card{max-width:420px;margin:24px auto;padding:26px 22px;display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.auth-card .mark{margin:0 auto;width:64px;height:64px}
+.auth-card .mark svg{width:38px;height:38px}
+.auth-card h1{margin:0;text-align:center;font-size:1.5rem;font-weight:900}
+.auth-card .lead{margin:0;text-align:center;color:var(--muted)}
+.auth-card .seg{justify-content:center}
+.auth-card .seg button{flex:1}
+.auth-card .btn{width:100%;padding:12px 18px;font-size:1rem}
+.auth-card .btn.ghost{background:none;color:var(--accent-strong)}
+.auth-card .pw{position:relative}
+.auth-card .pw input{padding-right:84px}
+.auth-card .pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--accent-strong);font-weight:900;cursor:pointer;padding:8px 10px}
+.auth-card .link{border:0;background:none;color:var(--accent-strong);font-weight:800;cursor:pointer;padding:4px;text-align:center}
+.auth-card .chk{display:flex;gap:10px;align-items:flex-start;font-size:.88rem;color:var(--muted)}
+.auth-card .chk input{margin-top:3px;width:20px;height:20px;flex:none}
+.auth-card .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.85rem}
+.auth-card .or:before,.auth-card .or:after{content:"";height:1px;background:var(--line);flex:1}
+.auth-card .note{font-size:.8rem;color:var(--muted);text-align:center;margin:0}
+.auth-card .pill{align-self:center;font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;background:var(--warn-soft);color:var(--warn);border-radius:999px;padding:4px 10px}
 .print-only{display:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 @media print{
@@ -751,6 +772,7 @@ const S={p:{name:'',hc:'',breed:'',age:'',sp:'d',kg:12,unit:'kg'},view:'inicio',
   ref:{conv:'kg',cv:10,cre:1.8,creU:'mg',sdma:'',upc:'',pas:''},
   sheet:[],notes:'',vet:'',
   alta:[],altaNotes:'',altaRev:'',
+  auth:{mode:'in'},
   ddx:{caso:'',lab:'',img:'',sex:'',busy:false,result:null,err:'',blocked:false}};
 try{const s=JSON.parse(localStorage.getItem('xavi-vet')||'null'); if(s){S.sheet=s.sheet||[];S.notes=s.notes||'';S.vet=s.vet||'';S.alta=s.alta||[];S.altaNotes=s.altaNotes||'';S.altaRev=s.altaRev||'';if(s.p)Object.assign(S.p,s.p);}}catch(e){}
 function snapshot(){return{sheet:S.sheet,notes:S.notes,p:S.p,vet:S.vet,alta:S.alta,altaNotes:S.altaNotes,altaRev:S.altaRev};}
@@ -768,6 +790,8 @@ function tr(s){
 }
 Object.assign(I18N.ca,{"Antes de empezar": "Abans de començar", "Calculadora Vet es una herramienta de apoyo para profesionales veterinarios.": "Calculadora Vet és una eina de suport per a professionals veterinaris.", "Los rangos de dosis y los cálculos son orientativos y pueden contener errores. No sustituyen la exploración ni el criterio clínico.": "Els rangs de dosi i els càlculs són orientatius i poden contenir errors. No substitueixen l'exploració ni el criteri clínic.", "Comprueba siempre la ficha técnica, la concentración del producto y el estado del paciente antes de administrar un medicamento. La responsabilidad de la prescripción es del veterinario.": "Comprova sempre la fitxa tècnica, la concentració del producte i l'estat del pacient abans d'administrar un medicament. La responsabilitat de la prescripció és del veterinari.", "No introduzcas datos personales de los propietarios. Todo lo que escribes se guarda solo en este dispositivo.": "No introdueixis dades personals dels propietaris. Tot el que escrius es desa només en aquest dispositiu.", "Entiendo y acepto": "Ho entenc i ho accepto", "Información y datos": "Informació i dades", "Aviso, fuentes y copia de seguridad": "Avís, fonts i còpia de seguretat", "Aviso clínico": "Avís clínic", "Fuentes": "Fonts", "Los rangos proceden de formularios veterinarios de referencia y de fichas técnicas de medicamentos veterinarios (CIMAVet). El veterinario responsable del proyecto está revisando y documentando la fuente de cada dato.": "Els rangs provenen de formularis veterinaris de referència i de fitxes tècniques de medicaments veterinaris (CIMAVet). El veterinari responsable del projecte està revisant i documentant la font de cada dada.", "Pendiente: lista detallada de fuentes por fármaco.": "Pendent: llista detallada de fonts per fàrmac.", "Tus datos": "Les teves dades", "Todo lo que escribes se guarda solo en este dispositivo. No hay cuentas y no se envía nada a ningún servidor. Si desinstalas la app o borras sus datos, se pierden.": "Tot el que escrius es desa només en aquest dispositiu. No hi ha comptes i no s'envia res a cap servidor. Si desinstal·les l'app o n'esborres les dades, es perden.", "Copia de seguridad": "Còpia de seguretat", "Guarda tus datos en un archivo para recuperarlos si cambias de móvil o reinstalas la app.": "Desa les teves dades en un fitxer per recuperar-les si canvies de mòbil o reinstal·les l'app.", "Exportar copia": "Exportar còpia", "Importar copia": "Importar còpia", "Borrar todos los datos": "Esborrar totes les dades", "Versión": "Versió", "Copia lista": "Còpia llesta", "Copia importada": "Còpia importada", "El archivo no es una copia válida de Calculadora Vet": "El fitxer no és una còpia vàlida de Calculadora Vet", "¿Borrar todos los datos de este dispositivo? Esta acción no se puede deshacer.": "Vols esborrar totes les dades d'aquest dispositiu? Aquesta acció no es pot desfer.", "¿Sustituir los datos actuales por los de la copia?": "Vols substituir les dades actuals per les de la còpia?", "Compartir": "Compartir", "Más": "Més", "Urgencias": "Urgències", "Menú principal": "Menú principal", "Más módulos": "Més mòduls", "Cerrar": "Tancar"});
 Object.assign(I18N.en,{"Antes de empezar": "Before you start", "Calculadora Vet es una herramienta de apoyo para profesionales veterinarios.": "Calculadora Vet is a support tool for veterinary professionals.", "Los rangos de dosis y los cálculos son orientativos y pueden contener errores. No sustituyen la exploración ni el criterio clínico.": "Dose ranges and calculations are indicative and may contain errors. They do not replace the examination or clinical judgement.", "Comprueba siempre la ficha técnica, la concentración del producto y el estado del paciente antes de administrar un medicamento. La responsabilidad de la prescripción es del veterinario.": "Always check the data sheet, the product concentration and the patient's condition before giving any drug. The veterinarian is responsible for the prescription.", "No introduzcas datos personales de los propietarios. Todo lo que escribes se guarda solo en este dispositivo.": "Do not enter owners' personal data. Everything you type is stored only on this device.", "Entiendo y acepto": "I understand and accept", "Información y datos": "Information and data", "Aviso, fuentes y copia de seguridad": "Notice, sources and backup", "Aviso clínico": "Clinical notice", "Fuentes": "Sources", "Los rangos proceden de formularios veterinarios de referencia y de fichas técnicas de medicamentos veterinarios (CIMAVet). El veterinario responsable del proyecto está revisando y documentando la fuente de cada dato.": "Ranges come from reference veterinary formularies and veterinary medicine data sheets (CIMAVet). The project's veterinarian is reviewing and documenting the source of each item.", "Pendiente: lista detallada de fuentes por fármaco.": "Pending: detailed list of sources per drug.", "Tus datos": "Your data", "Todo lo que escribes se guarda solo en este dispositivo. No hay cuentas y no se envía nada a ningún servidor. Si desinstalas la app o borras sus datos, se pierden.": "Everything you type is stored only on this device. There are no accounts and nothing is sent to any server. If you uninstall the app or clear its data, it is lost.", "Copia de seguridad": "Backup", "Guarda tus datos en un archivo para recuperarlos si cambias de móvil o reinstalas la app.": "Save your data to a file to recover it if you change phone or reinstall the app.", "Exportar copia": "Export backup", "Importar copia": "Import backup", "Borrar todos los datos": "Delete all data", "Versión": "Version", "Copia lista": "Backup ready", "Copia importada": "Backup imported", "El archivo no es una copia válida de Calculadora Vet": "The file is not a valid Calculadora Vet backup", "¿Borrar todos los datos de este dispositivo? Esta acción no se puede deshacer.": "Delete all data on this device? This cannot be undone.", "¿Sustituir los datos actuales por los de la copia?": "Replace the current data with the backup?", "Compartir": "Share", "Más": "More", "Urgencias": "Emergency", "Menú principal": "Main menu", "Más módulos": "More modules", "Cerrar": "Close"});
+Object.assign(I18N.ca,{"Accede a tu cuenta": "Accedeix al teu compte", "Crea tu cuenta": "Crea el teu compte", "Guarda tus hojas y pautas y sincronízalas entre tus dispositivos.": "Desa els teus fulls i pautes i sincronitza'ls entre els teus dispositius.", "Entrar": "Entrar", "Crear cuenta": "Crear compte", "Correo electrónico": "Correu electrònic", "Contraseña": "Contrasenya", "Mostrar": "Mostrar", "Ocultar": "Amagar", "¿Has olvidado la contraseña?": "Has oblidat la contrasenya?", "Nombre y apellidos": "Nom i cognoms", "Número de colegiado": "Número de col·legiat", "Acepto las condiciones de uso y la política de privacidad.": "Accepto les condicions d'ús i la política de privacitat.", "Solo para profesionales veterinarios.": "Només per a professionals veterinaris.", "Continuar sin cuenta": "Continuar sense compte", "Vista previa: el acceso con cuenta aún no está conectado.": "Vista prèvia: l'accés amb compte encara no està connectat.", "¿Ya tienes cuenta?": "Ja tens compte?", "¿No tienes cuenta?": "No tens compte?", "Vista previa": "Vista prèvia", "o": "o"});
+Object.assign(I18N.en,{"Accede a tu cuenta": "Sign in to your account", "Crea tu cuenta": "Create your account", "Guarda tus hojas y pautas y sincronízalas entre tus dispositivos.": "Save your treatment sheets and take-home plans and sync them across your devices.", "Entrar": "Sign in", "Crear cuenta": "Create account", "Correo electrónico": "Email", "Contraseña": "Password", "Mostrar": "Show", "Ocultar": "Hide", "¿Has olvidado la contraseña?": "Forgot your password?", "Nombre y apellidos": "Full name", "Número de colegiado": "Licence number", "Acepto las condiciones de uso y la política de privacidad.": "I accept the terms of use and the privacy policy.", "Solo para profesionales veterinarios.": "For veterinary professionals only.", "Continuar sin cuenta": "Continue without an account", "Vista previa: el acceso con cuenta aún no está conectado.": "Preview: account sign-in is not connected yet.", "¿Ya tienes cuenta?": "Already have an account?", "¿No tienes cuenta?": "Don't have an account?", "Vista previa": "Preview", "o": "or"});
 const TRA=['placeholder','aria-label','title'];
 function i18nDom(root){
   if(!root)return;
@@ -1558,14 +1582,14 @@ function sheetText(){
 }
 
 /* =================== RENDER =================== */
-const VIEWS={inicio:renderInicio,ddx:renderDdx,altas:renderAltas,farmacos:renderFarmacos,cri:renderCRI,rcp:renderRCP,fluidos:renderFluidos,transf:renderTransf,nutri:renderNutri,tox:renderTox,ref:renderRef,hoja:renderHoja,info:renderInfo};
+const VIEWS={inicio:renderInicio,ddx:renderDdx,altas:renderAltas,farmacos:renderFarmacos,cri:renderCRI,rcp:renderRCP,fluidos:renderFluidos,transf:renderTransf,nutri:renderNutri,tox:renderTox,ref:renderRef,hoja:renderHoja,info:renderInfo,login:renderLogin};
 function render(){
   const a=document.activeElement,id=a&&a.id,inView=a&&$('#view').contains(a);let raw=null,ss,se;
   if(inView&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA')&&a.type!=='range'){raw=a.value;try{ss=a.selectionStart;se=a.selectionEnd;}catch(e){}}
   $('#view').innerHTML=VIEWS[S.view]();i18nDom($('#view'));
   if(inView&&id){const el=document.getElementById(id);if(el){el.focus({preventScroll:true});if(raw!=null){el.value=raw;try{el.setSelectionRange(ss,se);}catch(e){}}}}
 }
-function all(){renderPatientBar();renderSide();render();i18nDom($('.pbar'));i18nDom($('#side'));}
+function all(){document.body.classList.toggle('auth',S.view==='login');renderPatientBar();renderSide();render();i18nDom($('.pbar'));i18nDom($('#side'));}
 function go(v){closeMore();S.view=v;all();try{if(location.hash.slice(1)!==v)history.pushState(null,'','#'+v);}catch(e){}window.scrollTo({top:0,behavior:'smooth'});}
 
 {const _rpb=renderPatientBar,_rs=renderSide;renderPatientBar=function(){_rpb();i18nDom($('.pbar'));};renderSide=function(){_rs();i18nDom($('#side'));};}
@@ -1598,6 +1622,25 @@ function showAck(){
   const m=document.createElement('div');m.className='modal no-print';m.id='ack';
   m.innerHTML=`<div role="dialog" aria-modal="true" aria-labelledby="ackT"><div class="mlangs" data-notr><button type="button" data-lang="ca" aria-pressed="${LANG==='ca'}">CA</button><button type="button" data-lang="es" aria-pressed="${LANG==='es'}">ES</button><button type="button" data-lang="en" aria-pressed="${LANG==='en'}">EN</button></div><h2 id="ackT">Antes de empezar</h2><p>${AV1}</p><p>${AV2}</p><p>${AV3}</p><p>${AV4}</p><button type="button" class="btn" data-act="ackOk">Entiendo y acepto</button></div>`;
   document.body.appendChild(m);i18nDom(m);const b=m.querySelector('[data-act="ackOk"]');if(b)b.focus();
+}
+function renderLogin(){
+  const up=S.auth.mode==='up';
+  return`<section class="panel auth-card">
+    <span class="pill">Vista previa</span>
+    <div class="mark" aria-hidden="true">${document.querySelector('.brand .mark').innerHTML}</div>
+    <h1>${up?'Crea tu cuenta':'Accede a tu cuenta'}</h1>
+    <p class="lead">Guarda tus hojas y pautas y sincronízalas entre tus dispositivos.</p>
+    <div class="seg" role="group" aria-label="Acceso"><button type="button" data-act="authMode" data-m="in" aria-pressed="${!up}">Entrar</button><button type="button" data-act="authMode" data-m="up" aria-pressed="${up}">Crear cuenta</button></div>
+    ${up?`<div class="field"><label for="authName">Nombre y apellidos</label><input id="authName" type="text" autocomplete="off"></div>
+    <div class="field"><label for="authLic">Número de colegiado</label><input id="authLic" type="text" autocomplete="off"></div>`:''}
+    <div class="field"><label for="authEmail">Correo electrónico</label><input id="authEmail" type="email" inputmode="email" autocomplete="off"></div>
+    <div class="field"><label for="authPass">Contraseña</label><div class="pw"><input id="authPass" type="password" autocomplete="off"><button type="button" data-act="authShow">Mostrar</button></div></div>
+    ${up?`<label class="chk"><input type="checkbox" id="authTerms"><span>Acepto las condiciones de uso y la política de privacidad.</span></label>`:`<button type="button" class="link" data-act="authSubmit">¿Has olvidado la contraseña?</button>`}
+    <button type="button" class="btn" data-act="authSubmit">${up?'Crear cuenta':'Entrar'}</button>
+    <div class="or"><span>o</span></div>
+    <button type="button" class="btn ghost" data-nav="inicio">Continuar sin cuenta</button>
+    <p class="note">Solo para profesionales veterinarios.</p>
+  </section>`;
 }
 function renderInfo(){
   return`<div class="stack">
@@ -1683,6 +1726,9 @@ document.addEventListener('click',e=>{
   if(act==='copySheet'){copyText(sheetText(),'Hoja copiada');return;}
   if(act==='shareSheet'){shareText(sheetText(),'Hoja copiada');return;}
   if(act==='altaShare'){shareText(altaText(),'Pauta copiada');return;}
+  if(act==='authMode'){S.auth.mode=ds.m;render();return;}
+  if(act==='authShow'){const i=$('#authPass');if(i){const s=i.type==='password';i.type=s?'text':'password';t.textContent=s?'Ocultar':'Mostrar';i18nDom(t);}return;}
+  if(act==='authSubmit'){toast('Vista previa: el acceso con cuenta aún no está conectado.');return;}
   if(act==='more'){openMore();return;}
   if(act==='moreClose'){closeMore();return;}
   if(act==='ackOk'){try{localStorage.setItem(ACK_KEY,'1');}catch(e){}const m=$('#ack');if(m)m.remove();return;}

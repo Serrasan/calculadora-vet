@@ -29,6 +29,16 @@ Usa `window.claude`, que solo existe en el entorno del prototipo. **Decidido: oc
 1. (hecho) Ocultarlo en la versión de tienda.
 2. Implementarlo con una API de IA a través de un backend propio. Eso cambia todo: política de privacidad, Data safety, contrato de encargado de tratamiento, transferencias internacionales, aviso de IA. Hay que rehacer este inventario antes.
 
+## Cuentas y login
+
+La pantalla `#login` es **solo una vista previa**: no envía ni guarda lo que se escribe, y no aparece en los menús. Si se activan cuentas reales hay que, antes de publicar:
+
+- Elegir proveedor (p. ej. Firebase, Supabase) y firmar contrato de encargado de tratamiento (art. 28 RGPD); revisar transferencias fuera de la UE.
+- Reescribir política de privacidad, Data safety (Google) y etiqueta de privacidad (Apple): correo, nombre, nº de colegiado e historial pasan a ser datos recogidos.
+- Apple exige poder borrar la cuenta desde la propia app, y ofrecer «Iniciar sesión con Apple» si se añaden accesos con Google u otras redes.
+- Si se sincronizan hojas y pautas con datos de pacientes, el rol cambia: la app pasa a tratar datos de clientes de la clínica. **[REVISAR CON ABOGADO]**
+- Contraseñas: nunca propias; usar el proveedor de identidad.
+
 ## Permisos de plataforma previstos
 
 Ninguno (sin cámara, ubicación, micrófono, contactos, notificaciones ni almacenamiento externo). Cualquier plugin de Capacitor que pida permisos debe pasar por el agente legal.

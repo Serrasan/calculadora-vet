@@ -60,6 +60,26 @@ const ok = (c, m) => { console.log((c ? 'OK   ' : 'FALLA') + ' ' + m); if (!c) f
   await p.goBack();
   ok(await p.evaluate(() => S.view) === 'farmacos', 'botón atrás vuelve a la vista anterior');
 
+  // pantalla de acceso (vista previa)
+  await p.goto(URL + '#login');
+  ok(await p.locator('.auth-card').count() === 1 && !(await p.locator('.pbar').isVisible()), 'login: se ve y oculta la barra del paciente');
+  await p.fill('#authEmail', 'prueba@ejemplo.com'); await p.fill('#authPass', 'secreto123');
+  ok(await p.inputValue('#authEmail') === 'prueba@ejemplo.com', 'login: escribir no borra el campo');
+  await p.click('[data-act=authShow]');
+  ok(await p.getAttribute('#authPass', 'type') === 'text', 'login: mostrar contraseña');
+  await p.click('[data-act=authMode][data-m=up]');
+  ok(await p.locator('#authLic').count() === 1, 'login: modo crear cuenta pide colegiado');
+  await p.click('.auth-card .btn:not(.ghost)');
+  ok(/Vista previa/.test(await p.locator('#toast').innerText()), 'login: el botón avisa de que es vista previa');
+  const stored = await p.evaluate(() => JSON.stringify(Object.assign({}, localStorage)));
+  ok(!/secreto123|prueba@ejemplo/.test(stored), 'login: no guarda lo que se escribe');
+  await p.click('[data-lang=en]');
+  ok(/Create your account/.test(await p.locator('.auth-card h1').innerText()), 'login: traducido');
+  await p.click('[data-lang=es]').catch(() => {});
+  await p.evaluate(() => setLang('es'));
+  await p.click('.auth-card .btn.ghost');
+  ok(await p.evaluate(() => S.view) === 'inicio' && await p.locator('.pbar').isVisible(), 'login: "Continuar sin cuenta" entra en la app');
+
   // móvil
   const m = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const q = await m.newPage();
@@ -73,6 +93,8 @@ const ok = (c, m) => { console.log((c ? 'OK   ' : 'FALLA') + ' ' + m); if (!c) f
   ok(await q.locator('#more').count() === 0 && await q.evaluate(() => S.view) === 'tox', 'móvil: elegir módulo cierra el menú y navega');
   const small = await q.evaluate(() => [...document.querySelectorAll('#tabbar button')].every(x => x.getBoundingClientRect().height >= 44));
   ok(small, 'móvil: botones de la barra ≥ 44 px');
+  await q.goto(URL + '#login');
+  ok(await q.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1) && !(await q.locator('#tabbar').isVisible()), 'móvil: login sin scroll horizontal y sin barra inferior');
 
   ok(errs.length === 0, 'sin errores de consola (' + errs.slice(0, 3).join(' | ') + ')');
   ok(ext.length === 0, 'sin peticiones externas (' + ext.slice(0, 2).join(' | ') + ')');

@@ -37,9 +37,11 @@ Mantenido por el agente `roadmap-producto`. Cada función indica estado y esfuer
 | Función | Estado |
 |---|---|
 | iOS / App Store | Proyecto creado, pendiente de Mac y cuenta de Apple |
+| Pantalla de acceso (login) | Diseño hecho como vista previa (`#login`, no enlazada ni funcional). Falta decidir el sistema de cuentas |
+| Cuentas con servidor y sincronización móvil-ordenador | Aplazado: cambia todo lo legal (ver `docs/legal/`) |
 | Diagnóstico diferencial con IA | Aplazado: exige servidor propio y rehacer la parte legal |
 | Monetización | Sin decidir |
 
 ## Descartado por ahora
 
-- Cuentas de usuario y sincronización en la nube (cambia el rol legal sobre los datos).
+- Activar cuentas y sincronización en la v1 (cambia el rol legal sobre los datos).

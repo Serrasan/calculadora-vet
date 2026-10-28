@@ -17,6 +17,7 @@ Mantenido por el agente `roadmap-creacion`. Estado: ✅ hecho · 🔄 en curso �
 - ✅ Pruebas automáticas de humo (`npm test`)
 - ⏳ `qa-testing`: pruebas de cálculo y de los tres idiomas
 - ⏳ `idiomas`: textos sin traducir
+- ✅ Pantalla de acceso como vista previa (no funcional, `#login`)
 - 🔄 Icono y pantalla de arranque: provisionales, 🚧 falta el logo definitivo
 - 🔄 Aviso clínico del primer arranque: hecho, texto provisional pendiente de revisión legal
 
