@@ -24,6 +24,10 @@ Botones CA, ES y EN en la cabecera: traducen toda la app, incluidas las pautas d
 
 Abre `index.html` en el navegador. Para tenerla online, activa GitHub Pages en *Settings → Pages* con la rama `main`.
 
+## Apps de iOS y Android
+
+Ver [docs/PUBLICAR.md](docs/PUBLICAR.md). La parte legal está en [docs/legal/](docs/legal/) y la mantiene el agente `legal-compliance` (`.claude/agents/`).
+
 ## Aviso
 
 Herramienta de apoyo a la prescripción. Los rangos son orientativos; comprueba siempre la concentración del producto, la ficha técnica (CIMAVet) y el estado clínico del paciente antes de administrar.
