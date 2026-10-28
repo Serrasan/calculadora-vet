@@ -1,0 +1,269 @@
+<title>Preguntas para Xavier</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<style>
+/* Mismo azul y la misma Nunito que la app. Una columna, preguntas en bloques sueltos, barra de progreso fija arriba. */
+:root{
+  --bg:#F3F6F9; --surface:#FFFFFF; --ink:#1F2933; --muted:#5E6872; --line:#DDE4EB;
+  --accent:#0C71C3; --accent-ink:#FFFFFF; --soft:#E6F3FD; --sunk:#F6F9FC;
+  --ok:#23864F; --ok-soft:#E2F3E8; --warn:#9A5A0C; --warn-soft:#FDF0DD;
+  --f-body:"Nunito","Museo Sans Rounded",Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F151C; --surface:#161E27; --ink:#E5EBF1; --muted:#98A4B0; --line:#25303C;
+  --accent:#4AAFF4; --accent-ink:#0A1520; --soft:#15283A; --sunk:#121921;
+  --ok:#6ACF94; --ok-soft:#14301F; --warn:#EBA65C; --warn-soft:#33261A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F151C; --surface:#161E27; --ink:#E5EBF1; --muted:#98A4B0; --line:#25303C;
+  --accent:#4AAFF4; --accent-ink:#0A1520; --soft:#15283A; --sunk:#121921;
+  --ok:#6ACF94; --ok-soft:#14301F; --warn:#EBA65C; --warn-soft:#33261A; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;font-weight:600}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar .wrap{padding-block:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.meter{flex:1 1 160px;min-width:0}
+.meter b{font-size:.9rem;font-weight:900}
+.track{height:8px;border-radius:99px;background:var(--sunk);border:1px solid var(--line);overflow:hidden;margin-top:4px}
+.fill{height:100%;width:0;background:var(--accent);transition:width .25s}
+.state{font-size:.8rem;font-weight:800;border-radius:99px;padding:4px 12px;background:var(--warn-soft);color:var(--warn);white-space:nowrap}
+.state[data-s="saved"]{background:var(--ok-soft);color:var(--ok)}
+
+header.top{padding-block:28px 8px}
+header.top h1{margin:0 0 8px;font-size:clamp(1.8rem,6vw,2.4rem);line-height:1.1;font-weight:900;color:var(--accent);text-wrap:balance}
+header.top p{margin:0 0 10px;color:var(--muted);max-width:60ch}
+.tips{display:flex;flex-direction:column;gap:6px;margin:14px 0 0;padding:0;list-style:none;color:var(--ink);font-size:.95rem}
+.tips li{display:flex;gap:10px}
+.tips li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:9px}
+
+h2.sec{margin:34px 0 4px;font-size:1.35rem;font-weight:900;text-wrap:balance}
+.secnote{margin:0 0 12px;color:var(--muted);font-size:.92rem}
+.qs{display:flex;flex-direction:column;gap:12px}
+fieldset.q{margin:0;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:16px}
+fieldset.q legend{padding:0;float:left;width:100%;font-weight:900;font-size:1.05rem;line-height:1.3;margin-bottom:4px}
+fieldset.q legend span{color:var(--accent);margin-right:6px}
+.hint{clear:both;margin:0 0 10px;color:var(--muted);font-size:.88rem;font-weight:600}
+.opts{clear:both;display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative;display:block;min-width:0;max-width:100%}
+.chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.chip span{display:flex;align-items:center;gap:8px;min-height:44px;padding:8px 16px;border-radius:99px;border:2px solid var(--line);background:var(--sunk);font-weight:800;line-height:1.25}
+.chip input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.chip.many span::before{content:"";flex:none;width:18px;height:18px;border-radius:5px;border:2px solid currentColor;opacity:.55}
+.chip.many input:checked+span::before{background:var(--accent-ink);box-shadow:inset 0 0 0 3px var(--accent);opacity:1}
+textarea{display:block;width:100%;min-height:96px;resize:vertical;border:2px solid var(--line);background:var(--sunk);border-radius:12px;padding:10px 12px;margin-top:10px}
+textarea:focus{border-color:var(--accent);outline:none}
+.row{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap}
+.lnk{border:0;background:none;color:var(--accent);font-weight:900;font-size:.88rem;padding:6px 0;cursor:pointer;min-height:36px}
+.lnk[hidden]{display:none}
+
+.end{margin:34px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.end h2{margin:0 0 6px;font-size:1.2rem;font-weight:900}
+.end p{margin:0 0 12px;color:var(--muted);font-size:.93rem}
+.btn{border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:10px 22px;min-height:46px;font-weight:900;cursor:pointer}
+.out{display:none;margin-top:12px}
+.out.show{display:block}
+.out textarea{min-height:200px;font-size:.85rem;font-weight:600}
+.thanks{margin:12px 0 0;font-weight:800;color:var(--ok)}
+footer{padding-block:28px 48px;color:var(--muted);font-size:.85rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="bar"><div class="wrap">
+  <div class="meter"><b id="count">0 de 24 respondidas</b><div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div></div>
+  <span class="state" id="state" data-s="local" role="status">Se guarda en este móvil</span>
+</div></div>
+
+<div class="wrap">
+<header class="top">
+  <h1>Preguntas para Xavier</h1>
+  <p>Estas son las decisiones que tenemos que tomar juntos para la calculadora veterinaria. No hace falta que respondas todo de una vez.</p>
+  <ul class="tips">
+    <li>Son 24 preguntas y llevan unos 10 minutos.</li>
+    <li>Toca una opción para elegirla. Si dudas, elige «No lo sé» o escribe un comentario.</li>
+    <li>Lo que contestes se guarda solo. Puedes cerrar y seguir luego.</li>
+  </ul>
+</header>
+<main id="form"></main>
+
+<section class="end">
+  <h2>Cuando termines</h2>
+  <p>Tus respuestas ya están guardadas. Si Aleix no las ve, pulsa el botón, copia el texto y mándaselo por mensaje.</p>
+  <button class="btn" id="copy" type="button">Copiar mis respuestas</button>
+  <div class="out" id="out"><textarea id="outText" readonly aria-label="Tus respuestas"></textarea></div>
+  <p class="thanks" id="thanks" hidden>Copiado. Gracias, Xavier.</p>
+</section>
+<footer>Las respuestas son solo para decidir cómo hacemos la app. No pidas ni escribas datos de pacientes ni de propietarios.</footer>
+</div>
+
+<script>
+const Q=[
+ {s:'La app',n:'Nombre, dibujo y colores. Es lo que ve la gente en la tienda.'},
+ {id:'nombre',t:'one',q:'¿Seguimos con el nombre «Calculadora Vet»?',h:'Si prefieres otro nombre, escríbelo en el comentario.',o:['Sí','Prefiero otro nombre','Me da igual']},
+ {id:'logo',t:'one',q:'¿Qué dibujo prefieres para el icono?',o:['La huella actual','Una jeringa','Una cruz veterinaria','Un perro y un gato','Tengo una idea o un diseñador']},
+ {id:'color',t:'one',q:'¿Qué colores te gustan para la app?',o:['Azul, como ahora','Verde','Otro color (cuéntalo en el comentario)','Me da igual']},
+ {id:'creditos',t:'one',q:'¿Quieres que aparezca tu nombre en la app?',h:'Por ejemplo en la pantalla «Información y datos»: «Contenido clínico revisado por…». Si sale tu nombre, figuras como responsable de lo que dice.',o:['Sí, con nombre y número de colegiado','Sí, solo el nombre','No, prefiero que no aparezca']},
+
+ {s:'Contenido clínico',n:'Las dosis son lo más importante. Sin tu revisión no se publica.'},
+ {id:'revisar',t:'one',q:'¿Puedes revisar los 58 fármacos del formulario?',o:['Sí, todos','Sí, empezando por los más usados','Solo algunos','Ahora no tengo tiempo']},
+ {id:'plazo',t:'one',q:'¿En cuánto tiempo podrías hacerlo?',o:['Una semana','Dos semanas','Un mes','Más de un mes']},
+ {id:'fuentes',t:'many',q:'¿En qué te basas para las dosis?',h:'Hay que poder citar de dónde sale cada dato. No copiaremos tablas de libros con derechos de autor.',o:['Fichas técnicas (CIMAVet)','Un formulario de referencia','Guías de especialidad (IRIS, ACVIM, ISFM…)','Protocolos de mi clínica','Otras (cuéntalas en el comentario)']},
+ {id:'modulos',t:'many',q:'¿Qué módulos usas más en consulta?',o:['Formulario de dosis','Altas','Infusiones continuas','Urgencias y RCP','Fluidoterapia','Transfusión','Nutrición','Toxicología','Referencias']},
+ {id:'falta',t:'text',q:'¿Qué te falta en la calculadora?',h:'Fármacos, cálculos, avisos, lo que echas de menos en el día a día.'},
+ {id:'sobra',t:'text',q:'¿Hay algo que esté mal, que sobre o que te confunda?'},
+ {id:'especies',t:'one',q:'¿Es suficiente con perro y gato?',o:['Sí','Faltan conejos y animales exóticos','Faltan otras especies (cuéntalo en el comentario)']},
+
+ {s:'Responsabilidad y acuerdo entre vosotros',n:'Conviene dejarlo claro antes de publicar. Para esto es mejor hablar con un abogado.'},
+ {id:'responsable',t:'one',q:'¿Aceptas figurar como veterinario responsable del contenido?',o:['Sí','Sí, si tengo un seguro que lo cubra','Quiero consultarlo con un abogado antes','No']},
+ {id:'seguro',t:'one',q:'¿Tienes seguro de responsabilidad civil profesional?',o:['Sí','No','No lo sé']},
+ {id:'reparto',t:'one',q:'¿Cómo repartís la titularidad y los beneficios, si los hay?',o:['A partes iguales','Otro reparto (cuéntalo en el comentario)','Aún no lo hemos hablado','Lo dejamos para un abogado']},
+ {id:'titular',t:'one',q:'¿Quién sería el titular de la cuenta en las tiendas?',o:['Uno de los dos, como autónomo','Una sociedad de los dos','Aún no lo sabemos']},
+
+ {s:'Precio y sincronización',n:'Si la app cobra o guarda datos en un servidor, cambian muchas cosas legales.'},
+ {id:'precio',t:'one',q:'¿La app debería ser gratis o de pago?',o:['Gratis','De pago, con un único precio','Suscripción (mensual o anual)','Gratis, con algunas funciones de pago','No lo sé']},
+ {id:'cuanto',t:'text',q:'Si fuera de pago, ¿cuánto crees que pagaría un compañero tuyo?'},
+ {id:'sincro',t:'one',q:'¿Necesitarías usarla también en el ordenador, con tus datos sincronizados?',o:['Imprescindible','Me vendría bien','No hace falta']},
+
+ {s:'Uso y datos',n:'Cuantos menos datos personales guarde la app, más sencilla es la parte legal.'},
+ {id:'datos',t:'many',q:'¿Qué datos guardarías en la app?',o:['Nombre de la mascota','Número de historia','Raza y edad','Nombre del propietario','Ninguno, solo calcular dosis']},
+ {id:'movil',t:'one',q:'¿Qué móvil tienes para probar?',o:['Android','iPhone','Los dos']},
+ {id:'idiomas',t:'text',q:'¿Hace falta algún idioma más, aparte de catalán, castellano e inglés?'},
+
+ {s:'Pruebas y siguiente paso',n:'Google pide un grupo de personas que prueben la app antes de publicarla.'},
+ {id:'testers',t:'one',q:'¿Cuántos compañeros veterinarios podrían probarla?',o:['Ninguno','De 1 a 5','De 6 a 11','12 o más']},
+ {id:'cuando',t:'one',q:'¿Cuándo podrías hacer una primera prueba en consulta?',o:['Esta semana','En las próximas dos semanas','Más adelante']},
+ {id:'final',t:'text',q:'¿Algo más que quieras decirnos?'}
+];
+const QS=Q.filter(x=>x.id),LS='cv-cuestionario-xavier';
+const state={},dirty={},timers={},writing={};
+let col=null,canWrite=false;
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+try{Object.assign(state,JSON.parse(localStorage.getItem(LS)||'{}'));}catch(e){}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}}
+const has=id=>{const s=state[id];return !!s&&(Array.isArray(s.v)?s.v.length>0:!!String(s.v||'').trim());};
+
+function build(){
+  let n=0,h='';
+  Q.forEach(x=>{
+    if(x.s){h+=`${n?'</div>':''}<h2 class="sec">${esc(x.s)}</h2><p class="secnote">${esc(x.n)}</p><div class="qs">`;return;}
+    n++;
+    const name='q_'+x.id;
+    h+=`<fieldset class="q" id="f_${x.id}"><legend><span>${n}.</span>${esc(x.q)}</legend>${x.h?`<p class="hint">${esc(x.h)}</p>`:''}`;
+    if(x.t==='text'){
+      h+=`<textarea id="t_${x.id}" data-id="${x.id}" data-k="v" aria-label="${esc(x.q)}" placeholder="Escribe aquí"></textarea>`;
+    }else{
+      h+=`<div class="opts">${x.o.map((o,i)=>`<label class="chip ${x.t==='many'?'many':''}"><input type="${x.t==='many'?'checkbox':'radio'}" name="${name}" value="${esc(o)}" data-id="${x.id}"><span>${esc(o)}</span></label>`).join('')}</div>`;
+      h+=`<div class="row"><button type="button" class="lnk" data-cm="${x.id}">Añadir comentario</button><button type="button" class="lnk" data-clear="${x.id}" hidden>Borrar respuesta</button></div>
+      <textarea id="c_${x.id}" data-id="${x.id}" data-k="c" aria-label="Comentario" placeholder="Comentario (opcional)" hidden></textarea>`;
+    }
+    h+=`</fieldset>`;
+  });
+  $('#form').innerHTML=h+'</div>';
+}
+function paint(id){
+  const x=QS.find(q=>q.id===id),s=state[id]||{v:x.t==='many'?[]:'',c:''},f=$('#f_'+id);if(!f)return;
+  if(x.t==='text'){const t=$('#t_'+id);if(t&&document.activeElement!==t&&t.value!==(s.v||''))t.value=s.v||'';return;}
+  f.querySelectorAll('input').forEach(i=>{i.checked=Array.isArray(s.v)?s.v.includes(i.value):s.v===i.value;});
+  const c=$('#c_'+id),b=f.querySelector('[data-cm]'),cl=f.querySelector('[data-clear]');
+  if(c&&document.activeElement!==c&&c.value!==(s.c||''))c.value=s.c||'';
+  if(c&&(s.c||'').trim()){c.hidden=false;b.hidden=true;}
+  cl.hidden=!has(id);
+}
+function progress(){
+  const k=QS.filter(q=>has(q.id)).length;
+  $('#count').textContent=`${k} de ${QS.length} respondidas`;
+  $('#fill').style.width=(k/QS.length*100)+'%';
+}
+function setState(s){
+  const el=$('#state');
+  const m={saved:['saved','Guardado'],saving:['local','Guardando…'],local:['local','Se guarda en este móvil']}[s];
+  el.dataset.s=m[0];el.textContent=m[1];
+}
+function change(id){
+  saveLocal();progress();paint(id);queue(id);
+}
+function queue(id){
+  dirty[id]=true;clearTimeout(timers[id]);
+  if(!col||!canWrite){setState('local');return;}
+  setState('saving');timers[id]=setTimeout(()=>flush(id),500);
+}
+async function flush(id){
+  if(!col||!canWrite)return;
+  if(writing[id]){timers[id]=setTimeout(()=>flush(id),400);return;}
+  const s=state[id]||{v:'',c:''};s.at=Date.now();state[id]=s;
+  const snap=JSON.stringify([s.v,s.c]);writing[id]=true;
+  try{
+    await col.doc(id).set({v:s.v,c:s.c||'',at:s.at});
+    const cur=state[id];
+    if(JSON.stringify([cur.v,cur.c])!==snap){queue(id);}else{dirty[id]=false;}
+    if(!Object.values(dirty).some(Boolean))setState('saved');
+  }catch(e){
+    if(e&&(e.code==='invalid_argument'||e.code==='revoked'||e.code==='not_granted'))canWrite=false;
+    setState('local');
+  }finally{writing[id]=false;}
+}
+function get(id){const x=QS.find(q=>q.id===id);return state[id]||(state[id]={v:x.t==='many'?[]:'',c:''});}
+
+document.addEventListener('input',e=>{
+  const el=e.target,id=el.dataset&&el.dataset.id;if(!id)return;
+  const s=get(id);
+  if(el.tagName==='TEXTAREA'){s[el.dataset.k]=el.value;}
+  else if(el.type==='checkbox'){const f=$('#f_'+id);s.v=[...f.querySelectorAll('input:checked')].map(i=>i.value);}
+  else if(el.type==='radio'){s.v=el.value;}
+  change(id);
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.cm){const c=$('#c_'+b.dataset.cm);c.hidden=false;b.hidden=true;c.focus();return;}
+  if(b.dataset.clear){const id=b.dataset.clear,x=QS.find(q=>q.id===id);state[id]={v:x.t==='many'?[]:'',c:state[id]?state[id].c:''};change(id);return;}
+});
+
+function summary(){
+  let n=0,t='Cuestionario Calculadora Vet · respuestas de Xavier\n';
+  Q.forEach(x=>{
+    if(x.s){t+=`\n== ${x.s} ==\n`;return;}
+    n++;const s=state[x.id],v=s?(Array.isArray(s.v)?s.v.join(', '):s.v):'';
+    t+=`\n${n}. ${x.q}\n   → ${String(v||'').trim()||'(sin responder)'}`;
+    if(s&&(s.c||'').trim()&&x.t!=='text')t+=`\n   Comentario: ${s.c.trim()}`;
+  });
+  return t+'\n';
+}
+$('#copy').addEventListener('click',async()=>{
+  const txt=summary(),out=$('#out'),ta=$('#outText');
+  ta.value=txt;out.classList.add('show');
+  try{await navigator.clipboard.writeText(txt);$('#thanks').hidden=false;}
+  catch(e){$('#thanks').hidden=true;ta.focus();ta.select();}
+});
+
+build();QS.forEach(q=>paint(q.id));progress();
+
+(async()=>{
+  try{
+    if(!(window.claude&&claude.use))return;
+    const db=await claude.use('db');if(!db)return;
+    col=db.collection('answers');
+    let user=null;try{user=await claude.use('user');}catch(e){}
+    const cw=user&&user.can?user.can('data.write'):null;
+    canWrite=cw!==false;
+    col.onSnapshot(snap=>{
+      snap.docs.forEach(d=>{
+        const x=d.data();if(!x||!QS.some(q=>q.id===d.id)||dirty[d.id]||writing[d.id])return;
+        const cur=state[d.id];
+        if(!cur||(x.at||0)>(cur.at||0)){state[d.id]={v:x.v,c:x.c||'',at:x.at};paint(d.id);}
+      });
+      saveLocal();progress();
+      if(canWrite&&!Object.values(dirty).some(Boolean))setState('saved');
+      // lo que ya había escrito en este móvil antes de que cargara la base de datos
+      QS.forEach(q=>{const s=state[q.id];if(s&&!s.at&&has(q.id)&&!dirty[q.id])queue(q.id);});
+    },()=>setState('local'));
+  }catch(e){setState('local');}
+})();
+</script>
