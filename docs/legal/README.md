@@ -16,3 +16,17 @@ Pídele revisar antes de cada versión o cambio relevante, por ejemplo:
 - "Pasa el agente legal por los cambios de esta rama."
 - "Actualiza la política de privacidad: he añadido analítica."
 - "Prepara las respuestas de Data safety y de la etiqueta de privacidad de Apple."
+
+## Equipo de agentes
+
+Definidos en `.claude/agents/`. Cada uno trabaja en su especialidad:
+
+| Agente | Especialidad |
+|---|---|
+| `legal-compliance` | Privacidad, políticas de tienda, aviso clínico, propiedad intelectual |
+| `clinical-content` | Dosis, fórmulas y seguridad clínica (la validación final es de un veterinario) |
+| `mobile-build` | Capacitor, Android/iOS, firma, versiones, CI |
+| `ux-design` | Interfaz móvil, accesibilidad, modo oscuro |
+| `qa-testing` | Pruebas en navegador, cálculos, regresiones |
+| `i18n-localization` | Catalán, castellano e inglés |
+| `store-listing` | Fichas, capturas y formularios de App Store y Google Play |
