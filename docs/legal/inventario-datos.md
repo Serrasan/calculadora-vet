@@ -39,6 +39,14 @@ La pantalla `#login` es **solo una vista previa**: no envía ni guarda lo que se
 - Si se sincronizan hojas y pautas con datos de pacientes, el rol cambia: la app pasa a tratar datos de clientes de la clínica. **[REVISAR CON ABOGADO]**
 - Contraseñas: nunca propias; usar el proveedor de identidad.
 
+## Plugins nativos
+
+| Plugin | Para qué | Permisos | Datos |
+|---|---|---|---|
+| `@capacitor/status-bar` | Color de los iconos de la barra de estado según el tema de la app | Ninguno | Ninguno |
+
+Cualquier plugin nuevo debe pasar por `legal-compliance` antes de añadirse.
+
 ## Permisos de plataforma previstos
 
 Ninguno (sin cámara, ubicación, micrófono, contactos, notificaciones ni almacenamiento externo). Cualquier plugin de Capacitor que pida permisos debe pasar por el agente legal.

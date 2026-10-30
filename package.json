@@ -8,14 +8,15 @@
     "sync": "npm run build && cap sync",
     "android": "npm run sync && cap open android",
     "ios": "npm run sync && cap open ios",
-    "test": "node tests/smoke.cjs",
+    "test": "node tests/smoke.cjs && node tests/calculos.cjs",
     "check": "node scripts/build-web.mjs --check",
     "pretest": "npm run build"
   },
   "dependencies": {
     "@capacitor/android": "^7.0.0",
     "@capacitor/core": "^7.0.0",
-    "@capacitor/ios": "^7.0.0"
+    "@capacitor/ios": "^7.0.0",
+    "@capacitor/status-bar": "^7.0.6"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
