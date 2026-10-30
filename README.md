@@ -25,6 +25,14 @@ Botones CA, ES y EN en la cabecera: traducen toda la app, incluidas las pautas d
 
 Abre `index.html` en el navegador. Para tenerla online, activa GitHub Pages en *Settings → Pages* con la rama `main`.
 
+## Diseño
+
+Sistema de diseño propio, definido con variables CSS al principio de `index.html`: tipografía IBM Plex Sans (alojada en `assets/fonts/`, licencia SIL OFL), superficies planas, una franja oscura para el paciente y su peso, color con significado (verde azulado para acciones, rojo para urgencias, ámbar para precauciones) y modo claro y oscuro. Todos los pares de color cumplen contraste AA. En móvil, barra de pestañas inferior y hoja «Más»; en escritorio, navegación lateral.
+
+## Pruebas
+
+`npm run build && npm test` abre la app en un navegador real y comprueba pantallas, idiomas, modo móvil sin desbordes, la copia de seguridad y que no haya errores ni conexiones externas. También se ejecutan en GitHub Actions antes de compilar la app de Android.
+
 ## Apps de iOS y Android
 
 Ver [docs/PUBLICAR.md](docs/PUBLICAR.md). La parte legal está en [docs/legal/](docs/legal/) y la mantiene el agente `legal-compliance` (`.claude/agents/`).

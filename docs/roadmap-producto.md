@@ -25,6 +25,7 @@ Mantenido por el agente `roadmap-producto`. Cada función indica estado y esfuer
 | Menú inferior en móvil, botón atrás, compartir hoja y pauta | Hecho |
 | Copia de seguridad (exportar, importar, borrar) | Hecho |
 | Pruebas automáticas (`npm test`) | Hecho |
+| Rediseño de la interfaz (sistema de diseño propio, claro y oscuro, móvil y escritorio) | Hecho |
 
 ## v1.1 — Mejoras sobre la base
 

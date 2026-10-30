@@ -11,6 +11,7 @@ Estado: `[ ]` pendiente · `[x]` hecho · `[!]` bloqueante. **Antes de afirmar c
 - [ ] Sección "Información y datos" en la app: hecha; falta la lista de fuentes por fármaco (veterinario).
 - [x] Pantalla de aviso clínico en el primer arranque (texto provisional **[REVISAR CON ABOGADO]**).
 - [ ] Revisar que el formulario no copia texto con copyright de terceros.
+- [x] Licencia de la tipografía (IBM Plex Sans, SIL OFL) incluida en `assets/fonts/NOTICE.txt`; añadirla también a la pantalla de licencias de la app.
 - [ ] Búsqueda de disponibilidad de la marca "Calculadora Vet" (OEPM, EUIPO, tiendas).
 - [ ] Revisión final por un abogado de política y condiciones.
 

@@ -80,6 +80,21 @@ const ok = (c, m) => { console.log((c ? 'OK   ' : 'FALLA') + ' ' + m); if (!c) f
   await p.click('.auth-card .btn.ghost');
   ok(await p.evaluate(() => S.view) === 'inicio' && await p.locator('.pbar').isVisible(), 'login: "Continuar sin cuenta" entra en la app');
 
+  // diseño: tipografía propia cargada y franja del paciente compacta en móvil, sin desbordes en ninguna pantalla
+  await p.goto(URL); await p.evaluate(() => document.fonts.ready);
+  ok(await p.evaluate(() => document.fonts.check('16px "IBM Plex Sans"')), 'diseño: IBM Plex Sans cargada desde el propio paquete');
+  const dm = await b.newContext({ viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true });
+  const dq = await dm.newPage();
+  await dq.goto(URL); await dq.click('[data-act=ackOk]');
+  const ph = await dq.evaluate(() => document.querySelector('.pbar').getBoundingClientRect().height);
+  ok(ph <= 125, 'diseño: franja del paciente compacta en móvil (' + Math.round(ph) + ' px)');
+  for (const v of VIEWS) {
+    await dq.goto(URL + '#' + v);
+    const over = await dq.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    ok(over <= 1, 'diseño: #' + v + ' sin desborde horizontal a 360 px');
+  }
+  await dm.close();
+
   // móvil
   const m = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const q = await m.newPage();
