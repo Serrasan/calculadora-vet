@@ -26,6 +26,9 @@ Mantenido por el agente `roadmap-producto`. Cada función indica estado y esfuer
 | Copia de seguridad (exportar, importar, borrar) | Hecho |
 | Pruebas automáticas (`npm test`) | Hecho |
 | Rediseño de la interfaz (sistema de diseño propio, claro y oscuro, móvil y escritorio) | Hecho |
+| Código dividido en módulos (`src/`) con build y comprobaciones | Hecho |
+| Pruebas de cálculo clínico y auditoría de accesibilidad automática | Hecho |
+| Iconos de la barra de estado según el tema (app nativa) | Hecho; falta probar en un móvil real |
 
 ## v1.1 — Mejoras sobre la base
 

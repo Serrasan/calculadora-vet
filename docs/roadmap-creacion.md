@@ -14,7 +14,9 @@ Mantenido por el agente `roadmap-creacion`. Estado: ✅ hecho · 🔄 en curso �
 ## Hito 3 — Pulir la app · agentes
 - ✅ Menú inferior en móvil, botón atrás, compartir y copia de seguridad
 - ⏳ `ux-design`: revisión en móvil, claro y oscuro
-- ✅ Pruebas automáticas de humo (`npm test`)
+- ✅ Pruebas automáticas: humo, cálculos clínicos y accesibilidad (`npm test`, también en GitHub)
+- ✅ Código dividido en `src/` con build y comprobación de sintaxis
+- ✅ Rediseño de la interfaz (diseño propio, claro y oscuro)
 - ⏳ `qa-testing`: pruebas de cálculo y de los tres idiomas
 - ⏳ `idiomas`: textos sin traducir
 - ✅ Pantalla de acceso como vista previa (no funcional, `#login`)
