@@ -46,7 +46,7 @@ Flujo de trabajo: edita en `src/`, ejecuta `npm run build` y `npm test`. `npm ru
 
 ## Pruebas
 
-`npm run build && npm test` abre la app en un navegador real y comprueba pantallas, idiomas, modo móvil sin desbordes, la copia de seguridad y que no haya errores ni conexiones externas. También se ejecutan en GitHub Actions antes de compilar la app de Android.
+`npm test` compila y ejecuta tres baterías en un navegador real: **humo** (pantallas, idiomas, móvil sin desbordes, copia de seguridad, sin errores ni conexiones externas), **cálculos** (cada resultado clínico contra su fórmula calculada de forma independiente) y **accesibilidad** (axe-core, WCAG 2 A/AA, claro y oscuro, escritorio y móvil). También se ejecutan en GitHub Actions antes de compilar la app de Android.
 
 ## Apps de iOS y Android
 

@@ -8,7 +8,7 @@
     "sync": "npm run build && cap sync",
     "android": "npm run sync && cap open android",
     "ios": "npm run sync && cap open ios",
-    "test": "node tests/smoke.cjs && node tests/calculos.cjs",
+    "test": "node tests/smoke.cjs && node tests/calculos.cjs && node tests/accesibilidad.cjs",
     "check": "node scripts/build-web.mjs --check",
     "pretest": "npm run build"
   },
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
-    "@capacitor/cli": "^7.0.0"
+    "@capacitor/cli": "^7.0.0",
+    "axe-core": "^4.14.0"
   }
 }

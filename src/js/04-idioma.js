@@ -20,4 +20,5 @@ function i18nDom(root){
 function setLang(l){LANG=l;try{localStorage.setItem('cv-lang',l);}catch(e){}document.documentElement.lang=l;document.title=tr('Calculadora Vet');
   document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===l)));
   setWeightField();i18nDom(document.body);all();if(typeof paintTheme==='function')paintTheme();}
-
+Object.assign(I18N.ca,{"Tabla desplazable":"Taula desplaçable"});
+Object.assign(I18N.en,{"Tabla desplazable":"Scrollable table"});
