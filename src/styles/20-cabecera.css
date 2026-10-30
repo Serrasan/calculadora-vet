@@ -1,0 +1,16 @@
+/* cabecera */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+header.site{background:var(--surface);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+header.site .wrap{height:56px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:11px;min-width:0;margin-right:auto}
+.mark{width:34px;height:34px;border-radius:var(--r-s);background:var(--accent);display:grid;place-items:center;flex:none}
+.mark svg{width:21px;height:21px;fill:var(--accent-ink)}
+.brand .name{font-weight:600;font-size:1rem;line-height:1.15;letter-spacing:-.005em;white-space:nowrap}
+.brand .name span{display:block;color:var(--muted);font-weight:400;font-size:.76rem;letter-spacing:0}
+.langs{display:flex;gap:2px;background:var(--sunk);border:1px solid var(--line);border-radius:var(--r-s);padding:2px}
+.langs button{border:0;background:none;border-radius:6px;padding:5px 10px;font-weight:600;font-size:.78rem;cursor:pointer;color:var(--muted);min-height:30px}
+.langs button:hover{color:var(--ink)}
+.langs button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong)}
+.theme{display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:var(--r-s);cursor:pointer}
+.theme:hover{border-color:var(--line-strong);background:var(--sunk)}
+

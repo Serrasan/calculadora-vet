@@ -1,12 +1,12 @@
 # Del prototipo a las tiendas
 
-La web (`index.html`) se empaqueta con [Capacitor](https://capacitorjs.com) en apps nativas para iOS y Android. El código sigue siendo uno solo.
+La web (código en `src/`, ensamblado en `index.html`) se empaqueta con [Capacitor](https://capacitorjs.com) en apps nativas para iOS y Android. El código sigue siendo uno solo.
 
 ## Primera vez
 
 ```bash
 npm install
-npm run build              # copia index.html a www/
+npm run build              # ensambla src/ en index.html y lo copia a www/
 npx cap add android        # genera android/ (requiere Android Studio para compilar)
 npx cap add ios            # genera ios/ (requiere macOS con Xcode)
 ```

@@ -1,0 +1,51 @@
+<!doctype html>
+<!-- GENERADO desde src/ con «npm run build». No lo edites a mano: edita los archivos de src/ (ver README). -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121B1A" media="(prefers-color-scheme: dark)">
+<title>Calculadora Vet</title>
+<!-- @css -->
+</head>
+<body>
+
+<header class="site no-print">
+  <div class="wrap">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><ellipse cx="6" cy="9.5" rx="2.1" ry="2.7"/><ellipse cx="10" cy="5.5" rx="2.1" ry="2.7"/><ellipse cx="14.5" cy="5.5" rx="2.1" ry="2.7"/><ellipse cx="18.4" cy="9.5" rx="2.1" ry="2.7"/><path d="M12.2 11.2c-2.6 0-6.2 4.2-6.2 6.7 0 1.6 1.3 2.6 2.9 2.6 1.4 0 2.1-.7 3.3-.7s2 .7 3.4.7c1.6 0 2.8-1 2.8-2.6 0-2.5-3.6-6.7-6.2-6.7z"/></svg></div>
+      <div class="name">Calculadora Vet<span>Dosis y protocolos</span></div>
+    </div>
+    <div class="langs" role="group" aria-label="Idioma" data-notr><button type="button" data-lang="ca" aria-pressed="false" title="Català">CA</button><button type="button" data-lang="es" aria-pressed="true" title="Castellano">ES</button><button type="button" data-lang="en" aria-pressed="false" title="English">EN</button></div>
+    <button class="theme" id="themeBtn" type="button" aria-label="Cambiar a modo noche"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path id="themeIcon" d=""/></svg><span class="vh" id="themeTxt">Noche</span></button>
+  </div>
+</header>
+
+<div class="wrap app">
+  <nav class="side no-print" id="side" aria-label="Módulos"></nav>
+  <div class="work">
+    <div class="pbar no-print">
+      <div class="pname"><input id="pName" type="text" placeholder="Nombre del paciente" aria-label="Nombre del paciente" autocomplete="off"></div>
+      <div class="seg" id="spSeg" role="group" aria-label="Especie"></div>
+      <div class="wbox">
+        <button id="wMinus" type="button" aria-label="Restar peso">−</button>
+        <input id="weight" type="text" inputmode="decimal" aria-label="Peso" autocomplete="off">
+        <select id="wUnit" aria-label="Unidad de peso"><option value="kg">kg</option><option value="g">g</option></select>
+        <button id="wPlus" type="button" aria-label="Sumar peso">+</button>
+      </div>
+      <span class="whint" id="wHint"></span>
+    </div>
+    <main id="view"></main>
+    <footer class="no-print">
+      <p><b>Calculadora Vet.</b> Herramienta de apoyo a la prescripción. Los rangos son orientativos y proceden de formularios veterinarios de referencia; algunos usos están fuera de ficha técnica. Comprueba siempre la concentración del producto, la ficha técnica (CIMAVet) y el estado clínico del paciente antes de administrar.</p>
+    </footer>
+  </div>
+</div>
+<nav class="tabbar no-print" id="tabbar" aria-label="Menú principal"></nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- @js -->
+
+</body>
+</html>

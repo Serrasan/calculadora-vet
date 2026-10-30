@@ -1,0 +1,39 @@
+{
+ "css": [
+  "styles/00-tokens.css",
+  "styles/10-base.css",
+  "styles/20-cabecera.css",
+  "styles/30-estructura.css",
+  "styles/40-componentes.css",
+  "styles/50-pantallas.css",
+  "styles/60-capas.css",
+  "styles/70-adaptable.css",
+  "styles/80-acceso.css",
+  "styles/90-impresion.css"
+ ],
+ "js": [
+  "js/01-datos.js",
+  "js/02-estado.js",
+  "js/03-idioma-diccionario.js",
+  "js/04-idioma.js",
+  "js/05-utilidades.js",
+  "js/06-paciente.js",
+  "js/07-inicio.js",
+  "js/08-formulario.js",
+  "js/09-infusiones.js",
+  "js/10-urgencias.js",
+  "js/11-fluidos.js",
+  "js/12-transfusion.js",
+  "js/13-nutricion.js",
+  "js/14-toxicologia.js",
+  "js/15-referencias.js",
+  "js/16-diagnostico.js",
+  "js/17-altas.js",
+  "js/18-hoja.js",
+  "js/19-render.js",
+  "js/20-movil-datos.js",
+  "js/21-eventos.js",
+  "js/22-tema.js",
+  "js/23-inicio-app.js"
+ ]
+}

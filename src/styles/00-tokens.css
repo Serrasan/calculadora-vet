@@ -1,0 +1,25 @@
+/* Calculadora Vet · sistema de diseño
+   Instrumento clínico: superficies neutras y planas, una sola franja oscura (el paciente y su peso) como centro de la pantalla,
+   números tabulares y color solo con significado (verde azulado = acción, rojo = urgencia, ámbar = precaución). */
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:100 700;font-display:swap;src:url(assets/fonts/plex-sans-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:100 700;font-display:swap;src:url(assets/fonts/plex-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+:root{
+  --bg:#ECEFEE; --surface:#FFFFFF; --sunk:#F4F6F5; --ink:#101A19; --muted:#586664; --line:#DCE2E0; --line-strong:#C3CDCA;
+  --accent:#0B6560; --accent-strong:#07504C; --accent-ink:#FFFFFF; --accent-soft:#E0F0ED; --on-accent-muted:rgba(255,255,255,.78);
+  --band:#0F1D1C; --band-ink:#EAF4F2; --band-muted:#9DB5B1; --band-line:#2A403D; --band-field:#18292779;
+  --ok:#1B7A45; --ok-soft:#E1F2E8; --warn:#955600; --warn-soft:#FBEFD8; --danger:#B8302A; --danger-soft:#FBE6E3; --danger-ink:#FFFFFF;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --r:10px; --r-s:8px; --ring:0 0 0 2px var(--surface),0 0 0 4px var(--accent);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A1110; --surface:#121B1A; --sunk:#0E1615; --ink:#E4EEEC; --muted:#93A5A2; --line:#22302E; --line-strong:#344642;
+  --accent:#4FD1BE; --accent-strong:#7FE2D2; --accent-ink:#04201C; --accent-soft:#12302C; --on-accent-muted:rgba(4,32,28,.76);
+  --band:#060C0B; --band-ink:#E4EEEC; --band-muted:#8FA39F; --band-line:#22302E; --band-field:#121B1A;
+  --ok:#6ACF94; --ok-soft:#12301F; --warn:#EBA65C; --warn-soft:#33261A; --danger:#F2897F; --danger-soft:#3A1F1C; --danger-ink:#2B0B09; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1110; --surface:#121B1A; --sunk:#0E1615; --ink:#E4EEEC; --muted:#93A5A2; --line:#22302E; --line-strong:#344642;
+  --accent:#4FD1BE; --accent-strong:#7FE2D2; --accent-ink:#04201C; --accent-soft:#12302C; --on-accent-muted:rgba(4,32,28,.76);
+  --band:#060C0B; --band-ink:#E4EEEC; --band-muted:#8FA39F; --band-line:#22302E; --band-field:#121B1A;
+  --ok:#6ACF94; --ok-soft:#12301F; --warn:#EBA65C; --warn-soft:#33261A; --danger:#F2897F; --danger-soft:#3A1F1C; --danger-ink:#2B0B09; color-scheme:dark}
+

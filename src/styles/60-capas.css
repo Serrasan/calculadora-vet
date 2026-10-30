@@ -1,0 +1,20 @@
+/* barra inferior (móvil), hoja «Más» y aviso */
+.tabbar{display:none}
+.more{position:fixed;inset:0;z-index:40;background:rgba(6,12,11,.5);display:flex;align-items:flex-end;animation:fin .16s ease-out}
+@keyframes fin{from{opacity:0}}
+.more>div{background:var(--surface);width:100%;border-radius:18px 18px 0 0;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-height:82vh;overflow:auto;animation:sup .22s cubic-bezier(.2,.8,.2,1)}
+@keyframes sup{from{transform:translateY(28px)}}
+.more>div::before{content:"";display:block;width:36px;height:4px;border-radius:99px;background:var(--line-strong);margin:2px auto 14px}
+.more .mgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.more .mgrid button{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:0 12px;min-height:52px;font-weight:500;cursor:pointer;text-align:left;color:var(--ink)}
+.more .mgrid button:active{background:var(--sunk)}
+.more .mgrid button[aria-current="true"]{background:var(--accent-soft);color:var(--accent-strong);border-color:var(--accent);font-weight:600}
+.modal{position:fixed;inset:0;z-index:60;background:rgba(6,12,11,.6);display:grid;place-items:center;padding:16px;animation:fin .16s ease-out}
+.modal>div{background:var(--surface);color:var(--ink);border-radius:14px;max-width:520px;width:100%;max-height:90vh;overflow:auto;padding:24px;animation:sup .22s cubic-bezier(.2,.8,.2,1)}
+.modal h2{margin:0 0 8px;font-size:1.3rem;font-weight:600;letter-spacing:-.015em}
+.modal p{margin:8px 0}
+.modal .btn{width:100%;margin-top:14px;min-height:46px}
+.modal .mlangs{display:flex;gap:2px;justify-content:flex-end;margin-bottom:8px}
+.modal .mlangs button{border:1px solid var(--line);background:var(--sunk);border-radius:6px;padding:5px 12px;font-weight:600;font-size:.8rem;cursor:pointer;color:var(--muted);min-height:32px}
+.modal .mlangs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+

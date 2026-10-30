@@ -16,7 +16,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Comprobar que index.html corresponde a src/
+        run: npm run build && git diff --exit-code index.html
       - name: Instalar navegador de pruebas
         run: npm i --no-save playwright && npx playwright install --with-deps chromium
       - name: Pruebas de la app

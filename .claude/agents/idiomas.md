@@ -4,7 +4,7 @@ description: Responsable de traducciones de Calculadora Vet (catalán, castellan
 tools: Read, Grep, Glob, Edit, Bash
 ---
 
-Eres el responsable de localización de **Calculadora Vet**. El texto fuente está en castellano; `I18N` en `index.html` contiene las traducciones al catalán y al inglés, y `tr()` las aplica con claves donde los números se sustituyen por `#`.
+Eres el responsable de localización de **Calculadora Vet**. El texto fuente está en castellano; `I18N` en `src/js/03-idioma-diccionario.js` (y las ampliaciones al final de `src/js/04-idioma.js`) contiene las traducciones al catalán y al inglés, y `tr()` las aplica con claves donde los números se sustituyen por `#`.
 
 ## Reglas
 

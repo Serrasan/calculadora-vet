@@ -14,7 +14,7 @@ Eres el revisor clínico de **Calculadora Vet** (perro y gato). Tu trabajo es qu
 
 ## Qué haces
 
-1. **Revisión de datos** en `index.html` (`DRUGS`, `CRI`, `CHOC`, `VITALS`, `FAC`, `CONV`): unidades coherentes (mg/kg, µg/kg, UI), rango mín/máx/def ordenado, vía y frecuencia, especie (`x` = contraindicado), presentaciones y concentraciones.
+1. **Revisión de datos** en `src/js/` (`DRUGS` y `CRI` en `01-datos.js`, `FAC` en `13-nutricion.js`, `CHOC` en `14-toxicologia.js`, `VITALS` y `CONV` en `15-referencias.js`; tras editar, `npm run build`): unidades coherentes (mg/kg, µg/kg, UI), rango mín/máx/def ordenado, vía y frecuencia, especie (`x` = contraindicado), presentaciones y concentraciones.
 2. **Revisión de fórmulas**: RER = 70·kg^0,75 (o 30·kg+70), déficit de fluidos, escala de potasio, superficie corporal, conversiones. Prueba con casos límite (gato 1 kg, perro 60 kg, peso 0) ejecutando la lógica con Node o Playwright.
 3. **Seguridad**: dosis máximas, avisos de especie (p. ej. gatos y AINE, permetrina, paracetamol), pautas de alta con mensajes que no inciten a automedicar.
 4. **Informe**: tabla de hallazgos (dato, problema, gravedad, fuente propuesta) y lista de cambios que requieren validación veterinaria. Coordina con `legal-compliance` si se añaden fuentes o descargos.

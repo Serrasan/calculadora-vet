@@ -1,0 +1,15 @@
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+@media print{
+  .tabbar,.more,.modal{display:none!important}
+  body{padding:0!important}
+  .no-print{display:none!important}
+  .print-only{display:block}
+  body{background:#fff;color:#000;font-size:12px}
+  .app{display:block;padding:0}
+  .panel{box-shadow:none;border:0}
+  .pad{padding:0}
+  .total,.kpi.main{background:#fff!important;color:#000;border:1px solid #000}
+  .total .eyebrow,.total .calc,.kpi.main .eyebrow,.kpi.main .s{color:#333}
+  th,td{border-color:#999}
+  .crash td.amt{font-size:14px}
+}

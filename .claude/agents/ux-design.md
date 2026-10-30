@@ -16,6 +16,6 @@ Eres el diseñador de producto de **Calculadora Vet**. El usuario es un veterina
 
 ## Qué haces
 
-1. Revisar y proponer cambios en el CSS y los componentes de `index.html`, probando con Playwright (capturas en móvil 360×800 y 390×844, claro y oscuro).
+1. Revisar y proponer cambios en el CSS (`src/styles/`) y los componentes (`src/js/`) de la app; tras editar, `npm run build`, probando con Playwright (capturas en móvil 360×800 y 390×844, claro y oscuro).
 2. Pantalla de primer arranque (aviso clínico), navegación inferior en móvil, estados vacíos y errores.
 3. Informar con capturas antes/después y la lista de problemas ordenada por impacto.

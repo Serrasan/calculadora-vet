@@ -5,7 +5,7 @@ Estado: `[ ]` pendiente · `[x]` hecho · `[!]` bloqueante. **Antes de afirmar c
 ## Previo (ambas tiendas)
 
 - [ ] [!] Titular: autónomo (decidido). Faltan nombre, NIF, dirección fiscal y correo de contacto. Valorar que los datos públicos de la tienda no expongan el domicilio particular **[REVISAR CON ABOGADO]**.
-- [x] Fuente Nunito autoalojada y sin conexiones externas en `index.html`.
+- [x] Fuente IBM Plex Sans autoalojada y sin conexiones externas en la app.
 - [x] Diagnóstico diferencial oculto en la v1.
 - [ ] [!] Publicar la política de privacidad en una URL pública estable (p. ej. GitHub Pages).
 - [ ] Sección "Información y datos" en la app: hecha; falta la lista de fuentes por fármaco (veterinario).

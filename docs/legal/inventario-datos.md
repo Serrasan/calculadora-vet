@@ -19,12 +19,12 @@ La app no tiene cuentas, ni registro, ni servidor propio, ni analítica, ni publ
 
 | Tercero | Qué recibe | Motivo | Estado |
 |---|---|---|---|
-| _Ninguno_ | — | — | Nunito (licencia SIL OFL) está alojada en `assets/fonts/`; `index.html` ya no hace peticiones externas (verificado con Playwright) |
+| _Ninguno_ | — | — | IBM Plex Sans (licencia SIL OFL, aviso en `assets/fonts/NOTICE.txt`) está alojada en `assets/fonts/`; la app ya no hace peticiones externas (verificado con Playwright) |
 | Apple / Google (tiendas) | Datos de descarga y facturación | Distribución | Fuera de la app; regido por sus políticas |
 
 ## Módulo de diagnóstico diferencial
 
-Usa `window.claude`, que solo existe en el entorno del prototipo. **Decidido: oculto en la v1** (`FEATURES.ddx=false` en `index.html`, también bloquea el acceso por `#ddx`). Para reactivarlo:
+Usa `window.claude`, que solo existe en el entorno del prototipo. **Decidido: oculto en la v1** (`FEATURES.ddx=false` en `src/js/05-utilidades.js`, también bloquea el acceso por `#ddx`). Para reactivarlo:
 
 1. (hecho) Ocultarlo en la versión de tienda.
 2. Implementarlo con una API de IA a través de un backend propio. Eso cambia todo: política de privacidad, Data safety, contrato de encargado de tratamiento, transferencias internacionales, aviso de IA. Hay que rehacer este inventario antes.

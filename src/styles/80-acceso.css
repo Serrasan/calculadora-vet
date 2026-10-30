@@ -1,0 +1,22 @@
+/* acceso (vista previa) */
+body.auth .pbar,body.auth .side,body.auth #tabbar,body.auth footer{display:none}
+.auth-card{max-width:420px;margin:24px auto;padding:26px 22px;display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.auth-card .mark{margin:0 auto;width:56px;height:56px;border-radius:14px}
+.auth-card .mark svg{width:34px;height:34px}
+.auth-card h1{margin:0;text-align:center;font-size:1.5rem;font-weight:600;letter-spacing:-.02em}
+.auth-card .lead{margin:0;text-align:center;color:var(--muted)}
+.auth-card .seg{justify-content:center}
+.auth-card .seg button{flex:1}
+.auth-card .btn{width:100%;min-height:46px;font-size:1rem}
+.auth-card .btn.ghost{color:var(--ink)}
+.auth-card .pw{position:relative}
+.auth-card .pw input{padding-right:84px}
+.auth-card .pw button{position:absolute;right:4px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--accent-strong);font-weight:600;cursor:pointer;padding:8px 10px}
+.auth-card .link{border:0;background:none;color:var(--accent-strong);font-weight:500;cursor:pointer;padding:6px;text-align:center}
+.auth-card .chk{display:flex;gap:10px;align-items:flex-start;font-size:.88rem;color:var(--muted)}
+.auth-card .chk input{margin-top:3px;width:20px;height:20px;flex:none;accent-color:var(--accent)}
+.auth-card .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.85rem}
+.auth-card .or:before,.auth-card .or:after{content:"";height:1px;background:var(--line);flex:1}
+.auth-card .note{font-size:.8rem;color:var(--muted);text-align:center;margin:0}
+.auth-card .pill{align-self:center;font-size:.76rem;font-weight:600;background:var(--warn-soft);color:var(--warn);border-radius:99px;padding:3px 11px}
+

@@ -1,0 +1,39 @@
+@media (max-width:920px){
+  .wrap{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+  header.site .wrap{height:52px}
+  .brand .name span{display:none}
+  .app{grid-template-columns:minmax(0,1fr);gap:0;padding-block:12px 24px}
+  .work{gap:14px}
+  .side{display:none}
+  .pbar{position:static;box-shadow:none;padding:10px 12px;gap:8px 10px}
+  .pname{flex-basis:100%}
+  .pname input{font-size:16px;padding:3px 2px}
+  .wbox{height:44px;margin-left:auto}
+  .wbox button{width:34px}
+  .wbox input{font-size:1.6rem;width:4.2ch}
+  .wbox select{padding:0 4px 0 2px}
+  .pbar .seg button{padding:6px 12px}
+  .whint:not(.bad){display:none}
+  .whint.bad{flex-basis:100%}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding:0 max(4px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(4px,env(safe-area-inset-left,0px))}
+  .tabbar button{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:0;background:none;padding:8px 2px 7px;min-height:56px;font-weight:500;font-size:.7rem;color:var(--muted);cursor:pointer}
+  .tabbar button svg.i{width:23px;height:23px}
+  .tabbar button:active{background:var(--sunk)}
+  .tabbar button[aria-current="true"]{color:var(--accent-strong);font-weight:600}
+  .tabbar button[aria-current="true"]::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
+  .tabbar .urg{color:var(--danger)}
+  .tabbar .urg[aria-current="true"]::before{background:var(--danger)}
+  body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+  input,select,textarea{font-size:16px}
+  footer{margin-top:4px}
+}
+
+@media (max-width:400px){
+  .pbar{padding:10px;gap:8px}
+  .pbar .seg{flex-wrap:nowrap}
+  .pbar .seg button{padding:6px 9px}
+  .wbox button{width:30px}
+  .wbox input{width:3.7ch;font-size:1.5rem}
+  .wbox select{font-size:.88rem}
+}
